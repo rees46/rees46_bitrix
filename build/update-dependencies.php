@@ -37,4 +37,9 @@ foreach(array('REES46', 'Pest') as $class) {
 	}
 }
 
+print "Clean\n";
+
+run(MODULE_DIR, "rm -f composer.lock");
+run(MODULE_DIR, "rm -rf vendor");
+
 print "Done!\n";
