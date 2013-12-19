@@ -1,0 +1,8 @@
+# composer - installed by update-dependencies
+build/composer.phar
+
+# vendor - required only for update process
+vendor
+
+# composer.lock is not required because we commit our classes into git
+composer.lock
