@@ -31,12 +31,18 @@ class rees46recommender extends CModule
 
 	public function InstallFiles($arParams = array())
 	{
-		return CopyDirFiles(__DIR__ .'/components', $_SERVER['DOCUMENT_ROOT'] .'/bitrix/components', true, true);
+		$result = true;
+		$result = $result && CopyDirFiles(__DIR__ .'/components/rees46', $_SERVER['DOCUMENT_ROOT'] .'/bitrix/components/rees46', true, true);
+		$result = $result && CopyDirFiles(__DIR__ .'/include', $_SERVER['DOCUMENT_ROOT'] .'/include', true, true);
+		return $result;
 	}
 
 	public function UnInstallFiles()
 	{
-		return DeleteDirFilesEx('/bitrix/components/rees46');
+		$result = true;
+		$result = $result && DeleteDirFilesEx('/bitrix/components/rees46');
+		$result = $result && DeleteDirFilesEx('/include/rees46-recommender.php');
+		return $result;
 	}
 
 	public function InstallEvents()
