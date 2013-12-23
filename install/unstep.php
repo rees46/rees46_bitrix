@@ -9,5 +9,5 @@ CAdminMessage::ShowNote('Модуль успешно удален из системы');
 ?>
 <form action="<?= $APPLICATION->GetCurPage() ?>">
   <input type="hidden" name="lang" value="<?= LANG ?>">
-  <input type="submit" value="<?= GetMessage("MOD_BACK") ?>">
+  <input type="submit" value="<?= GetMessage('MOD_BACK') ?>">
 <form>

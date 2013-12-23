@@ -3,7 +3,9 @@
 class Rees46Func
 {
 	const BASE_URL = 'http://api.rees46.com';
-	//const BASE_URL = 'http://paloalto.foxloc.com:8080';
+
+	private static $jsIncluded = false;
+	private static $handleJs = '';
 
 	/**
 	 * insert script tags for Rees46
@@ -22,13 +24,16 @@ class Rees46Func
 			<script type="text/javascript" src="http://cdn.rees46.com/rees46_script.js"></script>
 			<script type="text/javascript" src="<?= self::BASE_URL ?>/init_script.js"></script>
 			<script type="text/javascript">
-				$(document).ready(function(){
+				$(function(){
 					REES46.init('<?= $shop_id ?>', <?= $USER->GetId() ?: 'undefined' ?>);
 					var date = new Date(new Date().getTime() + 365*24*60*60*1000);
 					document.cookie = 'rees46_session_id=' + REES46.ssid + '; path=/; expires='+date.toUTCString();
+					<?= self::$handleJs ?>
 				});
 			</script>
 		<?php
+
+		self::$jsIncluded = true;
 	}
 
 	/**
@@ -205,5 +210,24 @@ class Rees46Func
 		file_put_contents('/tmp/order', ob_get_clean());
 
 		self::restPushData('purchase', $items, $order_id);
+	}
+
+	/**
+	 * run js after includeJs
+	 * @param $js
+	 */
+	public static function handleJs($js)
+	{
+		if (self::$jsIncluded) {
+			?>
+				<script>
+					$(function() {
+						<?= $js ?>
+					});
+				</script>
+			<?php
+		} else {
+			self::$handleJs .= $js;
+		}
 	}
 }
