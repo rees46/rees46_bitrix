@@ -64,7 +64,7 @@ class Rees46Func
 		$libIBlockElem = new CIBlockElement();
 
 		$item       = $libProduct->GetByID($id);
-		$itemBlock  = $libIBlockElem->GetByID($id);
+		$itemBlock  = $libIBlockElem->GetByID($id)->Fetch();
 
 		$return = array(
 			'item_id' => intval($id),
@@ -97,7 +97,7 @@ class Rees46Func
 		$item = $libBasket->GetByID($id);
 
 		$libIBlockElem = new CIBlockElement();
-		$itemBlock  = $libIBlockElem->GetByID($item['PRODUCT_ID']);
+		$itemBlock  = $libIBlockElem->GetByID($item['PRODUCT_ID'])->Fetch();
 
 		if ($item === false) {
 			return false;
