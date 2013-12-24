@@ -1,5 +1,9 @@
 <?php
 
+CModule::IncludeModule('iblock');
+CModule::IncludeModule('catalog');
+CModule::IncludeModule('sale');
+
 class Rees46Func
 {
 	const BASE_URL = 'http://api.rees46.com';
@@ -49,19 +53,26 @@ class Rees46Func
 	}
 
 	/**
-	 * get item params for view or cart push
+	 * get item params for view push
 	 *
 	 * @param $id
 	 * @return array
 	 */
 	private static function getItemArray($id)
 	{
-		$libProduct = new CCatalogProduct();
-		$item = $libProduct->GetByID($id);
+		$libProduct    = new CCatalogProduct();
+		$libIBlockElem = new CIBlockElement();
+
+		$item       = $libProduct->GetByID($id);
+		$itemBlock  = $libIBlockElem->GetByID($id);
 
 		$return = array(
 			'item_id' => intval($id),
 		);
+
+		if (!empty($itemBlock['IBLOCK_SECTION_ID'])) {
+			$return['category'] = $itemBlock['IBLOCK_SECTION_ID'];
+		}
 
 		if (!empty($item['PURCHASING_PRICE'])) {
 			$return['price'] = $item['PURCHASING_PRICE'];
@@ -85,6 +96,9 @@ class Rees46Func
 		$libBasket = new CSaleBasket();
 		$item = $libBasket->GetByID($id);
 
+		$libIBlockElem = new CIBlockElement();
+		$itemBlock  = $libIBlockElem->GetByID($item['PRODUCT_ID']);
+
 		if ($item === false) {
 			return false;
 		}
@@ -92,6 +106,10 @@ class Rees46Func
 		$return = array(
 			'item_id' => $item['PRODUCT_ID'],
 		);
+
+		if (!empty($itemBlock['IBLOCK_SECTION_ID'])) {
+			$return['category'] = $itemBlock['IBLOCK_SECTION_ID'];
+		}
 
 		if (!empty($item['PRICE'])) {
 			$return['price'] = $item['PRICE'];

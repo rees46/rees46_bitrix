@@ -15,17 +15,12 @@ if (isset($arParams['recommender'])) {
 
 $params = isset($arParams['params']) ? $arParams['params'] : array();
 
-$data = array(
-	'recommended_items' => array(41, 61),
-	'recommended_by' => $recommender,
-);
-
 $strParams = '';
 
 switch ($recommender) {
 	case 'see_also':
-		if (isset($data['cart']) && is_array($data['cart'])) {
-			$strParams = ','. json_encode(array_values($data['cart']));
+		if (isset($arParams['cart']) && is_array($arParams['cart'])) {
+			$strParams = ','. json_encode(array_values($arParams['cart']));
 		} else {
 			error_log('recommender see_also requires cart');
 			return;
@@ -33,14 +28,14 @@ switch ($recommender) {
 		break;
 
 	case 'recently_viewed':
-		if (isset($data['cart']) && is_array($data['cart'])) {
-			$strParams = ','. json_encode(array_values($data['cart']));
+		if (isset($arParams['cart']) && is_array($arParams['cart'])) {
+			$strParams = ','. json_encode(array_values($arParams['cart']));
 		} // cart is not required
 		break;
 
 	case 'also_bought':
-		if (isset($data['item_id']) && is_numeric($data['item_id'])) {
-			$strParams = ','. json_encode($data['item_id']);
+		if (isset($arParams['item_id']) && is_numeric($arParams['item_id'])) {
+			$strParams = ','. json_encode($arParams['item_id']);
 		} else {
 			error_log('recommender also_bought requires item_id');
 			return;
@@ -48,16 +43,16 @@ switch ($recommender) {
 		break;
 
 	case 'similar':
-		if (isset($data['item_id']) && is_numeric($data['item_id'])) {
-			$strParams = ','. json_encode($data['item_id']);
+		if (isset($arParams['item_id']) && is_numeric($arParams['item_id'])) {
+			$strParams = ','. json_encode($arParams['item_id']);
 		} else {
 			error_log('recommender similar requires item_id');
 			return;
 		}
 
 		// params2
-		if (isset($data['cart']) && is_array($data['cart'])) {
-			$strParams.= ','. json_encode(array_values($data['cart']));
+		if (isset($arParams['cart']) && is_array($arParams['cart'])) {
+			$strParams.= ','. json_encode(array_values($arParams['cart']));
 		} // cart is not required
 		break;
 
@@ -65,8 +60,8 @@ switch ($recommender) {
 		break;
 
 	case 'popular':
-		if (isset($data['category'])) {
-			$strParams = ','. json_encode($data['category']);
+		if (isset($arParams['category'])) {
+			$strParams = ','. json_encode($arParams['category']);
 		}
 		break;
 
