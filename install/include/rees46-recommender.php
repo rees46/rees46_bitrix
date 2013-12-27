@@ -28,11 +28,21 @@ if (isset($_REQUEST['recommended_items']) && is_array($_REQUEST['recommended_ite
 
 		$file = CFile::ResizeImageGet($picture, array('width' => 150, 'height' => 150), BX_RESIZE_IMAGE_PROPORTIONAL, true);
 
+		$price = array_pop($item['PRICES']);
+
 		?>
-			<div>
+			<div style="display: inline-block" class="R2D2">
 				<a href="<?= $link ?>">
-					<img src="<?= $file['src'] ?>" />
+					<img src="<?= $file['src'] ?>" class="item_img" />
 				</a>
+				<div>
+					<span class="item_title" title="<?= htmlspecialchars($item['NAME']) ?>"><?= $item['NAME'] ?><br/>
+					<?= $price['PRICE'] ?> <?= $price['CURRENCY'] ?><br/>
+					<a
+						onclick="return addToCart(this, 'list', 'В корзине', 'noCart');"
+						href="<?= $link .'&action=ADD2BASKET&id='. $item_id ?>"
+						class="bt3">Купить</a>
+				</div>
 			</div>
 		<?php
 	}
