@@ -8,7 +8,8 @@ CModule::IncludeModule('sale');
 $recommended_by = '';
 
 if (isset($_REQUEST['recommended_by'])) {
-	$recommended_by = '?recommended_by='.urlencode(strval($_REQUEST['recommended_by']));
+	$recommender = strval($_REQUEST['recommended_by']);
+	$recommended_by = '?recommended_by='. urlencode($recommender);
 }
 
 $libCatalogProduct = new CCatalogProduct();
@@ -36,10 +37,10 @@ if (isset($_REQUEST['recommended_items']) && is_array($_REQUEST['recommended_ite
 					<img src="<?= $file['src'] ?>" class="item_img" />
 				</a>
 				<div>
-					<span class="item_title" title="<?= htmlspecialchars($item['NAME']) ?>"><?= $item['NAME'] ?><br/>
+					<span class="item_title" title="<?= htmlspecialchars($item['NAME']) ?>"><?= $item['NAME'] ?></span><br/>
 					<?= $price['PRICE'] ?> <?= $price['CURRENCY'] ?><br/>
 					<a
-						onclick="return addToCart(this, 'list', 'В корзине', 'noCart');"
+						onclick="return rees46_send_view(<?= $item_id ?>, '<?= addslashes($recommender) ?>') && addToCart(this, 'list', 'В корзине', 'noCart');"
 						href="<?= $link .'&action=ADD2BASKET&id='. $item_id ?>"
 						class="bt3">Купить</a>
 				</div>
@@ -47,6 +48,18 @@ if (isset($_REQUEST['recommended_items']) && is_array($_REQUEST['recommended_ite
 		<?php
 	}
 }
+
+?>
+<script>
+	function rees46_send_view(id, recommender) {
+		REES46.pushData('view', {
+			item_id: id,
+			recommended_by: recommender
+		});
+		return true;
+	}
+</script>
+<?php
 
 require $_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/main/include/epilog_after.php';
 
