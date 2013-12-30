@@ -92,3 +92,5 @@ ob_start();
 	} <?= $strParams ?>);
 <?php
 Rees46Func::handleJs(ob_get_clean());
+
+$this->IncludeComponentTemplate(); // mainly for including css
