@@ -223,10 +223,6 @@ class Rees46Func
 			$items []= $pushItem;
 		}
 
-		ob_start();
-		var_dump($list, $list->Fetch(), $items);
-		file_put_contents('/tmp/order', ob_get_clean());
-
 		self::restPushData('purchase', $items, $order_id);
 	}
 
