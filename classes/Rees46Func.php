@@ -131,13 +131,15 @@ class Rees46Func
 	 */
 	private static function jsPushData($action, $data, $order_id = null)
 	{
+		ob_start();
+
 		?>
-			<script type="application/javascript">
-				$(function () {
-					REES46.pushData('<?= $action ?>', <?= json_encode($data) ?> <?= $order_id !== null ? ', '. $order_id : '' ?>);
-				});
-			</script>
+			$(function () {
+				REES46.pushData('<?= $action ?>', <?= json_encode($data) ?> <?= $order_id !== null ? ', '. $order_id : '' ?>);
+			});
 		<?php
+
+		self::handleJs(ob_get_clean());
 	}
 
 	/**
