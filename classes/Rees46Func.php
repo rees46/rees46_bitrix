@@ -134,9 +134,7 @@ class Rees46Func
 		ob_start();
 
 		?>
-			$(function () {
-				REES46.pushData('<?= $action ?>', <?= json_encode($data) ?> <?= $order_id !== null ? ', '. $order_id : '' ?>);
-			});
+			REES46.pushData('<?= $action ?>', <?= json_encode($data) ?> <?= $order_id !== null ? ', '. $order_id : '' ?>);
 		<?php
 
 		self::handleJs(ob_get_clean());
