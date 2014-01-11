@@ -15,7 +15,7 @@ function run($path, $command)
 
 //install composer
 print "Install/Update composer\n";
-if (is_file('composer.phar')) {
+if (is_file(__DIR__ .'/composer.phar')) {
 	run(__DIR__, 'php composer.phar self-update');
 } else {
 	run(__DIR__, 'curl -sS https://getcomposer.org/installer | php');

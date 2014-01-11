@@ -19,6 +19,7 @@ class REES46
 	private $session_id;
 	private $user_id;
 	private $base_url;
+	private $use_async_send;
 
 	/**
 	 * @var Pest
@@ -37,6 +38,8 @@ class REES46
 		$this->session_id = $session_id;
 		$this->user_id    = $user_id;
 		$this->base_url   = $base_url;
+
+		$this->use_async_send = function_exists('fsockopen') ? true : false;
 
 		$this->rest = new Pest($base_url);
 		$this->rest->curl_opts[CURLOPT_TIMEOUT_MS] = 1000;
@@ -105,7 +108,11 @@ class REES46
 
 		$data['count'] = $k;
 
-		$this->postAsync('push', $data);
+		if ($this->use_async_send) {
+			$this->postAsync('push', $data);
+		} else {
+			$this->rest->post('push', $data);
+		}
 	}
 
 	public function recommend($recommender, $params = array())
