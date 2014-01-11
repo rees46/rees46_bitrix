@@ -1,6 +1,9 @@
 # composer - installed by update-dependencies
 build/composer.phar
 
+# package
+build/*.zip
+
 # vendor - required only for update process
 vendor
 
