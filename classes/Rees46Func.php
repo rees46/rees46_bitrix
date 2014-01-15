@@ -207,7 +207,7 @@ class Rees46Func
 	public static function removeFromCart($basket_id)
 	{
 		$item = self::getBasketArray($basket_id);
-		self::restPushData('remove_from_cart', $item['item_id'], $item);
+		self::restPushData('remove_from_cart', new REES46PushItem($item['item_id'], $item));
 	}
 
 	public static function purchase($order_id)
