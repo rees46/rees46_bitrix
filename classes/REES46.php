@@ -280,7 +280,7 @@ class REES46
 		$out.= "Host: ".$parts['host']."\r\n";
 		$out.= "Content-Type: application/x-www-form-urlencoded\r\n";
 		$out.= "Content-Length: ".strlen($post_data)."\r\n";
-		$out.= "Connection: Close\r\n\r\n";
+		$out.= "\r\n";
 		$out.= $post_data;
 
 		fwrite($socket, $out);
