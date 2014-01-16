@@ -19,8 +19,8 @@ $strParams = '';
 
 switch ($recommender) {
 	case 'see_also':
-		if (isset($arParams['cart']) && is_array($arParams['cart'])) {
-			$strParams = ','. json_encode(array_values($arParams['cart']));
+		if (isset($params['cart']) && is_array($params['cart'])) {
+			$strParams = ','. json_encode(array_values($params['cart']));
 		} else {
 			error_log('recommender see_also requires cart');
 			return;
@@ -28,14 +28,14 @@ switch ($recommender) {
 		break;
 
 	case 'recently_viewed':
-		if (isset($arParams['cart']) && is_array($arParams['cart'])) {
-			$strParams = ','. json_encode(array_values($arParams['cart']));
+		if (isset($params['cart']) && is_array($params['cart'])) {
+			$strParams = ','. json_encode(array_values($params['cart']));
 		} // cart is not required
 		break;
 
 	case 'also_bought':
-		if (isset($arParams['item_id']) && is_numeric($arParams['item_id'])) {
-			$strParams = ','. json_encode($arParams['item_id']);
+		if (isset($params['item_id']) && is_numeric($params['item_id'])) {
+			$strParams = ','. json_encode($params['item_id']);
 		} else {
 			error_log('recommender also_bought requires item_id');
 			return;
@@ -43,16 +43,16 @@ switch ($recommender) {
 		break;
 
 	case 'similar':
-		if (isset($arParams['item_id']) && is_numeric($arParams['item_id'])) {
-			$strParams = ','. json_encode($arParams['item_id']);
+		if (isset($params['item_id']) && is_numeric($params['item_id'])) {
+			$strParams = ','. json_encode($params['item_id']);
 		} else {
-			error_log('recommender similar requires item_id');
+			print('recommender similar requires item_id');
 			return;
 		}
 
 		// params2
-		if (isset($arParams['cart']) && is_array($arParams['cart'])) {
-			$strParams.= ','. json_encode(array_values($arParams['cart']));
+		if (isset($params['cart']) && is_array($params['cart'])) {
+			$strParams.= ','. json_encode(array_values($params['cart']));
 		} // cart is not required
 		break;
 
@@ -60,8 +60,8 @@ switch ($recommender) {
 		break;
 
 	case 'popular':
-		if (isset($arParams['category'])) {
-			$strParams = ','. json_encode($arParams['category']);
+		if (isset($params['category'])) {
+			$strParams = ','. json_encode($params['category']);
 		}
 		break;
 
