@@ -46,7 +46,7 @@ switch ($recommender) {
 		if (isset($params['item_id']) && is_numeric($params['item_id'])) {
 			$strParams = ','. json_encode($params['item_id']);
 		} else {
-			print('recommender similar requires item_id');
+			error_log('recommender similar requires item_id');
 			return;
 		}
 
