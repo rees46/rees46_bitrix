@@ -26,13 +26,26 @@ class Rees46Func
 
 		?>
 			<script type="text/javascript" src="http://cdn.rees46.com/rees46_script.js"></script>
-			<script type="text/javascript" src="<?= self::BASE_URL ?>/init_script.js"></script>
 			<script type="text/javascript">
 				$(function(){
-					REES46.init('<?= $shop_id ?>', <?= $USER->GetId() ?: 'undefined' ?>);
-					var date = new Date(new Date().getTime() + 365*24*60*60*1000);
-					document.cookie = 'rees46_session_id=' + REES46.ssid + '; path=/; expires='+date.toUTCString();
-					<?= self::$handleJs ?>
+					REES46.init('<?= $shop_id ?>', <?= $USER->GetId() ?: 'undefined' ?>, function () {
+						var date = new Date(new Date().getTime() + 365*24*60*60*1000);
+						document.cookie = 'rees46_session_id=' + REES46.ssid + '; path=/; expires='+date.toUTCString();
+
+						if (typeof(window.ReesPushData) != 'undefined') {
+							for (i = 0; i < window.ReesPushData.length; i++) {
+								var pd = window.ReesPushData[i];
+
+								if (pd.hasOwnProperty('order_id')) {
+									REES46.pushData(pd.action, pd.data, pd.order_id);
+								} else {
+									REES46.pushData(pd.action, pd.data);
+								}
+							}
+						}
+
+						<?= self::$handleJs ?>
+					});
 				});
 			</script>
 		<?php
@@ -69,6 +82,10 @@ class Rees46Func
 		$return = array(
 			'item_id' => intval($id),
 		);
+
+		if (empty($item)) {
+			return null;
+		}
 
 		if (!empty($itemBlock['IBLOCK_SECTION_ID'])) {
 			$return['category'] = $itemBlock['IBLOCK_SECTION_ID'];
@@ -131,13 +148,25 @@ class Rees46Func
 	 */
 	private static function jsPushData($action, $data, $order_id = null)
 	{
-		ob_start();
-
 		?>
-			REES46.pushData('<?= $action ?>', <?= json_encode($data) ?> <?= $order_id !== null ? ', '. $order_id : '' ?>);
-		<?php
+			<script>
+				if (typeof(REES46) == 'undefined') {
+					if (typeof(window.ReesPushData) == 'undefined') {
+						window.ReesPushData = [];
+					}
 
-		self::handleJs(ob_get_clean());
+					window.ReesPushData.push({
+						action: '<?= $action ?>',
+						data: <?= json_encode($data) ?>
+						<?= $order_id !== null ? ', order_id: '. $order_id : '' ?>
+					});
+				} else {
+					REES46.addReadyListener(function() {
+						REES46.pushData('<?= $action ?>', <?= json_encode($data) ?> <?= $order_id !== null ? ', '. $order_id : '' ?>);
+					});
+				}
+			</script>
+		<?php
 	}
 
 	/**
