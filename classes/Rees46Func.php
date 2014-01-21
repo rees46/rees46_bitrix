@@ -75,9 +75,11 @@ class Rees46Func
 	{
 		$libProduct    = new CCatalogProduct();
 		$libIBlockElem = new CIBlockElement();
+		$libPrice      = new CPrice();
 
 		$item       = $libProduct->GetByID($id);
 		$itemBlock  = $libIBlockElem->GetByID($id)->Fetch();
+		$price      = $libPrice->GetBasePrice($id);
 
 		$return = array(
 			'item_id' => intval($id),
@@ -91,8 +93,8 @@ class Rees46Func
 			$return['category'] = $itemBlock['IBLOCK_SECTION_ID'];
 		}
 
-		if (!empty($item['PURCHASING_PRICE'])) {
-			$return['price'] = $item['PURCHASING_PRICE'];
+		if (!empty($price['PRICE'])) {
+			$return['price'] = $price['PRICE'];
 		}
 
 		if (!empty($item['QUANTITY'])) {
