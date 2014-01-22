@@ -13,6 +13,7 @@ if (isset($_REQUEST['recommended_by'])) {
 }
 
 $libCatalogProduct = new CCatalogProduct();
+$libFile = new CFile();
 
 if (isset($_REQUEST['recommended_items']) && is_array($_REQUEST['recommended_items'])) {
 	foreach ($_REQUEST['recommended_items'] as $item_id) {
@@ -27,7 +28,7 @@ if (isset($_REQUEST['recommended_items']) && is_array($_REQUEST['recommended_ite
 			continue;
 		}
 
-		$file = CFile::ResizeImageGet($picture, array('width' => 150, 'height' => 150), BX_RESIZE_IMAGE_PROPORTIONAL, true);
+		$file = $libFile->ResizeImageGet($picture, array('width' => 150, 'height' => 150), BX_RESIZE_IMAGE_PROPORTIONAL, true);
 
 		$price = array_pop($item['PRICES']);
 
@@ -39,10 +40,10 @@ if (isset($_REQUEST['recommended_items']) && is_array($_REQUEST['recommended_ite
 				<div>
 					<span class="item_title" title="<?= htmlspecialchars($item['NAME']) ?>"><?= $item['NAME'] ?></span><br/>
 					<?= $price['PRICE'] ?> <?= $price['CURRENCY'] ?><br/>
-					<a
+					<?/*<a
 						onclick="return rees46_send_view(<?= $item_id ?>, '<?= addslashes($recommender) ?>') && addToCart(this, 'list', 'В корзине', 'noCart');"
 						href="<?= $link .'&action=ADD2BASKET&id='. $item_id ?>"
-						class="bt3">Купить</a>
+						class="bt3">Купить</a>*/?>
 				</div>
 			</div>
 		<?php
