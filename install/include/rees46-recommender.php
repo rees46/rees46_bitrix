@@ -10,6 +10,29 @@ $recommended_by = '';
 if (isset($_REQUEST['recommended_by'])) {
 	$recommender = strval($_REQUEST['recommended_by']);
 	$recommended_by = '?recommended_by='. urlencode($recommender);
+
+	switch ($recommender) {
+		case 'see_also':
+			$recommender_title = 'Посмотрите также';
+			break;
+		case 'recently_viewed':
+			$recommender_title = 'Вы недавно смотрели';
+			break;
+		case 'also_bought':
+			$recommender_title = 'С этим также покупают';
+			break;
+		case 'similar':
+			$recommender_title = 'Похожие товары';
+			break;
+		case 'interesting':
+			$recommender_title = 'Возможно вас заинтересует';
+			break;
+		case 'popular':
+			$recommender_title = 'Популярное';
+			break;
+		default:
+			$recommender_title = '';
+	}
 }
 
 $libCatalogProduct = new CCatalogProduct();
@@ -34,6 +57,7 @@ if (isset($_REQUEST['recommended_items']) && is_array($_REQUEST['recommended_ite
 
 		?>
 			<div style="display: inline-block" class="R2D2">
+				<div class="title"><?= $recommender_title ?></div>
 				<a href="<?= $link ?>">
 					<img src="<?= $file['src'] ?>" class="item_img" />
 				</a>
