@@ -39,7 +39,9 @@ class REES46
 		$this->user_id    = $user_id;
 		$this->base_url   = $base_url;
 
-		$this->use_async_send = function_exists('fsockopen') ? true : false;
+		// disable fsockopen send as it sometimes fails
+		// $this->use_async_send = function_exists('fsockopen') ? true : false;
+		$this->use_async_send = false;
 
 		$this->rest = new Pest($base_url);
 		$this->rest->curl_opts[CURLOPT_TIMEOUT_MS] = 1000;

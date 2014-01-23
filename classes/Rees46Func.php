@@ -244,7 +244,18 @@ class Rees46Func
 	public static function purchase($order_id)
 	{
 		$libBasket = new CSaleBasket();
-		$list = $libBasket->GetList(array(), array('ORDER_ID' => $order_id));
+
+		if ($order_id !== null) {
+			$list = $libBasket->GetList(array(), array('ORDER_ID' => $order_id));
+		} else {
+			$list = $libBasket->GetList(array(),
+                		array(
+ 		                       "FUSER_ID" => CSaleBasket::GetBasketUserID(),
+                		       "LID" => SITE_ID,
+		                       "ORDER_ID" => false,
+                		)
+			);
+		}
 
 		$items = array();
 
