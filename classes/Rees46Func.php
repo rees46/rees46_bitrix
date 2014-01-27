@@ -249,11 +249,11 @@ class Rees46Func
 			$list = $libBasket->GetList(array(), array('ORDER_ID' => $order_id));
 		} else {
 			$list = $libBasket->GetList(array(),
-                		array(
- 		                       "FUSER_ID" => CSaleBasket::GetBasketUserID(),
-                		       "LID" => SITE_ID,
-		                       "ORDER_ID" => false,
-                		)
+				array(
+					'FUSER_ID' => $libBasket->GetBasketUserID(),
+					'LID' => SITE_ID,
+					'ORDER_ID' => false,
+				)
 			);
 		}
 
