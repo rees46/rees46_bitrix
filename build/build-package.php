@@ -31,6 +31,8 @@ run (__DIR__, 'cp '. MODULE_DIR .'/options.php '. BUILD_DIR);
 
 print "Creating archive...\n";
 
-run (__DIR__, "rm rees46recommender-{$version}.zip");
+run (__DIR__, "rm -f rees46recommender-{$version}.zip rees46recommender-{$version}-utf8.zip");
 run (__DIR__, "zip -r rees46recommender-{$version}.zip rees46recommender");
+run (__DIR__.'/rees46recommender', "find -iname \\*.php -exec sh -c 'iconv -f cp1251 -t utf8 {} > {}.tmp && rm -f {} && mv {}.tmp {}' \\;");
+run (__DIR__, "zip -r rees46recommender-{$version}-utf8.zip rees46recommender");
 run (__DIR__, 'rm -rf rees46recommender');
