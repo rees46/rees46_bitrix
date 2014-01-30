@@ -39,6 +39,12 @@ $libCatalogProduct = new CCatalogProduct();
 $libFile = new CFile();
 
 if (isset($_REQUEST['recommended_items']) && is_array($_REQUEST['recommended_items'])) {
+
+	?>
+		<div class="recommender-block-title"><?= $recommender_title ?></div>
+		<div class="recommended-items">
+	<?php
+
 	foreach ($_REQUEST['recommended_items'] as $item_id) {
 		$item_id = intval($item_id);
 
@@ -56,22 +62,26 @@ if (isset($_REQUEST['recommended_items']) && is_array($_REQUEST['recommended_ite
 		$price = array_pop($item['PRICES']);
 
 		?>
-			<div style="display: inline-block" class="R2D2">
-				<div class="title"><?= $recommender_title ?></div>
-				<a href="<?= $link ?>">
-					<img src="<?= $file['src'] ?>" class="item_img" />
-				</a>
-				<div>
-					<span class="item_title" title="<?= htmlspecialchars($item['NAME']) ?>"><?= $item['NAME'] ?></span><br/>
-					<?= $price['PRICE'] ?> <?= $price['CURRENCY'] ?><br/>
-					<?/*<a
-						onclick="return rees46_send_view(<?= $item_id ?>, '<?= addslashes($recommender) ?>') && addToCart(this, 'list', 'В корзине', 'noCart');"
-						href="<?= $link .'&action=ADD2BASKET&id='. $item_id ?>"
-						class="bt3">Купить</a>*/?>
+			<div class="recommended-item">
+				<div class="recommended-item-photo">
+					<a href="<?= $link ?>"><img src="<?= $file['src'] ?>" class="item_img" /></a>
+				</div>
+				<div class="recommended-item-title">
+					<?= $item['NAME'] ?>
+				</div>
+				<div class="recommended-item-price">
+					<?= $price['PRICE'] ?> <?= $price['CURRENCY'] ?>
+				</div>
+				<div class="recommended-item-action">
+					<a href="<?= $link ?>">Подробнее</a>
 				</div>
 			</div>
 		<?php
 	}
+
+	?>
+		</div>
+	<?php
 }
 
 ?>
