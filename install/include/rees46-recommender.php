@@ -67,7 +67,7 @@ if (isset($_REQUEST['recommended_items']) && is_array($_REQUEST['recommended_ite
 					<a href="<?= $link ?>"><img src="<?= $file['src'] ?>" class="item_img" /></a>
 				</div>
 				<div class="recommended-item-title">
-					<?= $item['NAME'] ?>
+					<a href="<?= $link ?>"><?= $item['NAME'] ?></a>
 				</div>
 				<div class="recommended-item-price">
 					<?= $price['PRICE'] ?> <?= $price['CURRENCY'] ?>
