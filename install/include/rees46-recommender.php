@@ -28,7 +28,7 @@ if (isset($_REQUEST['recommended_by'])) {
 			$recommender_title = 'Возможно вас заинтересует';
 			break;
 		case 'popular':
-			$recommender_title = 'Популярное';
+			$recommender_title = 'Популярные товары';
 			break;
 		default:
 			$recommender_title = '';
