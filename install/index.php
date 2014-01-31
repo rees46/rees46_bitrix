@@ -5,8 +5,8 @@ class rees46recommender extends CModule
 	const MODULE_ID = 'rees46recommender';
 
 	public $MODULE_ID           = self::MODULE_ID;
-	public $MODULE_VERSION      = '1.0.5';
-	public $MODULE_VERSION_DATE = '2014-01-30 12:00:00';
+	public $MODULE_VERSION      = '1.0.6';
+	public $MODULE_VERSION_DATE = '2014-01-30 13:50:00';
 	public $MODULE_NAME         = 'REES46 Recommender';
 	public $MODULE_DESCRIPTION  = 'Онлайн-мерчандайзер для блоков рекомендации товаров с персонализацией под каждого отдельного покупателя. Увеличивает продажи на 20-30% в автоматическом режиме за счет анализа потребностей покупателя.';
 	public $MODULE_CSS;

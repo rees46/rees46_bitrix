@@ -38,7 +38,7 @@ if (isset($_REQUEST['recommended_by'])) {
 $libCatalogProduct = new CCatalogProduct();
 $libFile = new CFile();
 
-if (isset($_REQUEST['recommended_items']) && is_array($_REQUEST['recommended_items'])) {
+if (isset($_REQUEST['recommended_items']) && is_array($_REQUEST['recommended_items']) && count($_REQUEST['recommended_items']) > 0) {
 
 	?>
 		<div class="recommender-block-title"><?= $recommender_title ?></div>
@@ -83,18 +83,6 @@ if (isset($_REQUEST['recommended_items']) && is_array($_REQUEST['recommended_ite
 		</div>
 	<?php
 }
-
-?>
-<script>
-	function rees46_send_view(id, recommender) {
-		REES46.pushData('view', {
-			item_id: id,
-			recommended_by: recommender
-		});
-		return true;
-	}
-</script>
-<?php
 
 require $_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/main/include/epilog_after.php';
 

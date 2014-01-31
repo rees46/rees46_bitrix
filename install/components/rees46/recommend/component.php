@@ -73,24 +73,22 @@ $uniqid = uniqid('rees46-recommend-');
 
 ?>
 <div id="<?= $uniqid ?>" class="rees46-recommend"></div>
-<?php
-
-ob_start();
-?>
-	REES46.recommend(<?= json_encode($recommender) ?>, function (data) {
-		$.ajax({
-			url: '/include/rees46-recommender.php',
-			method: 'get',
-			data: {
-				recommended_by: <?= json_encode($recommender) ?>,
-				recommended_items: data
-			},
-			success: function (html) {
-				$('#<?= $uniqid ?>').html(html);
-			}
+<script>
+	$(function () {
+		REES46.addReadyListener(function() {
+			REES46.recommend(<?= json_encode($recommender) ?>, function (data) {
+				$.ajax({
+					url: '/include/rees46-recommender.php',
+					method: 'get',
+					data: {
+						recommended_by: <?= json_encode($recommender) ?>,
+						recommended_items: data
+					},
+					success: function (html) {
+						$('#<?= $uniqid ?>').html(html);
+					}
+				});
+			} <?= $strParams ?>);
 		});
-	} <?= $strParams ?>);
-<?php
-Rees46Func::handleJs(ob_get_clean());
-
-$this->IncludeComponentTemplate(); // mainly for including css
+	});
+</script>
