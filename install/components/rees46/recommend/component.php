@@ -76,18 +76,20 @@ $uniqid = uniqid('rees46-recommend-');
 <script>
 	$(function () {
 		REES46.addReadyListener(function() {
-			REES46.recommend(<?= json_encode($recommender) ?>, function (data) {
-				$.ajax({
-					url: '/include/rees46-recommender.php',
-					method: 'get',
-					data: {
-						recommended_by: <?= json_encode($recommender) ?>,
-						recommended_items: data
-					},
-					success: function (html) {
-						$('#<?= $uniqid ?>').html(html);
-					}
-				});
+			REES46.recommend(<?= json_encode($recommender) ?>, function (items) {
+				if (items.length > 0) {
+					$.ajax({
+						url: '/include/rees46-recommender.php',
+						method: 'get',
+						data: {
+							recommended_by: <?= json_encode($recommender) ?>,
+							recommended_items: items
+						},
+						success: function (html) {
+							$('#<?= $uniqid ?>').html(html);
+						}
+					});
+				}
 			} <?= $strParams ?>);
 		});
 	});
