@@ -9,6 +9,9 @@ define('MODULE_DIR', dirname(__DIR__));
 define('BUILD_DIR', __DIR__ . '/mk.rees46');
 
 class CModule {} // we do not require bitrix things but mk_rees46 is inherited from CModule
+function IncludeModuleLangFile() {} // we do not require this too
+function GetMessage() { return ''; }
+
 require_once __DIR__ .'/../install/index.php'; // get mk_rees46 data
 
 $version = (new mk_rees46())->MODULE_VERSION;
