@@ -60,7 +60,7 @@ class Rees46Func
 	 */
 	private static function shopId()
 	{
-		$shop_id = COption::GetOptionString(rees46recommender::MODULE_ID, 'shop_id', false);
+		$shop_id = COption::GetOptionString(mk_rees46::MODULE_ID, 'shop_id', false);
 
 		return empty($shop_id) ? false : $shop_id;
 	}

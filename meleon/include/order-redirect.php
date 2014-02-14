@@ -2,9 +2,9 @@
 
 require $_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/main/include/prolog_before.php';
 
-if (IsModuleInstalled('rees46recommender') && IsModuleInstalled('sale')) {
+if (IsModuleInstalled('mk.rees46') && IsModuleInstalled('sale')) {
 	CModule::IncludeModule('sale');
-	CModule::IncludeModule('rees46recommender');
+	CModule::IncludeModule('mk.rees46');
 
 	Rees46Func::purchase(null);
 }

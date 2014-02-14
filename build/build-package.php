@@ -6,12 +6,12 @@
  */
 
 define('MODULE_DIR', dirname(__DIR__));
-define('BUILD_DIR', __DIR__ . '/rees46recommender');
+define('BUILD_DIR', __DIR__ . '/mk.rees46');
 
-class CModule {} // we do not require bitrix things but rees46recommender is inherited from CModule
-require_once __DIR__ .'/../install/index.php'; // get rees46recommender data
+class CModule {} // we do not require bitrix things but mk_rees46 is inherited from CModule
+require_once __DIR__ .'/../install/index.php'; // get mk_rees46 data
 
-$version = (new rees46recommender())->MODULE_VERSION;
+$version = (new mk_rees46())->MODULE_VERSION;
 
 function run($path, $command)
 {
@@ -31,8 +31,8 @@ run (__DIR__, 'cp '. MODULE_DIR .'/options.php '. BUILD_DIR);
 
 print "Creating archive...\n";
 
-run (__DIR__, "rm -f rees46recommender-{$version}.zip rees46recommender-{$version}-utf8.zip");
-run (__DIR__, "zip -r rees46recommender-{$version}.zip rees46recommender");
-run (__DIR__.'/rees46recommender', "find -iname \\*.php -exec sh -c 'iconv -f cp1251 -t utf8 {} > {}.tmp && rm -f {} && mv {}.tmp {}' \\;");
-run (__DIR__, "zip -r rees46recommender-{$version}-utf8.zip rees46recommender");
-run (__DIR__, 'rm -rf rees46recommender');
+run (__DIR__, "rm -f mk.rees46-{$version}.zip mk.rees46-{$version}-utf8.zip");
+run (__DIR__, "zip -r mk.rees46-{$version}.zip mk.rees46");
+run (__DIR__.'/mk.rees46', "find -iname \\*.php -exec sh -c 'iconv -f cp1251 -t utf8 {} > {}.tmp && rm -f {} && mv {}.tmp {}' \\;");
+run (__DIR__, "zip -r mk.rees46-{$version}-utf8.zip mk.rees46");
+run (__DIR__, 'rm -rf mk.rees46');

@@ -4,5 +4,5 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
 	die();
 }
 
-CModule::IncludeModule('rees46recommender');
+CModule::IncludeModule('mk.rees46');
 Rees46Func::includeJs();

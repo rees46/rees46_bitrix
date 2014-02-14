@@ -1,15 +1,17 @@
 <?php
 
-class rees46recommender extends CModule
+class mk_rees46 extends CModule
 {
-	const MODULE_ID = 'rees46recommender';
+	const MODULE_ID = 'mk.rees46';
 
 	public $MODULE_ID           = self::MODULE_ID;
-	public $MODULE_VERSION      = '1.0.6';
+	public $MODULE_VERSION      = '1.0.7';
 	public $MODULE_VERSION_DATE = '2014-01-30 13:50:00';
 	public $MODULE_NAME         = 'REES46 Recommender';
 	public $MODULE_DESCRIPTION  = 'Онлайн-мерчандайзер для блоков рекомендации товаров с персонализацией под каждого отдельного покупателя. Увеличивает продажи на 20-30% в автоматическом режиме за счет анализа потребностей покупателя.';
 	public $MODULE_CSS;
+	public $PARTNER_NAME        = 'Студия Михаила Кечинова';
+	public $PARTNER_URI         = 'http://mkechinov.ru';
 
 	public function DoInstall()
 	{

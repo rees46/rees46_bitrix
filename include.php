@@ -1,12 +1,12 @@
 <?php
 
 /* preload module info */
-if (class_exists('rees46recommender') === false) {
+if (class_exists('mk_rees46') === false) {
 	require __DIR__ . '/install/index.php';
 }
 
 CModule::AddAutoloadClasses(
-	rees46recommender::MODULE_ID,
+	mk_rees46::MODULE_ID,
 	array(
 		'Rees46Func' => 'classes/Rees46Func.php',
 
