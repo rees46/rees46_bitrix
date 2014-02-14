@@ -1,17 +1,31 @@
 <?php
 
+IncludeModuleLangFile(__FILE__);
+
 class mk_rees46 extends CModule
 {
-	const MODULE_ID = 'mk.rees46';
+	const MODULE_ID    = 'mk.rees46';
+	const PARTNER_NAME = 'REES46';
+	const PARTNER_URI  = 'http://rees46.com/';
 
 	public $MODULE_ID           = self::MODULE_ID;
-	public $MODULE_VERSION      = '1.0.7';
-	public $MODULE_VERSION_DATE = '2014-01-30 13:50:00';
+	public $PARTNER_NAME        = self::PARTNER_NAME;
+	public $PARTNER_URI         = self::PARTNER_URI;
+	public $MODULE_VERSION;
+	public $MODULE_VERSION_DATE;
 	public $MODULE_NAME         = 'REES46 Recommender';
-	public $MODULE_DESCRIPTION  = 'Онлайн-мерчандайзер для блоков рекомендации товаров с персонализацией под каждого отдельного покупателя. Увеличивает продажи на 20-30% в автоматическом режиме за счет анализа потребностей покупателя.';
+	public $MODULE_DESCRIPTION;
 	public $MODULE_CSS;
-	public $PARTNER_NAME        = 'REES46';
-	public $PARTNER_URI         = 'http://rees46.com/';
+
+	public function __construct()
+	{
+		$arModuleVersion = array();
+		include(__DIR__ . '/version.php');
+		$this->MODULE_VERSION = $arModuleVersion['VERSION'];
+		$this->MODULE_VERSION_DATE = $arModuleVersion['VERSION_DATE'];
+
+		$this->MODULE_DESCRIPTION = GetMessage('REES_INSTALL_DESCRIPTION');
+	}
 
 	public function DoInstall()
 	{
@@ -19,7 +33,7 @@ class mk_rees46 extends CModule
 		RegisterModule($this->MODULE_ID);
 		$this->InstallFiles();
 		$this->InstallEvents();
-		$APPLICATION->IncludeAdminFile('Установка REES46', __DIR__ . '/step.php');
+		$APPLICATION->IncludeAdminFile(GetMessage('REES_INSTALL_TITLE'), __DIR__ . '/step.php');
 	}
 
 	public function DoUninstall()
@@ -28,7 +42,7 @@ class mk_rees46 extends CModule
 		UnRegisterModule($this->MODULE_ID);
 		$this->UnInstallFiles();
 		$this->UnInstallEvents();
-		$APPLICATION->IncludeAdminFile('Установка REES46', __DIR__ . '/unstep.php');
+		$APPLICATION->IncludeAdminFile(GetMessage('REES_INSTALL_TITLE'), __DIR__ . '/unstep.php');
 	}
 
 	public function InstallFiles($arParams = array())
