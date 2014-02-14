@@ -10,8 +10,8 @@ class mk_rees46 extends CModule
 	public $MODULE_NAME         = 'REES46 Recommender';
 	public $MODULE_DESCRIPTION  = 'Онлайн-мерчандайзер для блоков рекомендации товаров с персонализацией под каждого отдельного покупателя. Увеличивает продажи на 20-30% в автоматическом режиме за счет анализа потребностей покупателя.';
 	public $MODULE_CSS;
-	public $PARTNER_NAME        = 'Студия Михаила Кечинова';
-	public $PARTNER_URI         = 'http://mkechinov.ru';
+	public $PARTNER_NAME        = 'REES46';
+	public $PARTNER_URI         = 'http://rees46.com/';
 
 	public function DoInstall()
 	{
