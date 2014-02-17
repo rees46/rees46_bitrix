@@ -4,18 +4,16 @@ IncludeModuleLangFile(__FILE__);
 
 class mk_rees46 extends CModule
 {
-	const MODULE_ID    = 'mk.rees46';
-	const PARTNER_NAME = 'REES46';
-	const PARTNER_URI  = 'http://rees46.com/';
+	const MODULE_ID = 'mk.rees46';
 
-	public $MODULE_ID           = self::MODULE_ID;
-	public $PARTNER_NAME        = self::PARTNER_NAME;
-	public $PARTNER_URI         = self::PARTNER_URI;
-	public $MODULE_VERSION;
-	public $MODULE_VERSION_DATE;
-	public $MODULE_NAME         = 'REES46 Recommender';
-	public $MODULE_DESCRIPTION;
-	public $MODULE_CSS;
+	var $MODULE_ID = "mk.rees46";
+	var $MODULE_VERSION;
+	var $MODULE_VERSION_DATE;
+	var $MODULE_NAME = 'REES46 Recommender';
+	var $MODULE_DESCRIPTION;
+	var $MODULE_CSS;
+	var $PARTNER_NAME;
+	var $PARTNER_URI;
 
 	public function __construct()
 	{
@@ -23,7 +21,8 @@ class mk_rees46 extends CModule
 		include(__DIR__ . '/version.php');
 		$this->MODULE_VERSION = $arModuleVersion['VERSION'];
 		$this->MODULE_VERSION_DATE = $arModuleVersion['VERSION_DATE'];
-
+		$this->PARTNER_NAME = "REES46";
+		$this->PARTNER_URI  = "http://rees46.com/";
 		$this->MODULE_DESCRIPTION = GetMessage('REES_INSTALL_DESCRIPTION');
 	}
 
