@@ -9,6 +9,7 @@ CModule::AddAutoloadClasses(
 	mk_rees46::MODULE_ID,
 	array(
 		'Rees46Func' => 'classes/Rees46Func.php',
+		'Rees46IncludeRunner' => 'classes/Rees46IncludeRunner.php',
 
 		'REES46' => 'classes/REES46.php',
 		'REES46Exception' => 'classes/REES46.php',

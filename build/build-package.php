@@ -29,6 +29,7 @@ print "Copying files...\n";
 run (__DIR__, 'cp -r '. MODULE_DIR .'/classes '. BUILD_DIR);
 run (__DIR__, 'cp -r '. MODULE_DIR .'/install '. BUILD_DIR);
 run (__DIR__, 'cp -r '. MODULE_DIR .'/options '. BUILD_DIR);
+run (__DIR__, 'cp -r '. MODULE_DIR .'/lang '. BUILD_DIR);
 run (__DIR__, 'cp '. MODULE_DIR .'/include.php '. BUILD_DIR);
 run (__DIR__, 'cp '. MODULE_DIR .'/options.php '. BUILD_DIR);
 

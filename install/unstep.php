@@ -1,10 +1,12 @@
 <?php
 
+IncludeModuleLangFile(__FILE__);
+
 if (!check_bitrix_sessid()) {
 	return;
 }
 
-CAdminMessage::ShowNote('Модуль успешно удален из системы');
+CAdminMessage::ShowNote(GetMessage('REES_MODULE_UNINSTALLED'));
 
 ?>
 <form action="<?= $APPLICATION->GetCurPage() ?>">

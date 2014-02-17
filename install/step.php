@@ -1,10 +1,12 @@
 <?php
 
+IncludeModuleLangFile(__FILE__);
+
 if (!check_bitrix_sessid()) {
 	return;
 }
 
-CAdminMessage::ShowNote('Модуль REES46 установлен');
+CAdminMessage::ShowNote(GetMessage('REES_MODULE_INSTALLED'));
 
 ?>
 <form action="<?= $APPLICATION->GetCurPage() ?>">
