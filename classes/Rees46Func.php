@@ -235,7 +235,7 @@ class Rees46Func
 		$ids = array();
 
 		foreach (self::getOrderItems(null) as $item) {
-			$ids []= $item['item_id'];
+			$ids []= $item['PRODUCT_ID'];
 		}
 
 		return $ids;
