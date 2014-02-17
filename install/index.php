@@ -9,7 +9,7 @@ class mk_rees46 extends CModule
 	var $MODULE_ID = "mk.rees46";
 	var $MODULE_VERSION;
 	var $MODULE_VERSION_DATE;
-	var $MODULE_NAME = 'REES46 Recommender';
+	var $MODULE_NAME = 'REES46';
 	var $MODULE_DESCRIPTION;
 	var $MODULE_CSS;
 	var $PARTNER_NAME;
@@ -19,11 +19,12 @@ class mk_rees46 extends CModule
 	{
 		$arModuleVersion = array();
 		include(__DIR__ . '/version.php');
-		$this->MODULE_VERSION = $arModuleVersion['VERSION'];
-		$this->MODULE_VERSION_DATE = $arModuleVersion['VERSION_DATE'];
-		$this->PARTNER_NAME = "REES46";
-		$this->PARTNER_URI  = "http://rees46.com/";
-		$this->MODULE_DESCRIPTION = GetMessage('REES_INSTALL_DESCRIPTION');
+		$this->MODULE_VERSION       = $arModuleVersion['VERSION'];
+		$this->MODULE_VERSION_DATE  = $arModuleVersion['VERSION_DATE'];
+		$this->PARTNER_NAME         = "REES46";
+		$this->PARTNER_URI          = "http://rees46.com/";
+		$this->MODULE_NAME          = GetMessage('REES_INSTALL_MODULE_NAME');
+		$this->MODULE_DESCRIPTION   = GetMessage('REES_INSTALL_MODULE_DESC');
 	}
 
 	public function DoInstall()

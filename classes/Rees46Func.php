@@ -230,6 +230,17 @@ class Rees46Func
 		self::restPushData('cart', new REES46PushItem($item['item_id'], $item));
 	}
 
+	public static function getCartItemIds()
+	{
+		$ids = array();
+
+		foreach (self::getOrderItems(null) as $item) {
+			$ids []= $item['item_id'];
+		}
+
+		return $ids;
+	}
+
 	/**
 	 * push remove from cart event
 	 *
@@ -243,6 +254,21 @@ class Rees46Func
 
 	public static function purchase($order_id)
 	{
+		$items = array();
+
+		foreach (self::getOrderItems($order_id) as $item) {
+			$pushItem = new REES46PushItem($item['PRODUCT_ID']);
+			$pushItem->amount = $item['QUANTITY'];
+			$items []= $pushItem;
+		}
+
+		self::restPushData('purchase', $items, $order_id);
+	}
+
+	private static function getOrderItems($order_id = null)
+	{
+		$items = array();
+
 		$libBasket = new CSaleBasket();
 
 		if ($order_id !== null) {
@@ -257,15 +283,10 @@ class Rees46Func
 			);
 		}
 
-		$items = array();
+		while ($items[] = $list->Fetch())
+			;
 
-		while ($item = $list->Fetch()) {
-			$pushItem = new REES46PushItem($item['PRODUCT_ID']);
-			$pushItem->amount = $item['QUANTITY'];
-			$items []= $pushItem;
-		}
-
-		self::restPushData('purchase', $items, $order_id);
+		return $items;
 	}
 
 	/**

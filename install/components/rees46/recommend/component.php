@@ -15,6 +15,12 @@ if (isset($arParams['recommender'])) {
 
 $params = isset($arParams['params']) ? $arParams['params'] : array();
 
+$cart = Rees46Func::getCartItemIds();
+
+if (isset($params['cart']) === false) {
+	$params['cart'] = $cart;
+}
+
 $strParams = '';
 
 switch ($recommender) {
