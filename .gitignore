@@ -4,6 +4,7 @@ build/composer.phar
 # package
 build/*.zip
 build/.directory
+build/.*
 
 # vendor - required only for update process
 vendor
