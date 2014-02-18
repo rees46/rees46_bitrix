@@ -83,6 +83,10 @@ class REES46
 				throw new REES46Exception('Item should be an instance of REES46PushItem');
 			}
 
+			if (empty($item->item_id)) {
+				continue;
+			}
+
 			$data['item_id'][$k] = $item->item_id;
 
 			if ($item->category) {
@@ -101,8 +105,8 @@ class REES46
 				$data['rating'][$k] = $item->rating;
 			}
 
-			if ($item->category) {
-				$data['amount'][$k] = $item->category;
+			if ($item->amount) {
+				$data['amount'][$k] = intval($item->amount);
 			}
 
 			$k++;
