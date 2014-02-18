@@ -115,30 +115,7 @@ class Rees46Func
 		$libBasket = new CSaleBasket();
 		$item = $libBasket->GetByID($id);
 
-		$libIBlockElem = new CIBlockElement();
-		$itemBlock  = $libIBlockElem->GetByID($item['PRODUCT_ID'])->Fetch();
-
-		if ($item === false) {
-			return false;
-		}
-
-		$return = array(
-			'item_id' => $item['PRODUCT_ID'],
-		);
-
-		if (!empty($itemBlock['IBLOCK_SECTION_ID'])) {
-			$return['category'] = $itemBlock['IBLOCK_SECTION_ID'];
-		}
-
-		if (!empty($item['PRICE'])) {
-			$return['price'] = $item['PRICE'];
-		}
-
-		if (!empty($item['CAN_BUY'])) {
-			$return['is_available'] = $item['CAN_BUY'] === 'Y' ? 1 : 0;
-		}
-
-		return $return;
+		return self::GetItemArray($item['PRODUCT_ID']);
 	}
 
 	/**
@@ -257,6 +234,10 @@ class Rees46Func
 		$items = array();
 
 		foreach (self::getOrderItems($order_id) as $item) {
+			if (empty($item['PRODUCT_ID'])) {
+				continue;
+			}
+
 			$pushItem = new REES46PushItem($item['PRODUCT_ID']);
 			$pushItem->amount = $item['QUANTITY'];
 			$items []= $pushItem;
