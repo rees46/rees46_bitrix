@@ -97,7 +97,7 @@ class Rees46Func
 			$return['price'] = $price['PRICE'];
 		}
 
-		if (!empty($item['QUANTITY'])) {
+		if (isset($item['QUANTITY'])) {
 			$return['is_available'] = $item['QUANTITY'] > 0 ? 1 : 0;
 		}
 
