@@ -77,9 +77,27 @@ class Rees46Func
 		$libIBlockElem = new CIBlockElement();
 		$libPrice      = new CPrice();
 
-		$item       = $libProduct->GetByID($id);
-		$itemBlock  = $libIBlockElem->GetByID($id)->Fetch();
-		$price      = $libPrice->GetBasePrice($id);
+		$item = $libProduct->GetByID($id);
+
+		// maybe we have complex item, let's find its first child entry
+		if ($item === false) {
+			$list = $libProduct->GetList(
+				array(
+					'ID' => 'ASC',
+				),
+				array(
+					'PROPERTY_CML2_LINK' => $id,
+				));
+
+			if ($item = $list->Fetch()) {
+				$child_item = true;
+				$id = $child_item['ID'];
+			} else {
+				return null; // c'est la vie
+			}
+
+			// now $id and $item point to the earliest child
+		}
 
 		$return = array(
 			'item_id' => intval($id),
@@ -88,6 +106,9 @@ class Rees46Func
 		if (empty($item)) {
 			return null;
 		}
+
+		$itemBlock  = $libIBlockElem->GetByID($id)->Fetch();
+		$price      = $libPrice->GetBasePrice($id);
 
 		if (!empty($itemBlock['IBLOCK_SECTION_ID'])) {
 			$return['category'] = $itemBlock['IBLOCK_SECTION_ID'];
