@@ -81,7 +81,7 @@ class Rees46Func
 
 		// maybe we have complex item, let's find its first child entry
 		if ($item === false) {
-			$list = $libProduct->GetList(
+			$list = $libIBlockElem->GetList(
 				array(
 					'ID' => 'ASC',
 				),
@@ -89,14 +89,15 @@ class Rees46Func
 					'PROPERTY_CML2_LINK' => $id,
 				));
 
-			if ($item = $list->Fetch()) {
-				$child_item = true;
-				$id = $child_item['ID'];
+			if ($itemBlock = $list->Fetch()) {
+				$id   = $itemBlock['ID'];
+				$item = $libProduct->GetByID($id);
 			} else {
 				return null; // c'est la vie
 			}
-
 			// now $id and $item point to the earliest child
+		} else {
+			$itemBlock  = $libIBlockElem->GetByID($id)->Fetch();
 		}
 
 		$return = array(
@@ -107,8 +108,7 @@ class Rees46Func
 			return null;
 		}
 
-		$itemBlock  = $libIBlockElem->GetByID($id)->Fetch();
-		$price      = $libPrice->GetBasePrice($id);
+		$price = $libPrice->GetBasePrice($id);
 
 		if (!empty($itemBlock['IBLOCK_SECTION_ID'])) {
 			$return['category'] = $itemBlock['IBLOCK_SECTION_ID'];
