@@ -199,6 +199,7 @@ class Rees46Func
 	/**
 	 * push add to cart event
 	 *
+	 * @see install/index.php
 	 * @param $basket_id
 	 */
 	public static function cart($basket_id)
@@ -207,6 +208,11 @@ class Rees46Func
 		self::restPushData('cart', new REES46PushItem($item['item_id'], $item));
 	}
 
+	/**
+	 * get item_ids in the current cart
+	 *
+	 * @return array
+	 */
 	public static function getCartItemIds()
 	{
 		$ids = array();
@@ -221,6 +227,7 @@ class Rees46Func
 	/**
 	 * push remove from cart event
 	 *
+	 * @see install/index.php
 	 * @param $basket_id
 	 */
 	public static function removeFromCart($basket_id)
@@ -229,6 +236,12 @@ class Rees46Func
 		self::restPushData('remove_from_cart', new REES46PushItem($item['item_id'], $item));
 	}
 
+	/**
+	 * callback for purchase event
+	 *
+	 * @see install/index.php
+	 * @param $order_id
+	 */
 	public static function purchase($order_id)
 	{
 		$items = array();
@@ -246,6 +259,12 @@ class Rees46Func
 		self::restPushData('purchase', $items, $order_id);
 	}
 
+	/**
+	 * get item data for order or current cart
+	 *
+	 * @param int $order_id send null for current cart
+	 * @return array
+	 */
 	private static function getOrderItems($order_id = null)
 	{
 		$items = array();

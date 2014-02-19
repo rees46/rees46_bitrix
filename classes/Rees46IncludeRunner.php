@@ -4,6 +4,9 @@ IncludeModuleLangFile(__FILE__);
 
 class Rees46IncludeRunner
 {
+	/**
+	 * handler for include/rees46-recommender.php, render recommenders
+	 */
 	public static function run()
 	{
 		CModule::IncludeModule('catalog');
@@ -11,6 +14,7 @@ class Rees46IncludeRunner
 
 		$recommended_by = '';
 
+		// get recommender name
 		if (isset($_REQUEST['recommended_by'])) {
 			$recommender = strval($_REQUEST['recommended_by']);
 			$recommended_by = '?recommended_by='. urlencode($recommender);
@@ -42,6 +46,7 @@ class Rees46IncludeRunner
 		$libCatalogProduct = new CCatalogProduct();
 		$libFile = new CFile();
 
+		// render items
 		if (isset($_REQUEST['recommended_items']) && is_array($_REQUEST['recommended_items']) && count($_REQUEST['recommended_items']) > 0) {
 
 			?>

@@ -15,6 +15,7 @@ if (isset($arParams['recommender'])) {
 
 $params = isset($arParams['params']) ? $arParams['params'] : array();
 
+// get current cart items
 $cart = Rees46Func::getCartItemIds();
 
 if (isset($params['cart']) === false) {
@@ -23,6 +24,7 @@ if (isset($params['cart']) === false) {
 
 $strParams = '';
 
+// check required params for recommenders
 switch ($recommender) {
 	case 'see_also':
 		if (isset($params['cart']) && is_array($params['cart'])) {
@@ -77,6 +79,7 @@ switch ($recommender) {
 
 $uniqid = uniqid('rees46-recommend-');
 
+// render recommender placeholder and corresponding js
 ?>
 <div id="<?= $uniqid ?>" class="rees46-recommend"></div>
 <script>
@@ -85,7 +88,7 @@ $uniqid = uniqid('rees46-recommend-');
 			REES46.recommend(<?= json_encode($recommender) ?>, function (items) {
 				if (items.length > 0) {
 					$.ajax({
-						url: '/include/rees46-recommender.php',
+						url: '<?= SITE_DIR ?>include/rees46-recommender.php',
 						method: 'get',
 						data: {
 							recommended_by: <?= json_encode($recommender) ?>,

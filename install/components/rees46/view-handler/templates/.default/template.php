@@ -2,4 +2,5 @@
 
 CModule::IncludeModule('mk.rees46');
 
+// render js to track item view event
 Rees46Func::view($arParams['item_id']);
