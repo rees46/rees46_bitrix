@@ -268,10 +268,6 @@ class Rees46Func
 		$items = array();
 
 		foreach (self::getOrderItems($order_id) as $item) {
-			if (empty($item['PRODUCT_ID'])) {
-				continue;
-			}
-
 			$pushItem = new REES46PushItem($item['PRODUCT_ID']);
 			$pushItem->amount = $item['QUANTITY'];
 			$items []= $pushItem;
@@ -304,8 +300,9 @@ class Rees46Func
 			);
 		}
 
-		while ($items[] = $list->Fetch())
-			;
+		while ($item = $list->Fetch()) {
+			$items []= $item;
+		}
 
 		return $items;
 	}
