@@ -308,6 +308,38 @@ class Rees46Func
 	}
 
 	/**
+	 * get real item id for complex product
+	 */
+	public static function getRealItemID($item_id)
+	{
+		$arr = self::getItemArray($item_id);
+		if ($arr) {
+			return $arr['item_id'];
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * @param array|Traversable $item_ids
+	 * @return array
+	 */
+	public static function getRealItemIDsArray($item_ids)
+	{
+		$ids = array();
+
+		foreach($item_ids as $id) {
+			$real_id = self::getRealItemID($id);
+
+			if ($real_id) {
+				$ids[] = $real_id;
+			}
+		}
+
+		return $ids;
+	}
+
+	/**
 	 * run js after includeJs
 	 * @param $js
 	 */

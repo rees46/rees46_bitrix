@@ -22,6 +22,14 @@ if (isset($params['cart']) === false) {
 	$params['cart'] = $cart;
 }
 
+if (empty($params['item_id']) === false) {
+	$params['item_id'] = Rees46Func::getRealItemID($params['item_id']);
+}
+
+if (empty($params['cart']) === false) {
+	$params['cart'] = Rees46Func::getRealItemIDsArray($params['cart']);
+}
+
 $strParams = '';
 
 // check required params for recommenders
