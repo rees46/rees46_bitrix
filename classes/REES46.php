@@ -48,7 +48,7 @@ class REES46
 	}
 
 	/**
-	 * @param string $event event/action type
+	 * @param string $event event type
 	 * @param REES46PushItem[]|REES46PushItem $items
 	 * @param string $order_id for purchase
 	 *
@@ -65,7 +65,7 @@ class REES46
 		$data = array(
 			'items'     => array(),
 			'ssid'      => $this->session_id,
-			'action'    => $event,
+			'event'     => $event,
 			'shop_id'   => $this->shop_id,
 		);
 
@@ -81,10 +81,6 @@ class REES46
 		foreach ($items as $item) {
 			if ($item instanceof REES46PushItem === false) {
 				throw new REES46Exception('Item should be an instance of REES46PushItem');
-			}
-
-			if (empty($item->item_id)) {
-				continue;
 			}
 
 			$data['item_id'][$k] = $item->item_id;
@@ -105,8 +101,8 @@ class REES46
 				$data['rating'][$k] = $item->rating;
 			}
 
-			if ($item->amount) {
-				$data['amount'][$k] = intval($item->amount);
+			if ($item->category) {
+				$data['amount'][$k] = $item->category;
 			}
 
 			$k++;
