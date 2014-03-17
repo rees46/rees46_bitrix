@@ -59,6 +59,12 @@ class Rees46IncludeRunner
 
 					$item = $libCatalogProduct->GetByIDEx($item_id);
 
+					$price = array_pop($item['PRICES']);
+
+					if ($price['PRICE'] == 0) {
+						continue;
+					}
+
 					$link = $item['DETAIL_PAGE_URL'] . $recommended_by;
 					$picture = $item['DETAIL_PICTURE'] ?: $item['PREVIEW_PICTURE'];
 
@@ -67,8 +73,6 @@ class Rees46IncludeRunner
 					}
 
 					$file = $libFile->ResizeImageGet($picture, array('width' => 150, 'height' => 150), BX_RESIZE_IMAGE_PROPORTIONAL, true);
-
-					$price = array_pop($item['PRICES']);
 
 					?>
 					<div class="recommended-item">
