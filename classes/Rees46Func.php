@@ -114,15 +114,15 @@ class Rees46Func
 			$return['category'] = $itemBlock['IBLOCK_SECTION_ID'];
 		}
 
-		$price = false;
+		$has_price = false;
 		if (!empty($price['PRICE'])) {
 			$return['price'] = $price['PRICE'];
-			$price = true;
+			$has_price = true;
 		}
 
 		if (isset($item['QUANTITY'])) {
 			$quantity = $item['QUANTITY'] > 0;
-			$return['is_available'] = ($quantity && $price) ? 1 : 0;
+			$return['is_available'] = ($quantity && $has_price) ? 1 : 0;
 		}
 
 		return $return;
