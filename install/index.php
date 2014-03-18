@@ -6,6 +6,9 @@ class mk_rees46 extends CModule
 {
 	const MODULE_ID = 'mk.rees46';
 
+	const IMAGE_WIDTH_DEFAULT  = 150;
+	const IMAGE_HEIGHT_DEFAULT = 150;
+
 	var $MODULE_ID = "mk.rees46";
 	var $MODULE_VERSION;
 	var $MODULE_VERSION_DATE;

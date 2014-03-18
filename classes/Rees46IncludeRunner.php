@@ -72,7 +72,10 @@ class Rees46IncludeRunner
 						continue;
 					}
 
-					$file = $libFile->ResizeImageGet($picture, array('width' => 150, 'height' => 150), BX_RESIZE_IMAGE_PROPORTIONAL, true);
+					$file = $libFile->ResizeImageGet($picture, array(
+						'width'  => Rees46Func::getImageWidth(),
+						'height' => Rees46Func::getImageHeight()
+					), BX_RESIZE_IMAGE_PROPORTIONAL, true);
 
 					?>
 					<div class="recommended-item">

@@ -360,4 +360,14 @@ class Rees46Func
 			self::$handleJs .= $js;
 		}
 	}
+
+	public static function getImageWidth()
+	{
+		return COption::GetOptionInt(mk_rees46::MODULE_ID, 'image_width', mk_rees46::IMAGE_WIDTH_DEFAULT);
+	}
+
+	public static function getImageHeight()
+	{
+		return COption::GetOptionInt(mk_rees46::MODULE_ID, 'image_height', mk_rees46::IMAGE_HEIGHT_DEFAULT);
+	}
 }
