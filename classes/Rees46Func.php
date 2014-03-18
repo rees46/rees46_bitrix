@@ -90,14 +90,19 @@ class Rees46Func
 				));
 
 			if ($itemBlock = $list->Fetch()) {
-				$id   = $itemBlock['ID'];
-				$item = $libProduct->GetByID($id);
+				$item = $libProduct->GetByID($itemBlock['ID']);
 			} else {
 				return null; // c'est la vie
 			}
-			// now $id and $item point to the earliest child
-		} else {
+			// now $item points to the earliest child
+		} else { // we have simple item or child
 			$itemBlock  = $libIBlockElem->GetByID($id)->Fetch();
+
+			$itemFull = $libProduct->GetByIDEx($id);
+
+			if (!empty($itemFull['PROPERTIES']['CML2_LINK']['VALUE'])) {
+				$id = $itemFull['PROPERTIES']['CML2_LINK']['VALUE'];
+			} // set id of the parent if we have child
 		}
 
 		$return = array(
@@ -108,7 +113,7 @@ class Rees46Func
 			return null;
 		}
 
-		$price = $libPrice->GetBasePrice($id);
+		$price = $libPrice->GetBasePrice($itemBlock['ID']);
 
 		if (!empty($itemBlock['IBLOCK_SECTION_ID'])) {
 			$return['category'] = $itemBlock['IBLOCK_SECTION_ID'];
@@ -304,6 +309,8 @@ class Rees46Func
 		}
 
 		while ($item = $list->Fetch()) {
+			$itemData = self::getItemArray($item['PRODUCT_ID']);
+			$item['PRODUCT_ID'] = $itemData['item_id']; // fix ID for complex items
 			$items []= $item;
 		}
 
