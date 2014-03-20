@@ -384,6 +384,6 @@ class Rees46Func
 
 	public static function getIncludeNonAvailable()
 	{
-		return COption::GetOptionInt(mk_rees46::MODULE_ID, 'recommend_nonavailable', mk_rees46::IMAGE_HEIGHT_DEFAULT);
+		return COption::GetOptionInt(mk_rees46::MODULE_ID, 'recommend_nonavailable', false) ? true : false;
 	}
 }
