@@ -21,9 +21,15 @@
 		$tabControl->BeginNextTab();
 	?>
 
-	<label for="REES46_shopid"><?= GetMessage('REES_OPTIONS_SHOP_ID') ?></label>
-	<br/>
-	<input type="text" id="REES46_shopid" value="<?= COption::GetOptionString(mk_rees46::MODULE_ID, 'shop_id') ?>" name="shop_id" style="width: 300px"/>
+	<div>
+		<label for="REES46_shopid"><?= GetMessage('REES_OPTIONS_SHOP_ID') ?></label>
+		<br/>
+		<input type="text" id="REES46_shopid" value="<?= COption::GetOptionString(mk_rees46::MODULE_ID, 'shop_id') ?>" name="shop_id" style="width: 300px"/>
+	</div>
+
+	<div style="margin-top: 60px;">
+		<input type="checkbox" id="REES46_recommend_nonavailable" value="1" <?php if (COption::GetOptionInt(mk_rees46::MODULE_ID, 'recommend_nonavailable', 0)): ?>checked="checked" <? endif ?> name="recommend_nonavailable" style="width: 300px"/> <label for="REES46_recommend_nonavailable"><?= GetMessage('REES_OPTIONS_RECOMMEND_NONAVAILABLE') ?></label>
+	</div>
 
 	<?php $tabControl->BeginNextTab(); ?>
 

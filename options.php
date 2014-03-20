@@ -10,6 +10,8 @@ if ($REQUEST_METHOD === 'POST' && (!empty($save) || !empty($apply)) && check_bit
 	if (intval($_REQUEST['image_height']) > 0) {
 		COption::SetOptionInt(mk_rees46::MODULE_ID, 'image_height', $_REQUEST['image_height']);
 	}
+
+	COption::SetOptionInt(mk_rees46::MODULE_ID, 'recommend_nonavailable', $_REQUEST['recommend_nonavailable'] ? 1 : 0);
 }
 
 include __DIR__ . '/options/form.php';

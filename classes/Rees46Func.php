@@ -130,6 +130,10 @@ class Rees46Func
 			$return['is_available'] = ($quantity && $has_price) ? 1 : 0;
 		}
 
+		if (self::getIncludeNonAvailable()) {
+			$return['is_available'] = 1;
+		}
+
 		return $return;
 	}
 
@@ -376,5 +380,10 @@ class Rees46Func
 	public static function getImageHeight()
 	{
 		return COption::GetOptionInt(mk_rees46::MODULE_ID, 'image_height', mk_rees46::IMAGE_HEIGHT_DEFAULT);
+	}
+
+	public static function getIncludeNonAvailable()
+	{
+		return COption::GetOptionInt(mk_rees46::MODULE_ID, 'recommend_nonavailable', mk_rees46::IMAGE_HEIGHT_DEFAULT);
 	}
 }
