@@ -12,5 +12,8 @@ $MESS['REES_OPTIONS_DISPLAY']
 $MESS['REES_OPTIONS_IMAGE_SIZE']
 	= 'Размер изображений в рекомендациях';
 
+$MESS['REES_OPTIONS_RECOMMEND_COUNT']
+	= 'Количество товаров для рекомендации';
+
 $MESS['REES_OPTIONS_RECOMMEND_NONAVAILABLE']
 	= 'Рекомендовать товары, которых нет в наличии';

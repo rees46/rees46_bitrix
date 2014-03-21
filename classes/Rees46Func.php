@@ -130,7 +130,7 @@ class Rees46Func
 			$return['is_available'] = ($quantity && $has_price) ? 1 : 0;
 		}
 
-		if (self::getIncludeNonAvailable()) {
+		if (self::getRecommendNonAvailable()) {
 			$return['is_available'] = 1;
 		}
 
@@ -382,7 +382,12 @@ class Rees46Func
 		return COption::GetOptionInt(mk_rees46::MODULE_ID, 'image_height', mk_rees46::IMAGE_HEIGHT_DEFAULT);
 	}
 
-	public static function getIncludeNonAvailable()
+	public static function getRecommendCount()
+	{
+		return COption::GetOptionInt(mk_rees46::MODULE_ID, 'recommend_count', mk_rees46::RECOMMEND_COUNT_DEFAULT);
+	}
+
+	public static function getRecommendNonAvailable()
 	{
 		return COption::GetOptionInt(mk_rees46::MODULE_ID, 'recommend_nonavailable', false) ? true : false;
 	}

@@ -28,7 +28,11 @@
 	</div>
 
 	<div style="margin-top: 60px;">
-		<input type="checkbox" id="REES46_recommend_nonavailable" value="1" <?php if (COption::GetOptionInt(mk_rees46::MODULE_ID, 'recommend_nonavailable', 0)): ?>checked="checked" <? endif ?> name="recommend_nonavailable" style="width: 300px"/> <label for="REES46_recommend_nonavailable"><?= GetMessage('REES_OPTIONS_RECOMMEND_NONAVAILABLE') ?></label>
+		<label for="REES46_recommend_count"><?= GetMessage('REES_OPTIONS_RECOMMEND_COUNT') ?></label>
+		<br/>
+		<input type="text" id="REES46_recommend_count" value="<?= COption::GetOptionInt(mk_rees46::MODULE_ID, 'recommend_count', mk_rees46::RECOMMEND_COUNT_DEFAULT) ?>" name="recommend_count" style="width: 300px"/>
+
+		<input type="checkbox" id="REES46_recommend_nonavailable" value="1" <?php if (COption::GetOptionInt(mk_rees46::MODULE_ID, 'recommend_nonavailable', 0)): ?>checked="checked"<? endif ?> name="recommend_nonavailable" style="width: 300px"/> <label for="REES46_recommend_nonavailable"><?= GetMessage('REES_OPTIONS_RECOMMEND_NONAVAILABLE') ?></label>
 	</div>
 
 	<?php $tabControl->BeginNextTab(); ?>
