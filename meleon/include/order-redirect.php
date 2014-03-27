@@ -6,7 +6,7 @@ if (IsModuleInstalled('mk.rees46') && IsModuleInstalled('sale')) {
 	CModule::IncludeModule('sale');
 	CModule::IncludeModule('mk.rees46');
 
-	Rees46Func::purchase(null);
+	\Rees46\Functions::purchase(null);
 }
 
 LocalRedirect(GetOrderUrl());

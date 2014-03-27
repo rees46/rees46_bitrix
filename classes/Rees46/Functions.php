@@ -1,10 +1,23 @@
 <?php
 
-CModule::IncludeModule('iblock');
-CModule::IncludeModule('catalog');
-CModule::IncludeModule('sale');
+namespace Rees46;
+use CCatalogProduct;
+use CIBlockElement;
+use COption;
+use CPrice;
+use CSaleBasket;
+use mk_rees46;
+use Pest_Exception;
+use REES46;
+use REES46Exception;
+use REES46PushItem;
+use Traversable;
 
-class Rees46Func
+\CModule::IncludeModule('iblock');
+\CModule::IncludeModule('catalog');
+\CModule::IncludeModule('sale');
+
+class Functions
 {
 	const BASE_URL = 'http://api.rees46.com';
 
@@ -25,12 +38,12 @@ class Rees46Func
 		}
 
 		?>
-			<script type="text/javascript" src="http://cdn.rees46.com/rees46_script.js"></script>
+			<script type="text/javascript" src="http://cdn.rees46.com/rees46_script2.js"></script>
 			<script type="text/javascript">
-				$(function(){
+				$(function () {
 					REES46.init('<?= $shop_id ?>', <?= $USER->GetId() ?: 'undefined' ?>, function () {
-						var date = new Date(new Date().getTime() + 365*24*60*60*1000);
-						document.cookie = 'rees46_session_id=' + REES46.ssid + '; path=/; expires='+date.toUTCString();
+						var date = new Date(new Date().getTime() + 365 * 24 * 60 * 60 * 1000);
+						document.cookie = 'rees46_session_id=' + REES46.ssid + '; path=/; expires=' + date.toUTCString();
 
 						if (typeof(window.ReesPushData) != 'undefined') {
 							for (i = 0; i < window.ReesPushData.length; i++) {
@@ -96,7 +109,7 @@ class Rees46Func
 			}
 			// now $item points to the earliest child
 		} else { // we have simple item or child
-			$itemBlock  = $libIBlockElem->GetByID($id)->Fetch();
+			$itemBlock = $libIBlockElem->GetByID($id)->Fetch();
 
 			$itemFull = $libProduct->GetByIDEx($id);
 
@@ -173,7 +186,7 @@ class Rees46Func
 						<?= $order_id !== null ? ', order_id: '. $order_id : '' ?>
 					});
 				} else {
-					REES46.addReadyListener(function() {
+					REES46.addReadyListener(function () {
 						REES46.pushData('<?= $action ?>', <?= json_encode($data) ?> <?= $order_id !== null ? ', '. $order_id : '' ?>);
 					});
 				}
@@ -342,7 +355,7 @@ class Rees46Func
 	{
 		$ids = array();
 
-		foreach($item_ids as $id) {
+		foreach ($item_ids as $id) {
 			$real_id = self::getRealItemID($id);
 
 			if ($real_id) {
@@ -362,7 +375,7 @@ class Rees46Func
 		if (self::$jsIncluded) {
 			?>
 				<script>
-					$(function() {
+					$(function () {
 						<?= $js ?>
 					});
 				</script>

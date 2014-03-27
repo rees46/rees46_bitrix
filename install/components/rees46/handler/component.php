@@ -5,4 +5,4 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
 }
 
 CModule::IncludeModule('mk.rees46');
-Rees46Func::includeJs(); // include required js and handle all events
+\Rees46\Functions::includeJs(); // include required js and handle all events

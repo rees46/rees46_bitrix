@@ -1,8 +1,15 @@
 <?php
 
+namespace Rees46\Component;
+
+use CCatalogProduct;
+use CFile;
+use CModule;
+use Rees46\Functions;
+
 IncludeModuleLangFile(__FILE__);
 
-class Rees46IncludeRunner
+class RecommendRenderer
 {
 	/**
 	 * handler for include/rees46-recommender.php, render recommenders
@@ -73,14 +80,14 @@ class Rees46IncludeRunner
 					}
 
 					$file = $libFile->ResizeImageGet($picture, array(
-						'width'  => Rees46Func::getImageWidth(),
-						'height' => Rees46Func::getImageHeight()
+						'width'  => Functions::getImageWidth(),
+						'height' => Functions::getImageHeight()
 					), BX_RESIZE_IMAGE_PROPORTIONAL, true);
 
 					?>
 					<div class="recommended-item">
 						<div class="recommended-item-photo">
-							<a href="<?= $link ?>"><img src="<?= $file['src'] ?>" class="item_img" /></a>
+							<a href="<?= $link ?>"><img src="<?= $file['src'] ?>" class="item_img"/></a>
 						</div>
 						<div class="recommended-item-title">
 							<a href="<?= $link ?>"><?= $item['NAME'] ?></a>
