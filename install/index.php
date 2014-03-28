@@ -68,20 +68,20 @@ class mk_rees46 extends CModule
 	public function InstallEvents()
 	{
 		// Track adding items to the cart
-		RegisterModuleDependences('sale', 'OnBasketAdd',            self::MODULE_ID, 'Rees46Func', 'cart');
+		RegisterModuleDependences('sale', 'OnBasketAdd',            self::MODULE_ID, 'Rees46\\Functions', 'cart');
 		// Track removing items from the cart
 		// OnBeforeBasketDelete because we can't get product_id in OnBasketDelete
-		RegisterModuleDependences('sale', 'OnBeforeBasketDelete',   self::MODULE_ID, 'Rees46Func', 'removeFromCart');
+		RegisterModuleDependences('sale', 'OnBeforeBasketDelete',   self::MODULE_ID, 'Rees46\\Functions', 'removeFromCart');
 		// Track ordering
 		// WARNING!!! NON-DOCUMENTED BITRIX EVENT!!!
 		// We can't get items in OnOrderAdd
-		RegisterModuleDependences('sale', 'OnBasketOrder',          self::MODULE_ID, 'Rees46Func', 'purchase');
+		RegisterModuleDependences('sale', 'OnBasketOrder',          self::MODULE_ID, 'Rees46\\Functions', 'purchase');
 	}
 
 	public function UnInstallEvents()
 	{
-		UnRegisterModuleDependences('sale', 'OnBasketAdd',          self::MODULE_ID, 'Rees46Func', 'cart');
-		UnRegisterModuleDependences('sale', 'OnBeforeBasketDelete', self::MODULE_ID, 'Rees46Func', 'removeFromCart');
-		UnRegisterModuleDependences('sale', 'OnBasketOrder',        self::MODULE_ID, 'Rees46Func', 'purchase');
+		UnRegisterModuleDependences('sale', 'OnBasketAdd',          self::MODULE_ID, 'Rees46\\Functions', 'cart');
+		UnRegisterModuleDependences('sale', 'OnBeforeBasketDelete', self::MODULE_ID, 'Rees46\\Functions', 'removeFromCart');
+		UnRegisterModuleDependences('sale', 'OnBasketOrder',        self::MODULE_ID, 'Rees46\\Functions', 'purchase');
 	}
 }

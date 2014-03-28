@@ -42,9 +42,6 @@ class Functions
 			<script type="text/javascript">
 				$(function () {
 					REES46.init('<?= $shop_id ?>', <?= $USER->GetId() ?: 'undefined' ?>, function () {
-						var date = new Date(new Date().getTime() + 365 * 24 * 60 * 60 * 1000);
-						document.cookie = 'rees46_session_id=' + REES46.ssid + '; path=/; expires=' + date.toUTCString();
-
 						if (typeof(window.ReesPushData) != 'undefined') {
 							for (i = 0; i < window.ReesPushData.length; i++) {
 								var pd = window.ReesPushData[i];
@@ -230,6 +227,37 @@ class Functions
 		}
 	}
 
+	private static function cookiePushData($action, $data)
+	{
+		switch ($action) {
+			case 'cart':
+				$cookie = 'rees46_track_cart';
+				break;
+
+			case 'remove_from_cart':
+				$cookie = 'rees46_track_remove_from_cart';
+				break;
+
+			case 'purchase':
+				$cookie = 'rees46_track_purchase';
+				break;
+
+			default:
+				error_log('Unknown action type: '. $action);
+				return;
+		}
+
+		setcookie($cookie, json_encode($data), strtotime('+1 hour'), '/');
+	}
+
+	private static function cookiePushPurchase($data, $order_id = null)
+	{
+		self::cookiePushData('purchase', array(
+			'items' => $data,
+			'order_id' => $order_id,
+		));
+	}
+
 	/**
 	 * push view event
 	 *
@@ -251,7 +279,7 @@ class Functions
 	public static function cart($basket_id)
 	{
 		$item = self::getBasketArray($basket_id);
-		self::restPushData('cart', new REES46PushItem($item['item_id'], $item));
+		self::cookiePushData('cart', $item);
 	}
 
 	/**
@@ -279,7 +307,7 @@ class Functions
 	public static function removeFromCart($basket_id)
 	{
 		$item = self::getBasketArray($basket_id);
-		self::restPushData('remove_from_cart', new REES46PushItem($item['item_id'], $item));
+		self::cookiePushData('remove_from_cart', $item);
 	}
 
 	/**
@@ -293,12 +321,13 @@ class Functions
 		$items = array();
 
 		foreach (self::getOrderItems($order_id) as $item) {
-			$pushItem = new REES46PushItem($item['PRODUCT_ID']);
-			$pushItem->amount = $item['QUANTITY'];
-			$items []= $pushItem;
+			$items []= array(
+				'item_id' => $item['PRODUCT_ID'],
+				'amount'  => $item['QUANTITY']
+			);
 		}
 
-		self::restPushData('purchase', $items, $order_id);
+		self::cookiePushPurchase($items, $order_id);
 	}
 
 	/**

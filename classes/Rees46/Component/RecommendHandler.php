@@ -10,7 +10,7 @@ class RecommendHandler
 		if (isset($arParams['recommender'])) {
 			$recommender = $arParams['recommender'];
 		} else {
-			print('recommender not specified');
+			error_log('recommender not specified');
 			return;
 		}
 
@@ -31,7 +31,10 @@ class RecommendHandler
 			$params['cart'] = Functions::getRealItemIDsArray($params['cart']);
 		}
 
-		$jsonParams = array('recommender_type' => $recommender);
+		$jsonParams = array(
+			'recommender_type' => $recommender,
+			'limit' => Functions::getRecommendCount(),
+		);
 
 		// check required params for recommenders
 		switch ($recommender) {
@@ -39,7 +42,7 @@ class RecommendHandler
 				if (isset($params['cart']) && is_array($params['cart'])) {
 					$jsonParams['cart'] = array_values($params['cart']);
 				} else {
-					print('recommender see_also requires cart');
+					error_log('recommender see_also requires cart');
 					return;
 				}
 				break;
@@ -54,7 +57,7 @@ class RecommendHandler
 				if (isset($params['item_id']) && is_numeric($params['item_id'])) {
 					$jsonParams['item'] = json_encode($params['item_id']);
 				} else {
-					print('recommender also_bought requires item_id');
+					error_log('recommender also_bought requires item_id');
 					return;
 				}
 				break;
@@ -63,7 +66,7 @@ class RecommendHandler
 				if (isset($params['item_id']) && is_numeric($params['item_id'])) {
 					$jsonParams['item'] = json_encode($params['item_id']);
 				} else {
-					print('recommender similar requires item_id');
+					error_log('recommender similar requires item_id');
 					return;
 				}
 
@@ -83,7 +86,7 @@ class RecommendHandler
 				break;
 
 			default:
-				print('unknown recommender: ' . $recommender);
+				error_log('unknown recommender: ' . $recommender);
 		}
 
 		$uniqid = uniqid('rees46-recommend-');
