@@ -17,3 +17,10 @@ $MESS['REES_OPTIONS_RECOMMEND_COUNT']
 
 $MESS['REES_OPTIONS_RECOMMEND_NONAVAILABLE']
 	= 'Рекомендовать товары, которых нет в наличии';
+
+$MESS['REES_OPTIONS_CSS']
+	= 'CSS';
+
+$MESS['REES_OPTIONS_CSS_FIELD']
+	= 'CSS для рекомендаций';
+

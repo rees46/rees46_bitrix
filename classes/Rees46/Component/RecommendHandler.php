@@ -100,9 +100,10 @@ class RecommendHandler
 						REES46.recommend(<?= json_encode($jsonParams) ?>, function (items) {
 							if (items.length > 0) {
 								$.ajax({
-									url: '<?= SITE_DIR ?>include/rees46-recommender.php',
+									url: '<?= SITE_DIR ?>include/rees46-handler.php',
 									method: 'get',
 									data: {
+										action: 'recommend',
 										recommended_by: <?= json_encode($recommender) ?>,
 										recommended_items: items
 									},

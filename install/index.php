@@ -61,7 +61,7 @@ class mk_rees46 extends CModule
 	{
 		$result = true;
 		$result = $result && DeleteDirFilesEx('/bitrix/components/rees46');
-		$result = $result && DeleteDirFilesEx('/include/rees46-recommender.php');
+		$result = $result && DeleteDirFilesEx('/include/rees46-handler.php');
 		return $result;
 	}
 

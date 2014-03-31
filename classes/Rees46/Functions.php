@@ -1,17 +1,6 @@
 <?php
 
 namespace Rees46;
-use CCatalogProduct;
-use CIBlockElement;
-use COption;
-use CPrice;
-use CSaleBasket;
-use mk_rees46;
-use Pest_Exception;
-use REES46;
-use REES46Exception;
-use REES46PushItem;
-use Traversable;
 
 \CModule::IncludeModule('iblock');
 \CModule::IncludeModule('catalog');
@@ -70,7 +59,7 @@ class Functions
 	 */
 	private static function shopId()
 	{
-		$shop_id = COption::GetOptionString(mk_rees46::MODULE_ID, 'shop_id', false);
+		$shop_id = \COption::GetOptionString(\mk_rees46::MODULE_ID, 'shop_id', false);
 
 		return empty($shop_id) ? false : $shop_id;
 	}
@@ -83,9 +72,9 @@ class Functions
 	 */
 	private static function getItemArray($id)
 	{
-		$libProduct    = new CCatalogProduct();
-		$libIBlockElem = new CIBlockElement();
-		$libPrice      = new CPrice();
+		$libProduct    = new \CCatalogProduct();
+		$libIBlockElem = new \CIBlockElement();
+		$libPrice      = new \CPrice();
 
 		$item = $libProduct->GetByID($id);
 
@@ -155,7 +144,7 @@ class Functions
 	 */
 	private static function getBasketArray($id)
 	{
-		$libBasket = new CSaleBasket();
+		$libBasket = new \CSaleBasket();
 		$item = $libBasket->GetByID($id);
 
 		return self::GetItemArray($item['PRODUCT_ID']);
@@ -189,42 +178,6 @@ class Functions
 				}
 			</script>
 		<?php
-	}
-
-	/**
-	 * push data via curl
-	 *
-	 * @param $action
-	 * @param $data
-	 * @param $order_id
-	 */
-	private static function restPushData($action, $data, $order_id = null)
-	{
-		global $USER;
-
-		$shop_id = self::shopId();
-
-		if ($shop_id === false) {
-			return;
-		}
-
-		if (isset($_COOKIE['rees46_session_id'])) {
-			$ssid = $_COOKIE['rees46_session_id'];
-		} else {
-			return;
-		}
-
-		$rees = new REES46(self::BASE_URL, $shop_id, $ssid, $USER->GetID());
-
-		try {
-			$rees->pushEvent($action, $data, $order_id);
-		} catch (REES46Exception $e) {
-			error_log($e->getMessage());
-			// do nothing at the time
-		} catch (Pest_Exception $e) {
-			error_log($e->getMessage());
-			// do nothing at the time
-		}
 	}
 
 	private static function cookiePushData($action, $data)
@@ -340,7 +293,7 @@ class Functions
 	{
 		$items = array();
 
-		$libBasket = new CSaleBasket();
+		$libBasket = new \CSaleBasket();
 
 		if ($order_id !== null) {
 			$list = $libBasket->GetList(array(), array('ORDER_ID' => $order_id));
@@ -377,7 +330,7 @@ class Functions
 	}
 
 	/**
-	 * @param array|Traversable $item_ids
+	 * @param array|\Traversable $item_ids
 	 * @return array
 	 */
 	public static function getRealItemIDsArray($item_ids)
@@ -414,23 +367,39 @@ class Functions
 		}
 	}
 
+	public static function showRecommenderCSS()
+	{
+		global $APPLICATION;
+		static $css_sent = false;
+
+		if ($APPLICATION && $css_sent === false) {
+			$APPLICATION->AddHeadString('<link href="'. SITE_DIR .'include/rees46-handler.php?action=css" rel="stylesheet" />');
+			$css_sent = true;
+		}
+	}
+
+	public static function getRecommenderCSS()
+	{
+		return \COption::GetOptionString(\mk_rees46::MODULE_ID, 'css');
+	}
+
 	public static function getImageWidth()
 	{
-		return COption::GetOptionInt(mk_rees46::MODULE_ID, 'image_width', mk_rees46::IMAGE_WIDTH_DEFAULT);
+		return \COption::GetOptionInt(\mk_rees46::MODULE_ID, 'image_width', \mk_rees46::IMAGE_WIDTH_DEFAULT);
 	}
 
 	public static function getImageHeight()
 	{
-		return COption::GetOptionInt(mk_rees46::MODULE_ID, 'image_height', mk_rees46::IMAGE_HEIGHT_DEFAULT);
+		return \COption::GetOptionInt(\mk_rees46::MODULE_ID, 'image_height', \mk_rees46::IMAGE_HEIGHT_DEFAULT);
 	}
 
 	public static function getRecommendCount()
 	{
-		return COption::GetOptionInt(mk_rees46::MODULE_ID, 'recommend_count', mk_rees46::RECOMMEND_COUNT_DEFAULT);
+		return \COption::GetOptionInt(\mk_rees46::MODULE_ID, 'recommend_count', \mk_rees46::RECOMMEND_COUNT_DEFAULT);
 	}
 
 	public static function getRecommendNonAvailable()
 	{
-		return COption::GetOptionInt(mk_rees46::MODULE_ID, 'recommend_nonavailable', false) ? true : false;
+		return \COption::GetOptionInt(\mk_rees46::MODULE_ID, 'recommend_nonavailable', false) ? true : false;
 	}
 }

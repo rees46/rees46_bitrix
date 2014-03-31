@@ -5,7 +5,6 @@ require $_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/main/include/prolog_before.
 CModule::IncludeModule('mk.rees46');
 
 // render recommender html
-\Rees46\Component\RecommendRenderer::run();
+\Rees46\Includes\Controller::route();
 
 require $_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/main/include/epilog_after.php';
-
