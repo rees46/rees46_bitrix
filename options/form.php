@@ -1,4 +1,9 @@
-<?php IncludeModuleLangFile(__FILE__) ?>
+<?php
+
+IncludeModuleLangFile(__FILE__);
+CModule::IncludeModule('mk.rees46');
+
+?>
 
 <form method="POST" action="<?=$APPLICATION->GetCurPage()?>?mid=<?= mk_rees46::MODULE_ID ?>&lang=<?=LANGUAGE_ID?>" id="FORMACTION">
 	<input type="hidden" name="back_url" value="<?=htmlspecialcharsbx($back_url)?>" />
@@ -16,11 +21,6 @@
 				'TAB'   => GetMessage('REES_OPTIONS_DISPLAY'),
 				'TITLE' => GetMessage('REES_OPTIONS_DISPLAY'),
 			),
-			array(
-				'DIV'   => 'edit3',
-				'TAB'   => GetMessage('REES_OPTIONS_CSS'),
-				'TITLE' => GetMessage('REES_OPTIONS_CSS'),
-			),
 		));
 		$tabControl->Begin();
 		$tabControl->BeginNextTab();
@@ -29,30 +29,44 @@
 	<div>
 		<label for="REES46_shopid"><?= GetMessage('REES_OPTIONS_SHOP_ID') ?></label>
 		<br/>
-		<input type="text" id="REES46_shopid" value="<?= COption::GetOptionString(mk_rees46::MODULE_ID, 'shop_id') ?>" name="shop_id" style="width: 300px"/>
+		<input type="text" id="REES46_shopid" value="<?= \Rees46\Functions::getShopID() ?>" name="shop_id" style="width: 300px"/>
 	</div>
 
 	<div style="margin-top: 60px;">
-		<label for="REES46_recommend_count"><?= GetMessage('REES_OPTIONS_RECOMMEND_COUNT') ?></label>
-		<br/>
-		<input type="text" id="REES46_recommend_count" value="<?= COption::GetOptionInt(mk_rees46::MODULE_ID, 'recommend_count', mk_rees46::RECOMMEND_COUNT_DEFAULT) ?>" name="recommend_count" style="width: 300px"/>
-		<br/>
-		<input type="checkbox" id="REES46_recommend_nonavailable" value="1" <?php if (COption::GetOptionInt(mk_rees46::MODULE_ID, 'recommend_nonavailable', 0)): ?>checked="checked"<? endif ?> name="recommend_nonavailable"/> <label for="REES46_recommend_nonavailable"><?= GetMessage('REES_OPTIONS_RECOMMEND_NONAVAILABLE') ?></label>
+		<table>
+			<tr>
+				<td style="padding-left: 0">
+					<label for="REES46_recommend_count"><?= GetMessage('REES_OPTIONS_RECOMMEND_COUNT') ?></label>
+				</td>
+				<td style="padding-left: 10px">
+					<input type="text" id="REES46_recommend_count" value="<?= \Rees46\Functions::getRecommendCount() ?>" name="recommend_count" style="width: 50px"/>
+				</td>
+			</tr>
+			<tr>
+				<td style="padding-left: 0">
+					<label for="REES46_recommend_nonavailable"><?= GetMessage('REES_OPTIONS_RECOMMEND_NONAVAILABLE') ?></label>
+				</td>
+				<td style="padding-left: 10px">
+					<input type="checkbox" id="REES46_recommend_nonavailable" value="1" <?php if (\Rees46\Functions::getRecommendNonAvailable()): ?>checked="checked"<? endif ?> name="recommend_nonavailable" style="margin: 0"/>
+				</td>
+			</tr>
 	</div>
 
 	<?php $tabControl->BeginNextTab(); ?>
 
-	<label for="REES46_img_width"><?= GetMessage('REES_OPTIONS_IMAGE_SIZE') ?></label>
-	<br/>
-	<input type="text" id="REES46_img_width"  value="<?= COption::GetOptionInt(mk_rees46::MODULE_ID, 'image_width', mk_rees46::IMAGE_WIDTH_DEFAULT) ?>" name="image_width" style="width: 50px"/>
-	x
-	<input type="text" id="REES46_img_height" value="<?= COption::GetOptionInt(mk_rees46::MODULE_ID, 'image_height', mk_rees46::IMAGE_HEIGHT_DEFAULT) ?>" name="image_height" style="width: 50px"/>
+	<div>
+		<label for="REES46_img_width"><?= GetMessage('REES_OPTIONS_IMAGE_SIZE') ?></label>
+		<br/>
+		<input type="text" id="REES46_img_width"  value="<?= \Rees46\Functions::getImageWidth() ?>" name="image_width" style="width: 50px"/>
+		<label for="REES46_img_height">x</label>
+		<input type="text" id="REES46_img_height" value="<?= \Rees46\Functions::getImageHeight() ?>" name="image_height" style="width: 50px"/>
+	</div>
 
-	<?php $tabControl->BeginNextTab(); ?>
-
-	<label for="REES46_css"><?= GetMessage('REES_OPTIONS_CSS_FIELD') ?></label>
-	<br/>
-	<textarea id="REES46_css" style="width: 500px; height: 300px;" name="css"><?= strip_tags(COption::GetOptionString(mk_rees46::MODULE_ID, 'css')) ?></textarea>
+	<div style="margin-top: 40px;">
+		<label for="REES46_css"><?= GetMessage('REES_OPTIONS_CSS_FIELD') ?></label>
+		<br/>
+		<textarea id="REES46_css" style="width: 500px; height: 250px;" name="css"><?= strip_tags(\Rees46\Functions::getRecommenderCSS()) ?></textarea>
+	</div>
 
 	<?php $tabControl->Buttons(array('disabled' => false)) ?>
 	<?php $tabControl->End(); ?>
