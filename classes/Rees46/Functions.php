@@ -67,10 +67,11 @@ class Functions
 	/**
 	 * get item params for view push
 	 *
-	 * @param $id
+	 * @param int $id
+	 * @param bool $more
 	 * @return array
 	 */
-	private static function getItemArray($id)
+	private static function getItemArray($id, $more = false)
 	{
 		$libProduct    = new \CCatalogProduct();
 		$libIBlockElem = new \CIBlockElement();
@@ -133,6 +134,24 @@ class Functions
 			$return['is_available'] = 1;
 		}
 
+		if ($more) {
+			$libMain = new \CMain;
+			$libFile = new \CFile();
+
+			$itemFull = $libProduct->GetByIDEx($id);
+
+			$host = ($libMain->IsHTTPS() ? 'https://' : 'http://') . SITE_SERVER_NAME;
+
+			$return['name'] = $itemFull['NAME'];
+			$return['url'] = $host . $itemFull['DETAIL_PAGE_URL'];
+
+			$picture = $itemFull['DETAIL_PICTURE'] ?: $itemFull['PREVIEW_PICTURE'];
+
+			if ($picture) {
+				$return['image_url'] = $host . $libFile->GetPath($picture);
+			}
+		}
+
 		return $return;
 	}
 
@@ -159,6 +178,8 @@ class Functions
 	 */
 	private static function jsPushData($action, $data, $order_id = null)
 	{
+		$json = self::jsonEncode($data);
+
 		?>
 			<script>
 				if (typeof(REES46) == 'undefined') {
@@ -168,12 +189,12 @@ class Functions
 
 					window.ReesPushData.push({
 						action: '<?= $action ?>',
-						data: <?= json_encode($data) ?>
+						data: <?= $json ?>
 						<?= $order_id !== null ? ', order_id: '. $order_id : '' ?>
 					});
 				} else {
 					REES46.addReadyListener(function () {
-						REES46.pushData('<?= $action ?>', <?= json_encode($data) ?> <?= $order_id !== null ? ', '. $order_id : '' ?>);
+						REES46.pushData('<?= $action ?>', <?= $json ?> <?= $order_id !== null ? ', '. $order_id : '' ?>);
 					});
 				}
 			</script>
@@ -218,7 +239,7 @@ class Functions
 	 */
 	public static function view($item_id)
 	{
-		$item = self::getItemArray($item_id);
+		$item = self::getItemArray($item_id, true);
 
 		self::jsPushData('view', $item);
 	}
@@ -450,5 +471,57 @@ CSS
 	public static function getRecommendNonAvailable()
 	{
 		return \COption::GetOptionInt(\mk_rees46::MODULE_ID, 'recommend_nonavailable', false) ? true : false;
+	}
+
+	/**
+	 * Unfortunately JSON_UNESCAPED_UNICODE is available only in PHP 5.4 and later
+	 *
+	 * @param $array
+	 * @return string JSON
+	 */
+	private static function jsonEncode($array)
+	{
+		$js_array = true;
+		$prev_key = -1;
+
+		$result = array();
+
+		foreach ($array as $key => $value) {
+			if ($js_array && is_numeric($key) && $key == $prev_key + 1) {
+				$prev_key = $key;
+			} else {
+				$js_array = false;
+			}
+
+			if       (is_array($value)) {
+				$value = self::jsonEncode($value);
+			} elseif ($value === true) {
+				$value = 'true';
+			} elseif ($value === false) {
+				$value = 'false';
+			} elseif ($value === null) {
+				$value = 'null';
+			} elseif (is_numeric($value)) {
+				// leave as it is
+			} else {
+				$value = '"'.addslashes($value).'"';
+			}
+
+			$key = '"'.addslashes($key).'"';
+
+			$result[$key] = $value;
+		}
+
+		if ($js_array) {
+			$json = '[' . implode(',', $result) . ']';
+		} else {
+			$jsonHash = array();
+			foreach ($result as $key => $value) {
+				$jsonHash []= "$key:$value";
+			}
+			$json = '{'. implode(',', $jsonHash) .'}';
+		}
+
+		return $json;
 	}
 }
