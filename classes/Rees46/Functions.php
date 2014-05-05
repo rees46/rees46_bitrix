@@ -372,8 +372,10 @@ class Functions
 		global $APPLICATION;
 		static $css_sent = false;
 
+		$prefix = SITE_DIR ?: '/';
+
 		if ($APPLICATION && $css_sent === false) {
-			$APPLICATION->AddHeadString('<link href="'. SITE_DIR .'include/rees46-handler.php?action=css" rel="stylesheet" />');
+			$APPLICATION->AddHeadString('<link href="'. $prefix .'include/rees46-handler.php?action=css" rel="stylesheet" />');
 			$css_sent = true;
 		}
 	}
