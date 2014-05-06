@@ -1,8 +1,11 @@
 <?php
 
 if ($REQUEST_METHOD === 'POST' && (!empty($save) || !empty($apply)) && check_bitrix_sessid()) {
-	if (trim($_REQUEST['shop_id'])) {
+	if (isset($_REQUEST['shop_id'])) {
 		COption::SetOptionString(mk_rees46::MODULE_ID, 'shop_id', trim($_REQUEST['shop_id']));
+	}
+	if (isset($_REQUEST['shop_secret'])) {
+		COption::SetOptionString(mk_rees46::MODULE_ID, 'shop_secret', trim($_REQUEST['shop_secret']));
 	}
 	if (isset($_REQUEST['css'])) {
 		COption::SetOptionString(mk_rees46::MODULE_ID, 'css', trim($_REQUEST['css']));
@@ -18,6 +21,10 @@ if ($REQUEST_METHOD === 'POST' && (!empty($save) || !empty($apply)) && check_bit
 	}
 
 	COption::SetOptionInt(mk_rees46::MODULE_ID, 'recommend_nonavailable', $_REQUEST['recommend_nonavailable'] ? 1 : 0);
+
+	if (isset($_REQUEST['do_export'])) {
+
+	}
 }
 
 include __DIR__ . '/options/form.php';

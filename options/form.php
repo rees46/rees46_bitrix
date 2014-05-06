@@ -21,6 +21,11 @@ CModule::IncludeModule('mk.rees46');
 				'TAB'   => GetMessage('REES_OPTIONS_DISPLAY'),
 				'TITLE' => GetMessage('REES_OPTIONS_DISPLAY'),
 			),
+			array(
+				'DIV'   => 'edit3',
+				'TAB'   => GetMessage('REES_QUICK_EXPORT'),
+				'TITLE' => GetMessage('REES_QUICK_EXPORT'),
+			),
 		));
 		$tabControl->Begin();
 		$tabControl->BeginNextTab();
@@ -29,7 +34,13 @@ CModule::IncludeModule('mk.rees46');
 	<div>
 		<label for="REES46_shopid"><?= GetMessage('REES_OPTIONS_SHOP_ID') ?></label>
 		<br/>
-		<input type="text" id="REES46_shopid" value="<?= \Rees46\Functions::getShopID() ?>" name="shop_id" style="width: 300px"/>
+		<input type="text" id="REES46_shopid" value="<?= \Rees46\Options::getShopID() ?>" name="shop_id" style="width: 300px"/>
+	</div>
+
+	<div style="margin-top: 10px;">
+		<label for="REES46_shopsecret"><?= GetMessage('REES_OPTIONS_SHOP_SECRET') ?></label>
+		<br/>
+		<input type="text" id="REES46_shopsecret" value="<?= \Rees46\Options::getShopSecret() ?>" name="shop_secret" style="width: 300px"/>
 	</div>
 
 	<div style="margin-top: 60px;">
@@ -39,7 +50,7 @@ CModule::IncludeModule('mk.rees46');
 					<label for="REES46_recommend_count"><?= GetMessage('REES_OPTIONS_RECOMMEND_COUNT') ?></label>
 				</td>
 				<td style="padding-left: 10px">
-					<input type="text" id="REES46_recommend_count" value="<?= \Rees46\Functions::getRecommendCount() ?>" name="recommend_count" style="width: 50px"/>
+					<input type="text" id="REES46_recommend_count" value="<?= \Rees46\Options::getRecommendCount() ?>" name="recommend_count" style="width: 50px"/>
 				</td>
 			</tr>
 			<tr>
@@ -47,7 +58,7 @@ CModule::IncludeModule('mk.rees46');
 					<label for="REES46_recommend_nonavailable"><?= GetMessage('REES_OPTIONS_RECOMMEND_NONAVAILABLE') ?></label>
 				</td>
 				<td style="padding-left: 10px">
-					<input type="checkbox" id="REES46_recommend_nonavailable" value="1" <?php if (\Rees46\Functions::getRecommendNonAvailable()): ?>checked="checked"<? endif ?> name="recommend_nonavailable" style="margin: 0"/>
+					<input type="checkbox" id="REES46_recommend_nonavailable" value="1" <?php if (\Rees46\Options::getRecommendNonAvailable()): ?>checked="checked"<? endif ?> name="recommend_nonavailable" style="margin: 0"/>
 				</td>
 			</tr>
 	</div>
@@ -57,15 +68,25 @@ CModule::IncludeModule('mk.rees46');
 	<div>
 		<label for="REES46_img_width"><?= GetMessage('REES_OPTIONS_IMAGE_SIZE') ?></label>
 		<br/>
-		<input type="text" id="REES46_img_width"  value="<?= \Rees46\Functions::getImageWidth() ?>" name="image_width" style="width: 50px"/>
+		<input type="text" id="REES46_img_width"  value="<?= \Rees46\Options::getImageWidth() ?>" name="image_width" style="width: 50px"/>
 		<label for="REES46_img_height">x</label>
-		<input type="text" id="REES46_img_height" value="<?= \Rees46\Functions::getImageHeight() ?>" name="image_height" style="width: 50px"/>
+		<input type="text" id="REES46_img_height" value="<?= \Rees46\Options::getImageHeight() ?>" name="image_height" style="width: 50px"/>
 	</div>
 
 	<div style="margin-top: 40px;">
 		<label for="REES46_css"><?= GetMessage('REES_OPTIONS_CSS_FIELD') ?></label>
 		<br/>
-		<textarea id="REES46_css" style="width: 500px; height: 250px;" name="css"><?= strip_tags(\Rees46\Functions::getRecommenderCSS()) ?></textarea>
+		<textarea id="REES46_css" style="width: 500px; height: 250px;" name="css"><?= strip_tags(\Rees46\Options::getRecommenderCSS()) ?></textarea>
+	</div>
+
+	<?php $tabControl->BeginNextTab(); ?>
+
+	<p>
+		<?= GetMessage('REES_QUICK_EXPORT_DESC') ?>
+	</p>
+
+	<div>
+		<input class="adm-btn-save" type="submit" value="<?= GetMessage('REES_QUICK_EXPORT_BUTTON') ?>" name="do_export"/>
 	</div>
 
 	<?php $tabControl->Buttons(array('disabled' => false)) ?>

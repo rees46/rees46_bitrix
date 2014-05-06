@@ -1,7 +1,9 @@
 <?php
 
 namespace Rees46\Component;
+
 use Rees46\Functions;
+use Rees46\Options;
 
 class RecommendHandler
 {
@@ -33,7 +35,7 @@ class RecommendHandler
 
 		$jsonParams = array(
 			'recommender_type' => $recommender,
-			'limit' => Functions::getRecommendCount(),
+			'limit' => Options::getRecommendCount(),
 		);
 
 		// check required params for recommenders

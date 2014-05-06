@@ -5,7 +5,7 @@ namespace Rees46\Component;
 use CCatalogProduct;
 use CFile;
 use CModule;
-use Rees46\Functions;
+use Rees46\Options;
 
 IncludeModuleLangFile(__FILE__);
 
@@ -80,8 +80,8 @@ class RecommendRenderer
 					}
 
 					$file = $libFile->ResizeImageGet($picture, array(
-						'width'  => Functions::getImageWidth(),
-						'height' => Functions::getImageHeight()
+						'width'  => Options::getImageWidth(),
+						'height' => Options::getImageHeight()
 					), BX_RESIZE_IMAGE_PROPORTIONAL, true);
 
 					?>

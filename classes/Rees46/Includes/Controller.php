@@ -3,7 +3,7 @@
 namespace Rees46\Includes;
 
 use Rees46\Component\RecommendRenderer;
-use Rees46\Functions;
+use Rees46\Options;
 
 class Controller
 {
@@ -27,6 +27,6 @@ class Controller
 	{
 		header('Content-type: text/css');
 
-		echo Functions::getRecommenderCSS();
+		echo Options::getRecommenderCSS();
 	}
 }
