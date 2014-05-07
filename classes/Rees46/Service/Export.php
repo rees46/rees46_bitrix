@@ -55,6 +55,8 @@ class Export
 			foreach ($dbItems as $dbItem) {
 				$item = $dbItem['DATA'];
 				$item['amount'] = $dbItem['QUANTITY'];
+				$item['id'] = $item['item_id'];
+				unset($item['item_id']);
 
 				$items []= $item;
 			}
@@ -71,6 +73,10 @@ class Export
 	{
 		$pest = new \PestJSON(Functions::BASE_URL);
 
-		$pest->post('/import/orders', $data);
+		try {
+			$pest->post('/import/orders.json', $data);
+		} catch (\Pest_Json_Decode $e) {
+			// can be safely ignored
+		}
 	}
 }
