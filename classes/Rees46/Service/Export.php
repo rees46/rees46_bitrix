@@ -69,7 +69,7 @@ class Export
 
 	private static function sendData($data)
 	{
-		$pest = new \Pest(Functions::BASE_URL);
+		$pest = new \PestJSON(Functions::BASE_URL);
 
 		$pest->post('/import/orders', $data);
 	}
