@@ -34,6 +34,7 @@ class Data
 	 * get item data for order or current cart
 	 *
 	 * @param int $order_id send null for current cart
+	 * @param bool $item_more_data
 	 * @return array
 	 */
 	public static function getOrderItems($order_id = null, $item_more_data = false)
