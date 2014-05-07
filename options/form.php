@@ -1,7 +1,12 @@
 <?php
+/**
+ * @var \Bitrix\Main\Application $APPLICATION
+ * @var string $export_state
+ * @var string $export_count
+ * @var string $export_error
+ */
 
 IncludeModuleLangFile(__FILE__);
-CModule::IncludeModule('mk.rees46');
 
 ?>
 
@@ -81,13 +86,28 @@ CModule::IncludeModule('mk.rees46');
 
 	<?php $tabControl->BeginNextTab(); ?>
 
-	<p>
-		<?= GetMessage('REES_QUICK_EXPORT_DESC') ?>
-	</p>
+	<?php if ($export_state === \Rees46\Service\Export::STATUS_NOT_PERFORMED): ?>
+		<p>
+			<?= GetMessage('REES_QUICK_EXPORT_DESC') ?>
+		</p>
 
-	<div>
-		<input class="adm-btn-save" type="submit" value="<?= GetMessage('REES_QUICK_EXPORT_BUTTON') ?>" name="do_export"/>
-	</div>
+		<div>
+			<input class="adm-btn-save" type="submit" value="<?= GetMessage('REES_QUICK_EXPORT_BUTTON') ?>" name="do_export">
+		</div>
+	<?php elseif ($export_state === \Rees46\Service\Export::STATUS_SUCCESS && $export_count === 0): ?>
+		<div>
+			<?= GetMessage('REES_QUICK_EXPORT_EMPTY') ?>
+		</div>
+	<?php elseif ($export_state === \Rees46\Service\Export::STATUS_SUCCESS && $export_count !== 0): ?>
+		<div>
+			<?= GetMessage('REES_QUICK_EXPORT_SUCCESS') ?>
+		</div>
+	<?php elseif ($export_state === \Rees46\Service\Export::STATUS_FAIL): ?>
+		<div style="color:red">
+			<?= GetMessage('REES_QUICK_EXPORT_FAIL') ?><br/>
+			<?= $export_error ?>
+		</div>
+	<?php endif ?>
 
 	<?php $tabControl->Buttons(array('disabled' => false)) ?>
 	<?php $tabControl->End(); ?>

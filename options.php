@@ -1,5 +1,7 @@
 <?php
 
+CModule::IncludeModule('mk.rees46');
+
 if ($REQUEST_METHOD === 'POST' && (!empty($save) || !empty($apply)) && check_bitrix_sessid()) {
 	if (isset($_REQUEST['shop_id'])) {
 		COption::SetOptionString(mk_rees46::MODULE_ID, 'shop_id', trim($_REQUEST['shop_id']));
@@ -21,9 +23,18 @@ if ($REQUEST_METHOD === 'POST' && (!empty($save) || !empty($apply)) && check_bit
 	}
 
 	COption::SetOptionInt(mk_rees46::MODULE_ID, 'recommend_nonavailable', $_REQUEST['recommend_nonavailable'] ? 1 : 0);
+}
 
-	if (isset($_REQUEST['do_export'])) {
+$export_state = \Rees46\Service\Export::STATUS_NOT_PERFORMED;
+$export_count = -1;
 
+if (isset($_REQUEST['do_export'])) {
+	try {
+		$export_count = \Rees46\Service\Export::exportOrders();
+		$export_state = \Rees46\Service\Export::STATUS_SUCCESS;
+	} catch (Exception $e) {
+		$export_error = $e->getMessage();
+		$export_state = \Rees46\Service\Export::STATUS_FAIL;
 	}
 }
 
