@@ -55,7 +55,7 @@ class Export
 			foreach ($dbItems as $dbItem) {
 				$item = $dbItem['DATA'];
 				$item['amount'] = $dbItem['QUANTITY'];
-				$item['id'] = $item['item_id'];
+				$item['id'] = strval($item['item_id']);
 				unset($item['item_id']);
 
 				$items []= $item;
