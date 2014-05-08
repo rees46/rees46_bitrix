@@ -11,7 +11,11 @@ UnRegisterModuleDependences('sale', 'OnBasketAdd',          'mk.rees46', 'Rees46
 UnRegisterModuleDependences('sale', 'OnBeforeBasketDelete', 'mk.rees46', 'Rees46Func', 'removeFromCart');
 UnRegisterModuleDependences('sale', 'OnBasketOrder',        'mk.rees46', 'Rees46Func', 'purchase');
 
-RegisterModuleDependences('sale', 'OnBasketAdd',            'mk.rees46', 'Rees46\\Functions', 'cart');
-RegisterModuleDependences('sale', 'OnBeforeBasketDelete',   'mk.rees46', 'Rees46\\Functions', 'removeFromCart');
-RegisterModuleDependences('sale', 'OnBasketOrder',          'mk.rees46', 'Rees46\\Functions', 'purchase');
+UnRegisterModuleDependences('sale', 'OnBasketAdd',          'mk.rees46', 'Rees46\\Functions', 'cart');
+UnRegisterModuleDependences('sale', 'OnBeforeBasketDelete', 'mk.rees46', 'Rees46\\Functions', 'removeFromCart');
+UnRegisterModuleDependences('sale', 'OnBasketOrder',        'mk.rees46', 'Rees46\\Functions', 'purchase');
+
+RegisterModuleDependences('sale', 'OnBasketAdd',            'mk.rees46', 'Rees46\\Events', 'cart');
+RegisterModuleDependences('sale', 'OnBeforeBasketDelete',   'mk.rees46', 'Rees46\\Events', 'removeFromCart');
+RegisterModuleDependences('sale', 'OnBasketOrder',          'mk.rees46', 'Rees46\\Events', 'purchase');
 

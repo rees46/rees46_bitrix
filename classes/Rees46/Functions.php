@@ -57,7 +57,7 @@ class Functions
 	 * @param $data
 	 * @param $order_id
 	 */
-	private static function jsPushData($action, $data, $order_id = null)
+	public static function jsPushData($action, $data, $order_id = null)
 	{
 		$json = self::jsonEncode($data);
 
@@ -82,7 +82,7 @@ class Functions
 		<?php
 	}
 
-	private static function cookiePushData($action, $data)
+	public static function cookiePushData($action, $data)
 	{
 		switch ($action) {
 			case 'cart':
@@ -105,36 +105,12 @@ class Functions
 		setcookie($cookie, json_encode($data), strtotime('+1 hour'), '/');
 	}
 
-	private static function cookiePushPurchase($data, $order_id = null)
+	public static function cookiePushPurchase($data, $order_id = null)
 	{
 		self::cookiePushData('purchase', array(
 			'items' => $data,
 			'order_id' => $order_id,
 		));
-	}
-
-	/**
-	 * push view event
-	 *
-	 * @param $item_id
-	 */
-	public static function view($item_id)
-	{
-		$item = Data::getItemArray($item_id, true);
-
-		self::jsPushData('view', $item);
-	}
-
-	/**
-	 * push add to cart event
-	 *
-	 * @see install/index.php
-	 * @param $basket_id
-	 */
-	public static function cart($basket_id)
-	{
-		$item = Data::getBasketArray($basket_id);
-		self::cookiePushData('cart', $item);
 	}
 
 	/**
@@ -151,38 +127,6 @@ class Functions
 		}
 
 		return $ids;
-	}
-
-	/**
-	 * push remove from cart event
-	 *
-	 * @see install/index.php
-	 * @param $basket_id
-	 */
-	public static function removeFromCart($basket_id)
-	{
-		$item = Data::getBasketArray($basket_id);
-		self::cookiePushData('remove_from_cart', $item);
-	}
-
-	/**
-	 * callback for purchase event
-	 *
-	 * @see install/index.php
-	 * @param $order_id
-	 */
-	public static function purchase($order_id)
-	{
-		$items = array();
-
-		foreach (Data::getOrderItems($order_id) as $item) {
-			$items []= array(
-				'item_id' => $item['PRODUCT_ID'],
-				'amount'  => $item['QUANTITY']
-			);
-		}
-
-		self::cookiePushPurchase($items, $order_id);
 	}
 
 	/**
@@ -300,4 +244,17 @@ class Functions
 
 		return $json;
 	}
+
+	/**
+	 * Old events for compatibility
+	 */
+
+	/**
+	 * @deprecated Rees46\Events::view
+	 */
+	public static function view($item_id)               { Events::view($item_id); }
+	/**
+	 * @deprecated Rees46\Events::purchase
+	 */
+	public static function purchase($order_id)          { Events::purchase($order_id); }
 }
