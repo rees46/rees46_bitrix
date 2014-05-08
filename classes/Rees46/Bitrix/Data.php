@@ -126,6 +126,13 @@ class Data
 
 		if (!empty($itemBlock['IBLOCK_SECTION_ID'])) {
 			$return['category'] = $itemBlock['IBLOCK_SECTION_ID'];
+
+		} else {
+			$parentItemBlock = $libIBlockElem->GetByID($id)->Fetch();
+
+			if (!empty($parentItemBlock['IBLOCK_SECTION_ID'])) {
+				$return['category'] = $parentItemBlock['IBLOCK_SECTION_ID'];
+			}
 		}
 
 		$has_price = false;
