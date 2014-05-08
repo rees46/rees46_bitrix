@@ -1,4 +1,7 @@
 <?php
+/**
+ * @var string $REQUEST_METHOD
+ */
 
 CModule::IncludeModule('mk.rees46');
 
