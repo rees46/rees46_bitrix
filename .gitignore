@@ -9,3 +9,5 @@ build/*.*.*
 
 # vendor - required only for update process
 vendor
+
+.idea
