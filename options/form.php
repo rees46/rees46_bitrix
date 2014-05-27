@@ -78,7 +78,7 @@ IncludeModuleLangFile(__FILE__);
 		<input type="text" id="REES46_img_height" value="<?= \Rees46\Options::getImageHeight() ?>" name="image_height" style="width: 50px"/>
 	</div>
 
-	<div style="margin-top: 40px;">
+	<div style="margin-top: 40px; display: none;">
 		<label for="REES46_css"><?= GetMessage('REES_OPTIONS_CSS_FIELD') ?></label>
 		<br/>
 		<textarea id="REES46_css" style="width: 500px; height: 250px;" name="css"><?= strip_tags(\Rees46\Options::getRecommenderCSS()) ?></textarea>
