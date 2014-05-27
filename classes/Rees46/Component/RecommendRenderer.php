@@ -93,7 +93,9 @@ class RecommendRenderer
 							<a href="<?= $link ?>"><?= $item['NAME'] ?></a>
 						</div>
 						<div class="recommended-item-price">
-							<?= $price['PRICE'] ?> <?= $price['CURRENCY'] ?>
+							<?= $price['PRICE'] ?>
+							<?//= $price['CURRENCY'] ?>
+							руб.
 						</div>
 						<div class="recommended-item-action">
 							<a href="<?= $link ?>"><?= GetMessage('REES_INCLUDE_MORE') ?></a>
