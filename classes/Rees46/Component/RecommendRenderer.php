@@ -95,7 +95,7 @@ class RecommendRenderer
 						<div class="recommended-item-price">
 							<?= $price['PRICE'] ?>
 							<?//= $price['CURRENCY'] ?>
-							руб.
+							<?= GetMessage('REES_INCLUDE_CURRENCY') ?>
 						</div>
 						<div class="recommended-item-action">
 							<a href="<?= $link ?>"><?= GetMessage('REES_INCLUDE_MORE') ?></a>
