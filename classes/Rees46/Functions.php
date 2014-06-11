@@ -187,7 +187,7 @@ class Functions
 
 		$shop_id = Options::getShopID();
 		if($APPLICATION && $shop_id && $css_sent === false) {
-			$APPLICATION->AddHeadString('<link href="http://rees46.com/shop_css/'. $shop_id .'" rel="stylesheet" />');
+			$APPLICATION->AddHeadString('<link href="http://rees46.com/shop_css/'. $shop_id .'" rel="stylesheet" type="text/css" />');
 		}
 		$css_sent = true;
 
