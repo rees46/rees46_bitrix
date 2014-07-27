@@ -66,26 +66,77 @@ class RecommendRenderer
 			foreach ($_REQUEST['recommended_items'] as $item_id) {
 				$item_id = intval($item_id);
 				$item = $libCatalogProduct->GetByIDEx($item_id);
-				$price = array_pop($item['PRICES']);
 
-				if ($price['PRICE'] == 0) {
-					continue;
-				}
 
-				$final_price = $price['PRICE'];
 
-				// Получаем скидки на товары
-				$discounts = CCatalogDiscount::GetDiscountByProduct($item_id);
-				if($discounts && is_array($discounts)) {
-					$max_discount = 0;
-					foreach($discounts as $discount) {
-						if($discount['ACTIVE'] == 'Y' && $discount['VALUE'] > $max_discount) {
-							$max_discount = $discount['VALUE'];
-						}
+				// Получаем цену товара или товарного предложения
+				if(CCatalogSku::IsExistOffers($item_id)) {
+
+					// У товара есть товарные предложения, нужно найти одно из предложений и расчитать его цену
+
+//					echo var_export(CCatalogProduct::GetOptimalPrice($item_id, 1, $USER->GetUserGroupArray(), 'N'), true);
+//
+//					$price = array_pop($item['PRICES']);
+//
+//					if ($price['PRICE'] == 0) {
+//						continue;
+//					}
+//
+//					$final_price = $price['PRICE'];
+
+					// @todo: придумать, как для торговых предложений получать цену
+
+					$price = array_pop($item['PRICES']);
+
+					if ($price['PRICE'] == 0) {
+						continue;
 					}
-					if($max_discount > 0) {
-						$final_price -= $max_discount;					}
+
+					$final_price = $price['PRICE'];
+
+
+				} else {
+
+					// У товара нет товарных предложений, значит находим именно его цену по его скидкам
+
+					$price = CCatalogProduct::GetOptimalPrice(
+						$item_id,
+						1,
+						$USER->GetUserGroupArray(),
+						'N'
+					//					 array arPrices = array()[,
+					//					 string siteID = false[,
+					//					 array arDiscountCoupons = false]]]]]]
+					);
+
+					if(!$price || !isset($price['DISCOUNT_PRICE'])) {
+						continue;
+					}
+
+					$final_price = $price['DISCOUNT_PRICE'];
+
 				}
+
+//				$price = array_pop($item['PRICES']);
+//
+//				if ($price['PRICE'] == 0) {
+//					continue;
+//				}
+//
+//				$final_price = $price['PRICE'];
+//
+//				// Получаем скидки на товары
+//				$discounts = CCatalogDiscount::GetDiscountByProduct($item_id);
+//				if($discounts && is_array($discounts)) {
+//					$max_discount = 0;
+//					foreach($discounts as $discount) {
+//						if($discount['ACTIVE'] == 'Y' && $discount['VALUE'] > $max_discount) {
+//							$max_discount = $discount['VALUE'];
+//						}
+//					}
+//					if($max_discount > 0) {
+//						$final_price -= $max_discount;					}
+//				}
 
 				$link = $item['DETAIL_PAGE_URL'] . $recommended_by;
 				$picture = $item['DETAIL_PICTURE'] ?: $item['PREVIEW_PICTURE'];
