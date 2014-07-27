@@ -67,33 +67,11 @@ class RecommendRenderer
 				$item_id = intval($item_id);
 				$item = $libCatalogProduct->GetByIDEx($item_id);
 
-
-
 				// Получаем цену товара или товарного предложения
 				if(CCatalogSku::IsExistOffers($item_id)) {
 
-					// У товара есть товарные предложения, нужно найти одно из предложений и расчитать его цену
-
-//					echo var_export(CCatalogProduct::GetOptimalPrice($item_id, 1, $USER->GetUserGroupArray(), 'N'), true);
-//
-//					$price = array_pop($item['PRICES']);
-//
-//					if ($price['PRICE'] == 0) {
-//						continue;
-//					}
-//
-//					$final_price = $price['PRICE'];
-
-					// @todo: придумать, как для торговых предложений получать цену
-
-					$price = array_pop($item['PRICES']);
-
-					if ($price['PRICE'] == 0) {
-						continue;
-					}
-
-					$final_price = $price['PRICE'];
-
+					// Для товарных предложений просто не показываем цену
+					$final_price = null;
 
 				} else {
 
@@ -104,9 +82,9 @@ class RecommendRenderer
 						1,
 						$USER->GetUserGroupArray(),
 						'N'
-					//					 array arPrices = array()[,
-					//					 string siteID = false[,
-					//					 array arDiscountCoupons = false]]]]]]
+						// array arPrices = array()[,
+						// string siteID = false[,
+						// array arDiscountCoupons = false]]]]]]
 					);
 
 					if(!$price || !isset($price['DISCOUNT_PRICE'])) {
@@ -116,27 +94,6 @@ class RecommendRenderer
 					$final_price = $price['DISCOUNT_PRICE'];
 
 				}
-
-//				$price = array_pop($item['PRICES']);
-//
-//				if ($price['PRICE'] == 0) {
-//					continue;
-//				}
-//
-//				$final_price = $price['PRICE'];
-//
-//				// Получаем скидки на товары
-//				$discounts = CCatalogDiscount::GetDiscountByProduct($item_id);
-//				if($discounts && is_array($discounts)) {
-//					$max_discount = 0;
-//					foreach($discounts as $discount) {
-//						if($discount['ACTIVE'] == 'Y' && $discount['VALUE'] > $max_discount) {
-//							$max_discount = $discount['VALUE'];
-//						}
-//					}
-//					if($max_discount > 0) {
-//						$final_price -= $max_discount;					}
-//				}
 
 				$link = $item['DETAIL_PAGE_URL'] . $recommended_by;
 				$picture = $item['DETAIL_PICTURE'] ?: $item['PREVIEW_PICTURE'];
@@ -151,26 +108,15 @@ class RecommendRenderer
 				), BX_RESIZE_IMAGE_PROPORTIONAL, true);
 
 				$html .= '<div class="recommended-item">
-					<div class="recommended-item-photo">
-						<a href="' . $link . '"><img src="' . $file['src'] . '" class="item_img"/></a>
-					</div>
-					<div class="recommended-item-title">
-						<a href="' . $link . '">' . $item['NAME'] . '</a>
-					</div>
-					<div class="recommended-item-price">
-						' . $final_price . '
-						' . GetMessage('REES_INCLUDE_CURRENCY') . '
-					</div>
-					<div class="recommended-item-action">
-						<a href="' . $link . '">' . GetMessage('REES_INCLUDE_MORE') . '</a>
-					</div>
+					<div class="recommended-item-photo"><a href="' . $link . '"><img src="' . $file['src'] . '" class="item_img"/></a></div>
+					<div class="recommended-item-title"><a href="' . $link . '">' . $item['NAME'] . '</a></div>
+					' . ( $final_price ? '<div class="recommended-item-price">' . $final_price . '' . GetMessage('REES_INCLUDE_CURRENCY') . '</div>' : '') . '
+					<div class="recommended-item-action"><a href="' . $link . '">' . GetMessage('REES_INCLUDE_MORE') . '</a></div>
 				</div>';
 
 				$found_items++;
 
 			}
-
-			//= $price['CURRENCY']
 
 			$html .= '</div>';
 
