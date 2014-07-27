@@ -6,7 +6,10 @@ use CCatalogProduct;
 use CFile;
 use CModule;
 use CCatalogDiscount;
+use CCatalogSKU;
 use Rees46\Options;
+use CPrice;
+use CCurrencyLang;
 
 IncludeModuleLangFile(__FILE__);
 
@@ -19,6 +22,8 @@ class RecommendRenderer
 	{
 		CModule::IncludeModule('catalog');
 		CModule::IncludeModule('sale');
+
+		global $USER;
 
 		$recommended_by = '';
 
@@ -67,6 +72,8 @@ class RecommendRenderer
 				$item_id = intval($item_id);
 				$item = $libCatalogProduct->GetByIDEx($item_id);
 
+				$currency_code = 'RUB';
+
 				// Получаем цену товара или товарного предложения
 				if(CCatalogSku::IsExistOffers($item_id)) {
 
@@ -91,6 +98,10 @@ class RecommendRenderer
 						continue;
 					}
 
+					if(isset($price['CURRENCY'])) {
+						$currency_code = $price['CURRENCY'];
+					}
+
 					$final_price = $price['DISCOUNT_PRICE'];
 
 				}
@@ -110,7 +121,7 @@ class RecommendRenderer
 				$html .= '<div class="recommended-item">
 					<div class="recommended-item-photo"><a href="' . $link . '"><img src="' . $file['src'] . '" class="item_img"/></a></div>
 					<div class="recommended-item-title"><a href="' . $link . '">' . $item['NAME'] . '</a></div>
-					' . ( $final_price ? '<div class="recommended-item-price">' . $final_price . '' . GetMessage('REES_INCLUDE_CURRENCY') . '</div>' : '') . '
+					' . ( $final_price ? '<div class="recommended-item-price">' . CCurrencyLang::CurrencyFormat($final_price, $currency_code, true) . '</div>' : '') . '
 					<div class="recommended-item-action"><a href="' . $link . '">' . GetMessage('REES_INCLUDE_MORE') . '</a></div>
 				</div>';
 
