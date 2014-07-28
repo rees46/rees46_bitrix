@@ -102,6 +102,10 @@ class RecommendRenderer
 						$currency_code = $price['CURRENCY'];
 					}
 
+					if(isset($price['PRICE']['CURRENCY'])) {
+						$currency_code = $price['PRICE']['CURRENCY'];
+					}
+
 					$final_price = $price['DISCOUNT_PRICE'];
 
 				}
