@@ -10,6 +10,8 @@ use CCatalogSKU;
 use Rees46\Options;
 use CPrice;
 use CCurrencyLang;
+use CIBlockElement;
+use CIBlockPriceTools;
 
 IncludeModuleLangFile(__FILE__);
 
@@ -79,6 +81,35 @@ class RecommendRenderer
 
 					// Для товарных предложений просто не показываем цену
 					$final_price = null;
+
+					// Пытаемся найти цену среди торговых предложений
+					$res = CIBlockElement::GetByID($item_id);
+					if($ar_res = $res->GetNext()) {
+						if(isset($ar_res['IBLOCK_ID']) && $ar_res['IBLOCK_ID']) {
+							$offers = CIBlockPriceTools::GetOffersArray(array(
+								'IBLOCK_ID' => $ar_res['IBLOCK_ID'],
+								'HIDE_NOT_AVAILABLE' => 'Y',
+								'CHECK_PERMISSIONS' => 'Y'
+							), array($item_id));
+							foreach($offers as $offer) {
+								$offer_price_info = CatalogGetPriceTableEx($offer['ID']);
+								if($offer_price_info && isset($offer_price_info['AVAILABLE']) && $offer_price_info['AVAILABLE'] == 'Y') {
+									if(isset($offer_price_info['MATRIX'])) {
+										$price_info = array_pop($offer_price_info['MATRIX']);
+										$price_info = array_pop($price_info);
+										if($price_info['PRICE'] && intval($price_info['PRICE']) > 0) {
+											if($final_price == null || intval($price_info['PRICE']) < $final_price) {
+												$final_price = intval($price_info['PRICE']);
+												if(isset($price_info['CURRENCY']) && $price_info['CURRENCY'] != '') {
+													$currency_code = $price_info['CURRENCY'];
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
 
 				} else {
 
