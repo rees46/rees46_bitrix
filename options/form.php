@@ -15,25 +15,25 @@ IncludeModuleLangFile(__FILE__);
 	<?= bitrix_sessid_post() ?>
 
 	<?php
-		$tabControl = new CAdminTabControl('tabControl', array(
-			array(
-				'DIV'   => 'edit1',
-				'TAB'   => GetMessage('REES_OPTIONS_SETTINGS'),
-				'TITLE' => GetMessage('REES_OPTIONS_SETTINGS'),
-			),
-			array(
-				'DIV'   => 'edit2',
-				'TAB'   => GetMessage('REES_OPTIONS_DISPLAY'),
-				'TITLE' => GetMessage('REES_OPTIONS_DISPLAY'),
-			),
-			array(
-				'DIV'   => 'edit3',
-				'TAB'   => GetMessage('REES_QUICK_EXPORT'),
-				'TITLE' => GetMessage('REES_QUICK_EXPORT'),
-			),
-		));
-		$tabControl->Begin();
-		$tabControl->BeginNextTab();
+	$tabControl = new CAdminTabControl('tabControl', array(
+		array(
+			'DIV'   => 'edit1',
+			'TAB'   => GetMessage('REES_OPTIONS_SETTINGS'),
+			'TITLE' => GetMessage('REES_OPTIONS_SETTINGS'),
+		),
+		array(
+			'DIV'   => 'edit2',
+			'TAB'   => GetMessage('REES_OPTIONS_DISPLAY'),
+			'TITLE' => GetMessage('REES_OPTIONS_DISPLAY'),
+		),
+		array(
+			'DIV'   => 'edit3',
+			'TAB'   => GetMessage('REES_QUICK_EXPORT'),
+			'TITLE' => GetMessage('REES_QUICK_EXPORT'),
+		),
+	));
+	$tabControl->Begin();
+	$tabControl->BeginNextTab();
 	?>
 
 	<div>
@@ -91,9 +91,14 @@ IncludeModuleLangFile(__FILE__);
 			<?= GetMessage('REES_QUICK_EXPORT_DESC') ?>
 		</p>
 
-		<div>
-			<input class="adm-btn-save" type="submit" value="<?= GetMessage('REES_QUICK_EXPORT_BUTTON') ?>" name="do_export">
-		</div>
+		<?php if(\Rees46\Options::getShopSecret() == ''): ?>
+			<p><strong><?= GetMessage('REES_QUICK_EXPORT_DESC_NO_SECRET') ?></strong></p>
+		<?php else: ?>
+			<div>
+				<input class="adm-btn-save" type="submit" value="<?= GetMessage('REES_QUICK_EXPORT_BUTTON') ?>" name="do_export">
+			</div>
+		<?php endif ?>
+
 	<?php elseif ($export_state === \Rees46\Service\Export::STATUS_SUCCESS && $export_count === 0): ?>
 		<div>
 			<?= GetMessage('REES_QUICK_EXPORT_EMPTY') ?>
