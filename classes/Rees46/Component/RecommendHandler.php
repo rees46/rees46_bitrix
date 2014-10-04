@@ -114,6 +114,9 @@ class RecommendHandler
 								dataType: 'html',
 								async: true,
 								onsuccess: function (html) {
+									if (REES46.showPromotion) {
+										html = html + REES46.getPromotionBlock();
+									}
 									BX('<?= $uniqid ?>').innerHTML = html;
 								}
 							});
