@@ -27,7 +27,7 @@ class Functions
 		?>
 			<script type="text/javascript" src="http://cdn.rees46.com/rees46_script2.js"></script>
 			<script type="text/javascript">
-				$(function () {
+				BX.ready(function(){
 					REES46.init('<?= $shop_id ?>', <?= $USER->GetId() ?: 'undefined' ?>, function () {
 						if (typeof(window.ReesPushData) != 'undefined') {
 							for (i = 0; i < window.ReesPushData.length; i++) {

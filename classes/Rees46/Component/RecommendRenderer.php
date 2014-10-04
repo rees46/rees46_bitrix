@@ -13,6 +13,7 @@ use CCurrencyLang;
 use CIBlockElement;
 use CIBlockPriceTools;
 
+
 IncludeModuleLangFile(__FILE__);
 
 class RecommendRenderer
@@ -24,6 +25,7 @@ class RecommendRenderer
 	{
 		CModule::IncludeModule('catalog');
 		CModule::IncludeModule('sale');
+		CModule::IncludeModule("iblock");
 
 		global $USER;
 
@@ -111,6 +113,7 @@ class RecommendRenderer
 						}
 					}
 
+
 				} else {
 
 					// У товара нет товарных предложений, значит находим именно его цену по его скидкам
@@ -137,13 +140,7 @@ class RecommendRenderer
 						$currency_code = $price['PRICE']['CURRENCY'];
 					}
 
-					// На одном сайте цены в евро, но discount_price выводится сконвертированной в гривны. Получается цена типа 4433 EUR, хотя это гривны.
-					// Поэтому логика такая: пока discount_price не используем до следующей жалобы на то, что скидки не учитываются.
-					if( isset($price['DISCOUNT_LIST']) && is_array($price['DISCOUNT_LIST']) && count($price['DISCOUNT_LIST']) > 0 ) {
-						$final_price = $price['DISCOUNT_PRICE'];
-					} else {
-						$final_price = $price['PRICE']['PRICE'];
-					}
+					$final_price = $price['DISCOUNT_PRICE'];
 
 				}
 

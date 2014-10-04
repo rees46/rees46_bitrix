@@ -95,29 +95,33 @@ class RecommendHandler
 
 		// render recommender placeholder and corresponding js
 		?>
-			<div id="<?= $uniqid ?>" class="rees46-recommend"></div>
-			<script>
-				$(function () {
-					REES46.addReadyListener(function () {
-						REES46.recommend(<?= json_encode($jsonParams) ?>, function (items) {
-							if (items.length > 0) {
-								$.ajax({
-									url: '<?= SITE_DIR ?>include/rees46-handler.php',
-									method: 'get',
-									data: {
-										action: 'recommend',
-										recommended_by: <?= json_encode($recommender) ?>,
-										recommended_items: items
-									},
-									success: function (html) {
-										$('#<?= $uniqid ?>').html(html);
-									}
-								});
-							}
-						});
+		<div id="<?= $uniqid ?>" class="rees46-recommend"></div>
+		<script>
+			BX.ready(function(){
+				REES46.addReadyListener(function () {
+					REES46.recommend(<?= json_encode($jsonParams) ?>, function (items) {
+						if (items.length > 0) {
+
+							var data_string = BX.ajax.prepareData({
+								action: 'recommend',
+								recommended_by: <?= json_encode($recommender) ?>,
+								recommended_items: items
+							});
+
+							BX.ajax({
+								url: '<?= SITE_DIR ?>include/rees46-handler.php?' + data_string,
+								method: 'GET',
+								dataType: 'html',
+								async: true,
+								onsuccess: function (html) {
+									BX('<?= $uniqid ?>').innerHTML = html;
+								}
+							});
+						}
 					});
 				});
-			</script>
-		<?php
+			});
+		</script>
+	<?php
 	}
 }
