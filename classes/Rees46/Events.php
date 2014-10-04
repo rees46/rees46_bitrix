@@ -55,7 +55,8 @@ class Events
 		foreach (Data::getOrderItems($order_id) as $item) {
 			$items []= array(
 				'item_id' => $item['PRODUCT_ID'],
-				'amount'  => $item['QUANTITY']
+				'amount'  => $item['QUANTITY'],
+				'price' => $item['PRICE']
 			);
 		}
 
