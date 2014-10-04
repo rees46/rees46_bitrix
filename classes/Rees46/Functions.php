@@ -25,26 +25,34 @@ class Functions
 		}
 
 		?>
-			<script type="text/javascript" src="http://cdn.rees46.com/rees46_script2.js"></script>
-			<script type="text/javascript">
-				BX.ready(function(){
-					REES46.init('<?= $shop_id ?>', <?= $USER->GetId() ?: 'undefined' ?>, function () {
-						if (typeof(window.ReesPushData) != 'undefined') {
-							for (i = 0; i < window.ReesPushData.length; i++) {
-								var pd = window.ReesPushData[i];
+		<script type="text/javascript" src="http://cdn.rees46.com/rees46_script2.js"></script>
+		<script type="text/javascript">
+			BX.ready(function(){
+				var ud = null;
+				<?php if( $USER->GetId() != null ): ?>
+				ud = {
+					id: <?php echo $USER->GetId() ?>,
+					email: '<?php echo $USER->GetEmail() ?>'
+				};
+				<?php endif; ?>
 
-								if (pd.hasOwnProperty('order_id')) {
-									REES46.pushData(pd.action, pd.data, pd.order_id);
-								} else {
-									REES46.pushData(pd.action, pd.data);
-								}
+				REES46.init('<?= $shop_id ?>', ud, function () {
+					if (typeof(window.ReesPushData) != 'undefined') {
+						for (i = 0; i < window.ReesPushData.length; i++) {
+							var pd = window.ReesPushData[i];
+
+							if (pd.hasOwnProperty('order_id')) {
+								REES46.pushData(pd.action, pd.data, pd.order_id);
+							} else {
+								REES46.pushData(pd.action, pd.data);
 							}
 						}
+					}
 
-						<?= self::$handleJs ?>
-					});
+					<?= self::$handleJs ?>
 				});
-			</script>
+			});
+		</script>
 		<?php
 
 		self::$jsIncluded = true;
@@ -62,24 +70,24 @@ class Functions
 		$json = self::jsonEncode($data);
 
 		?>
-			<script>
-				if (typeof(REES46) == 'undefined') {
-					if (typeof(window.ReesPushData) == 'undefined') {
-						window.ReesPushData = [];
-					}
-
-					window.ReesPushData.push({
-						action: '<?= $action ?>',
-						data: <?= $json ?>
-						<?= $order_id !== null ? ', order_id: '. $order_id : '' ?>
-					});
-				} else {
-					REES46.addReadyListener(function () {
-						REES46.pushData('<?= $action ?>', <?= $json ?> <?= $order_id !== null ? ', '. $order_id : '' ?>);
-					});
+		<script>
+			if (typeof(REES46) == 'undefined') {
+				if (typeof(window.ReesPushData) == 'undefined') {
+					window.ReesPushData = [];
 				}
-			</script>
-		<?php
+
+				window.ReesPushData.push({
+					action: '<?= $action ?>',
+					data: <?= $json ?>
+					<?= $order_id !== null ? ', order_id: '. $order_id : '' ?>
+				});
+			} else {
+				REES46.addReadyListener(function () {
+					REES46.pushData('<?= $action ?>', <?= $json ?> <?= $order_id !== null ? ', '. $order_id : '' ?>);
+				});
+			}
+		</script>
+	<?php
 	}
 
 	public static function cookiePushData($action, $data)
@@ -169,12 +177,12 @@ class Functions
 	{
 		if (self::$jsIncluded) {
 			?>
-				<script>
-					$(function () {
-						<?= $js ?>
-					});
-				</script>
-			<?php
+			<script>
+				$(function () {
+					<?= $js ?>
+				});
+			</script>
+		<?php
 		} else {
 			self::$handleJs .= $js;
 		}
