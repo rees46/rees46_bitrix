@@ -77,6 +77,7 @@ class RecommendRenderer
 				$item = $libCatalogProduct->GetByIDEx($item_id);
 
 				$currency_code = 'RUB';
+				$picture = null;
 
 				// Получаем цену товара или товарного предложения
 				if(CCatalogSku::IsExistOffers($item_id)) {
@@ -94,6 +95,12 @@ class RecommendRenderer
 								'CHECK_PERMISSIONS' => 'Y'
 							), array($item_id));
 							foreach($offers as $offer) {
+
+								// Ищем фото
+								if(isset($offer['DETAIL_PICTURE']) && (int)$offer['DETAIL_PICTURE'] > 0 ) {
+									$picture = $offer['DETAIL_PICTURE'];
+								}
+
 								$offer_price_info = CatalogGetPriceTableEx($offer['ID']);
 								if($offer_price_info && isset($offer_price_info['AVAILABLE']) && $offer_price_info['AVAILABLE'] == 'Y') {
 									if(isset($offer_price_info['MATRIX'])) {
@@ -145,7 +152,11 @@ class RecommendRenderer
 				}
 
 				$link = $item['DETAIL_PAGE_URL'] . $recommended_by;
-				$picture = $item['DETAIL_PICTURE'] ?: $item['PREVIEW_PICTURE'];
+
+				if($picture == null) {
+					$picture = $item['DETAIL_PICTURE'] ?: $item['PREVIEW_PICTURE'];
+				}
+
 
 				if ($picture === null) {
 					continue;
