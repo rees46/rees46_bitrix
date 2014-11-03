@@ -10,6 +10,8 @@ use CCatalogSKU;
 use Rees46\Options;
 use CPrice;
 use CCurrencyLang;
+use CCurrency;
+use CCurrencyRates;
 use CIBlockElement;
 use CIBlockPriceTools;
 
@@ -67,6 +69,14 @@ class RecommendRenderer
 		if (isset($_REQUEST['recommended_items']) && is_array($_REQUEST['recommended_items']) && count($_REQUEST['recommended_items']) > 0) {
 
 			$found_items = 0;
+
+			$base_currency = 'RUB';
+			$currencies = CCurrency::GetList();
+			foreach($currencies as $currency) {
+				if($currency['BASE'] == 'Y') {
+					$base_currency = $currency['CURRENCY'];
+				}
+			}
 
 			$html = '';
 			$html .= '<div class="recommender-block-title">' . $recommender_title . '</div>';
@@ -139,15 +149,13 @@ class RecommendRenderer
 						continue;
 					}
 
-					if(isset($price['CURRENCY'])) {
-						$currency_code = $price['CURRENCY'];
-					}
-
-					if(isset($price['PRICE']['CURRENCY'])) {
-						$currency_code = $price['PRICE']['CURRENCY'];
-					}
+					// Because discount price always displays in base currency, prevent currency conversion later
+					$currency_code = $base_currency;
+//					if(isset($price['CURRENCY'])) { $currency_code = $price['CURRENCY']; }
+//					if(isset($price['PRICE']['CURRENCY'])) { $currency_code = $price['PRICE']['CURRENCY']; }
 
 					$final_price = $price['DISCOUNT_PRICE'];
+
 
 				}
 
@@ -157,10 +165,19 @@ class RecommendRenderer
 					$picture = $item['DETAIL_PICTURE'] ?: $item['PREVIEW_PICTURE'];
 				}
 
+				if($currency_code != $base_currency) {
+					$final_price = CCurrencyRates::ConvertCurrency($final_price, $currency_code, $base_currency);
+					$currency_code = $base_currency;
+				}
+
+				// Round price down
+				$final_price = (int)$final_price;
+
 
 				if ($picture === null) {
 					continue;
 				}
+
 
 				$file = $libFile->ResizeImageGet($picture, array(
 					'width'  => Options::getImageWidth(),
