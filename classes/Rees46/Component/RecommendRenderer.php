@@ -14,6 +14,7 @@ use CCurrency;
 use CCurrencyRates;
 use CIBlockElement;
 use CIBlockPriceTools;
+use COption;
 
 
 IncludeModuleLangFile(__FILE__);
@@ -70,6 +71,13 @@ class RecommendRenderer
 
 			$found_items = 0;
 
+			// Currency to display
+			$sale_currency = COption::GetOptionString("sale", "default_currency");
+			if($sale_currency == '') {
+				$sale_currency = 'RUB';
+			}
+
+			// Trade catalog currency
 			$base_currency = 'RUB';
 			$currencies = CCurrency::GetList();
 			foreach($currencies as $currency) {
@@ -145,16 +153,18 @@ class RecommendRenderer
 						// array arDiscountCoupons = false]]]]]]
 					);
 
-					if(!$price || !isset($price['DISCOUNT_PRICE'])) {
+					if(!$price || !isset($price['PRICE'])) {
 						continue;
 					}
 
-					// Because discount price always displays in base currency, prevent currency conversion later
-					$currency_code = $base_currency;
-//					if(isset($price['CURRENCY'])) { $currency_code = $price['CURRENCY']; }
-//					if(isset($price['PRICE']['CURRENCY'])) { $currency_code = $price['PRICE']['CURRENCY']; }
+					if(isset($price['CURRENCY'])) {
+						$currency_code = $price['CURRENCY'];
+					}
+					if(isset($price['PRICE']['CURRENCY'])) {
+						$currency_code = $price['PRICE']['CURRENCY'];
+					}
 
-					$final_price = $price['DISCOUNT_PRICE'];
+					$final_price = $price['PRICE']['PRICE'];
 
 
 				}
