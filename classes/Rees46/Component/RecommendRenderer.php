@@ -176,9 +176,9 @@ class RecommendRenderer
 					$picture = $item['DETAIL_PICTURE'] ?: $item['PREVIEW_PICTURE'];
 				}
 
-				if($currency_code != $base_currency) {
-					$final_price = CCurrencyRates::ConvertCurrency($final_price, $currency_code, $base_currency);
-					$currency_code = $base_currency;
+				if($currency_code != $sale_currency) {
+					$final_price = CCurrencyRates::ConvertCurrency($final_price, $currency_code, $sale_currency);
+					$currency_code = $sale_currency;
 				}
 
 				// Round price down
