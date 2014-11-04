@@ -77,14 +77,15 @@ class RecommendRenderer
 				$sale_currency = 'RUB';
 			}
 
-			// Trade catalog currency
-			$base_currency = 'RUB';
-			$currencies = CCurrency::GetList();
-			foreach($currencies as $currency) {
-				if($currency['BASE'] == 'Y') {
-					$base_currency = $currency['CURRENCY'];
-				}
-			}
+ 			$base_currency = 'RUB';
+            $currencies = CCurrency::GetList();
+            if($currencies && isset($currencies->arResult) && is_array($currencies->arResult)) {
+                foreach($currencies->arResult as $currency) {
+                    if($currency['BASE'] == 'Y') {
+                        $base_currency = $currency['CURRENCY'];
+                    }
+                }
+            }
 
 			$html = '';
 			$html .= '<div class="recommender-block-title">' . $recommender_title . '</div>';
