@@ -15,7 +15,7 @@ use CCurrencyRates;
 use CIBlockElement;
 use CIBlockPriceTools;
 use COption;
-
+use Rees46\Bitrix\Data;
 
 IncludeModuleLangFile(__FILE__);
 
@@ -72,20 +72,11 @@ class RecommendRenderer
 			$found_items = 0;
 
 			// Currency to display
-			$sale_currency = COption::GetOptionString("sale", "default_currency");
-			if($sale_currency == '') {
-				$sale_currency = 'RUB';
-			}
+			$sale_currency = Data::getSaleCurrency();
 
- 			$base_currency = 'RUB';
-            $currencies = CCurrency::GetList();
-            if($currencies && isset($currencies->arResult) && is_array($currencies->arResult)) {
-                foreach($currencies->arResult as $currency) {
-                    if($currency['BASE'] == 'Y') {
-                        $base_currency = $currency['CURRENCY'];
-                    }
-                }
-            }
+			// Trade catalog currency
+			$base_currency = Data::getBaseCurrency();
+
 
 			$html = '';
 			$html .= '<div class="recommender-block-title">' . $recommender_title . '</div>';
@@ -95,102 +86,24 @@ class RecommendRenderer
 				$item_id = intval($item_id);
 				$item = $libCatalogProduct->GetByIDEx($item_id);
 
-				$currency_code = 'RUB';
-				$picture = null;
+				// Get price
+				$final_price = Data::getFinalPriceInCurrency($item_id, $sale_currency);
 
-				// Получаем цену товара или товарного предложения
-				if(CCatalogSku::IsExistOffers($item_id)) {
-
-					// Для товарных предложений просто не показываем цену
-					$final_price = null;
-
-					// Пытаемся найти цену среди торговых предложений
-					$res = CIBlockElement::GetByID($item_id);
-					if($ar_res = $res->GetNext()) {
-						if(isset($ar_res['IBLOCK_ID']) && $ar_res['IBLOCK_ID']) {
-							$offers = CIBlockPriceTools::GetOffersArray(array(
-								'IBLOCK_ID' => $ar_res['IBLOCK_ID'],
-								'HIDE_NOT_AVAILABLE' => 'Y',
-								'CHECK_PERMISSIONS' => 'Y'
-							), array($item_id));
-							foreach($offers as $offer) {
-
-								// Ищем фото
-								if(isset($offer['DETAIL_PICTURE']) && (int)$offer['DETAIL_PICTURE'] > 0 ) {
-									$picture = $offer['DETAIL_PICTURE'];
-								}
-
-								$offer_price_info = CatalogGetPriceTableEx($offer['ID']);
-								if($offer_price_info && isset($offer_price_info['AVAILABLE']) && $offer_price_info['AVAILABLE'] == 'Y') {
-									if(isset($offer_price_info['MATRIX'])) {
-										$price_info = array_pop($offer_price_info['MATRIX']);
-										$price_info = array_pop($price_info);
-										if($price_info['PRICE'] && intval($price_info['PRICE']) > 0) {
-											if($final_price == null || intval($price_info['PRICE']) < $final_price) {
-												$final_price = intval($price_info['PRICE']);
-												if(isset($price_info['CURRENCY']) && $price_info['CURRENCY'] != '') {
-													$currency_code = $price_info['CURRENCY'];
-												}
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-
-
-				} else {
-
-					// У товара нет товарных предложений, значит находим именно его цену по его скидкам
-
-					$price = CCatalogProduct::GetOptimalPrice(
-						$item_id,
-						1,
-						$USER->GetUserGroupArray(),
-						'N'
-						// array arPrices = array()[,
-						// string siteID = false[,
-						// array arDiscountCoupons = false]]]]]]
-					);
-
-					if(!$price || !isset($price['PRICE'])) {
-						continue;
-					}
-
-					if(isset($price['CURRENCY'])) {
-						$currency_code = $price['CURRENCY'];
-					}
-					if(isset($price['PRICE']['CURRENCY'])) {
-						$currency_code = $price['PRICE']['CURRENCY'];
-					}
-
-					$final_price = $price['PRICE']['PRICE'];
-
-
-				}
-
-				$link = $item['DETAIL_PAGE_URL'] . $recommended_by;
-
-				if($picture == null) {
-					$picture = $item['DETAIL_PICTURE'] ?: $item['PREVIEW_PICTURE'];
-				}
-
-				if($currency_code != $sale_currency) {
-					$final_price = CCurrencyRates::ConvertCurrency($final_price, $currency_code, $sale_currency);
-					$currency_code = $sale_currency;
-				}
-
-				// Round price down
-				$final_price = (int)$final_price;
-
-
-				if ($picture === null) {
+				// Check price
+				if($final_price == false) {
 					continue;
 				}
 
+				// Url to product with recommended_by attribute
+				$link = $item['DETAIL_PAGE_URL'] . $recommended_by;
 
-				$file = $libFile->ResizeImageGet($picture, array(
+				// Get photo
+				$picture_id = Data::getProductPhotoId($item_id);
+				if ($picture_id === null) {
+					continue;
+				}
+
+				$file = $libFile->ResizeImageGet($picture_id, array(
 					'width'  => Options::getImageWidth(),
 					'height' => Options::getImageHeight()
 				), BX_RESIZE_IMAGE_PROPORTIONAL, true);
@@ -198,7 +111,7 @@ class RecommendRenderer
 				$html .= '<div class="recommended-item">
 					<div class="recommended-item-photo"><a href="' . $link . '"><img src="' . $file['src'] . '" class="item_img"/></a></div>
 					<div class="recommended-item-title"><a href="' . $link . '">' . $item['NAME'] . '</a></div>
-					' . ( $final_price ? '<div class="recommended-item-price">' . CCurrencyLang::CurrencyFormat($final_price, $currency_code, true) . '</div>' : '') . '
+					' . ( $final_price ? '<div class="recommended-item-price">' . CCurrencyLang::CurrencyFormat($final_price, $sale_currency, true) . '</div>' : '') . '
 					<div class="recommended-item-action"><a href="' . $link . '">' . GetMessage('REES_INCLUDE_MORE') . '</a></div>
 				</div>';
 

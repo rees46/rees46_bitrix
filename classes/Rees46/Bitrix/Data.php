@@ -3,6 +3,18 @@
 namespace Rees46\Bitrix;
 
 use Rees46\Options;
+use COption;
+use CCurrency;
+use CCatalogProduct;
+use CFile;
+use CModule;
+use CCatalogDiscount;
+use CCatalogSKU;
+use CPrice;
+use CCurrencyLang;
+use CCurrencyRates;
+use CIBlockElement;
+use CIBlockPriceTools;
 
 \CModule::IncludeModule('iblock');
 \CModule::IncludeModule('catalog');
@@ -122,8 +134,6 @@ class Data
 			return null;
 		}
 
-		$price = $libPrice->GetBasePrice($itemBlock['ID']);
-
 		if (!empty($itemBlock['IBLOCK_SECTION_ID'])) {
 			$return['category'] = $itemBlock['IBLOCK_SECTION_ID'];
 
@@ -136,8 +146,8 @@ class Data
 		}
 
 		$has_price = false;
-		if (!empty($price['PRICE'])) {
-			$return['price'] = $price['PRICE'];
+		$return['price'] = self::getFinalPriceInCurrency($return['item_id'], self::getSaleCurrency());
+		if (!empty($return['price'])) {
 			$has_price = true;
 		}
 
@@ -188,4 +198,176 @@ class Data
 
 		return Data::getItemArray($item['PRODUCT_ID']);
 	}
+
+
+
+	public static function getFinalPriceInCurrency($item_id, $sale_currency = 'RUB') {
+
+		global $USER;
+
+		$currency_code = 'RUB';
+
+		// Получаем цену товара или товарного предложения
+		if(CCatalogSku::IsExistOffers($item_id)) {
+
+			// Для товарных предложений просто не показываем цену
+			$final_price = null;
+
+			// Пытаемся найти цену среди торговых предложений
+			$res = CIBlockElement::GetByID($item_id);
+
+			if($ar_res = $res->GetNext()) {
+
+				if(isset($ar_res['IBLOCK_ID']) && $ar_res['IBLOCK_ID']) {
+
+					$offers = CIBlockPriceTools::GetOffersArray(array(
+						'IBLOCK_ID' => $ar_res['IBLOCK_ID'],
+						'HIDE_NOT_AVAILABLE' => 'Y',
+						'CHECK_PERMISSIONS' => 'Y'
+					), array($item_id));
+
+					foreach($offers as $offer) {
+						$offer_price_info = CatalogGetPriceTableEx($offer['ID']);
+
+						if($offer_price_info && isset($offer_price_info['AVAILABLE']) && $offer_price_info['AVAILABLE'] == 'Y') {
+							if(isset($offer_price_info['MATRIX'])) {
+								$price_info = array_pop($offer_price_info['MATRIX']);
+								$price_info = array_pop($price_info);
+								if($price_info['PRICE'] && intval($price_info['PRICE']) > 0) {
+									if($final_price == null || intval($price_info['PRICE']) < $final_price) {
+										$final_price = intval($price_info['PRICE']);
+										if(isset($price_info['CURRENCY']) && $price_info['CURRENCY'] != '') {
+											$currency_code = $price_info['CURRENCY'];
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+
+		} else {
+
+			// У товара нет товарных предложений, значит находим именно его цену по его скидкам
+
+			$price = CCatalogProduct::GetOptimalPrice(
+				$item_id,
+				1,
+				$USER->GetUserGroupArray(),
+				'N'
+			// array arPrices = array()[,
+			// string siteID = false[,
+			// array arDiscountCoupons = false]]]]]]
+			);
+
+			if(!$price || !isset($price['PRICE'])) {
+				return false;
+			}
+
+			if(isset($price['CURRENCY'])) {
+				$currency_code = $price['CURRENCY'];
+			}
+			if(isset($price['PRICE']['CURRENCY'])) {
+				$currency_code = $price['PRICE']['CURRENCY'];
+			}
+
+			$final_price = $price['PRICE']['PRICE'];
+
+
+		}
+
+		if($currency_code != $sale_currency) {
+			$final_price = CCurrencyRates::ConvertCurrency($final_price, $currency_code, $sale_currency);
+			$currency_code = $sale_currency;
+		}
+
+		// Round price down
+		$final_price = round($final_price);
+
+		return $final_price;
+
+	}
+
+
+	/**
+	 * Find product photo ID
+	 * @param integer $item_id Item ID
+	 * @return integer|null
+	 */
+	public static function getProductPhotoId($item_id) {
+
+		$picture = null;
+
+		// Получаем цену товара или товарного предложения
+		if(CCatalogSku::IsExistOffers($item_id)) {
+
+			// Пытаемся найти цену среди торговых предложений
+			$res = CIBlockElement::GetByID($item_id);
+
+			if($ar_res = $res->GetNext()) {
+
+				if(isset($ar_res['IBLOCK_ID']) && $ar_res['IBLOCK_ID']) {
+
+					$offers = CIBlockPriceTools::GetOffersArray(array(
+						'IBLOCK_ID' => $ar_res['IBLOCK_ID'],
+						'HIDE_NOT_AVAILABLE' => 'Y',
+						'CHECK_PERMISSIONS' => 'Y'
+					), array($item_id));
+
+					foreach($offers as $offer) {
+
+						// Ищем фото
+						if(isset($offer['DETAIL_PICTURE']) && (int)$offer['DETAIL_PICTURE'] > 0 ) {
+							$picture = $offer['DETAIL_PICTURE'];
+						}
+
+					}
+				}
+			}
+		}
+
+		if($picture == null) {
+			$item_id = intval($item_id);
+			$libCatalogProduct = new CCatalogProduct();
+			$item = $libCatalogProduct->GetByIDEx($item_id);
+			$picture = $item['DETAIL_PICTURE'] ?: $item['PREVIEW_PICTURE'];
+		}
+
+		return $picture;
+
+	}
+
+
+	/**
+	 * Returns sale currency code of this shop
+	 * @return String
+	 */
+	public static function getSaleCurrency() {
+		$sale_currency = COption::GetOptionString("sale", "default_currency");
+		if($sale_currency == '') {
+			$sale_currency = 'RUB';
+		}
+		return $sale_currency;
+	}
+
+
+	/**
+	 * Return base trade catalog currency
+	 * @return string
+	 */
+	public static function getBaseCurrency() {
+		$base_currency = 'RUB';
+		$currencies = CCurrency::GetList();
+		if($currencies && isset($currencies->arResult) && is_array($currencies->arResult)) {
+			foreach($currencies->arResult as $currency) {
+				if($currency['BASE'] == 'Y') {
+					$base_currency = $currency['CURRENCY'];
+				}
+			}
+		}
+		return $base_currency;
+	}
+
+
 }

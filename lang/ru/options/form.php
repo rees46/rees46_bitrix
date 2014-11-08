@@ -4,7 +4,7 @@ $MESS['REES_OPTIONS_SETTINGS']
 	= 'Настройки';
 
 $MESS['REES_OPTIONS_SHOP_ID']
-	= 'ID магазина';
+	= 'Код магазина';
 
 $MESS['REES_OPTIONS_SHOP_SECRET']
 	= 'Секретный ключ';
