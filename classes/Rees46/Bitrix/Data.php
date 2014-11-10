@@ -134,16 +134,13 @@ class Data
 			return null;
 		}
 
-		if (!empty($itemBlock['IBLOCK_SECTION_ID'])) {
-			$return['category'] = $itemBlock['IBLOCK_SECTION_ID'];
-
-		} else {
-			$parentItemBlock = $libIBlockElem->GetByID($id)->Fetch();
-
-			if (!empty($parentItemBlock['IBLOCK_SECTION_ID'])) {
-				$return['category'] = $parentItemBlock['IBLOCK_SECTION_ID'];
-			}
+		// Get categories
+		$categories = array();
+		$item_categories = CIBlockElement::GetElementGroups($id, true);
+		while($category = $item_categories->Fetch()) {
+			$categories[] = $category['ID'];
 		}
+		$return['categories'] = $categories;
 
 		$has_price = false;
 		$return['price'] = self::getFinalPriceInCurrency($return['item_id'], self::getSaleCurrency());
@@ -227,22 +224,31 @@ class Data
 					), array($item_id));
 
 					foreach($offers as $offer) {
-						$offer_price_info = CatalogGetPriceTableEx($offer['ID']);
 
-						if($offer_price_info && isset($offer_price_info['AVAILABLE']) && $offer_price_info['AVAILABLE'] == 'Y') {
-							if(isset($offer_price_info['MATRIX'])) {
-								$price_info = array_pop($offer_price_info['MATRIX']);
-								$price_info = array_pop($price_info);
-								if($price_info['PRICE'] && intval($price_info['PRICE']) > 0) {
-									if($final_price == null || intval($price_info['PRICE']) < $final_price) {
-										$final_price = intval($price_info['PRICE']);
-										if(isset($price_info['CURRENCY']) && $price_info['CURRENCY'] != '') {
-											$currency_code = $price_info['CURRENCY'];
-										}
-									}
-								}
-							}
+						$price = CCatalogProduct::GetOptimalPrice(
+							$offer['ID'],
+							1,
+							$USER->GetUserGroupArray(),
+							'N'
+						);
+						if(isset($price['PRICE'])) {
+							$final_price = $price['PRICE']['PRICE'];
+							$currency_code = $price['PRICE']['CURRENCY'];
 						}
+
+						// Find discounts
+						$arDiscounts = CCatalogDiscount::GetDiscountByProduct(
+							$item_id,
+							$USER->GetUserGroupArray(),
+							"N",
+							2
+						);
+						if(is_array($arDiscounts) && sizeof($arDiscounts) > 0) {
+							$final_price = CCatalogProduct::CountPriceWithDiscount($final_price, $currency_code, $arDiscounts);
+						}
+
+
+
 					}
 				}
 			}
@@ -273,6 +279,17 @@ class Data
 			}
 
 			$final_price = $price['PRICE']['PRICE'];
+
+			// Find discounts
+			$arDiscounts = CCatalogDiscount::GetDiscountByProduct(
+				$item_id,
+				$USER->GetUserGroupArray(),
+				"N",
+				2
+			);
+			if(is_array($arDiscounts) && sizeof($arDiscounts) > 0) {
+				$final_price = CCatalogProduct::CountPriceWithDiscount($final_price, $currency_code, $arDiscounts);
+			}
 
 
 		}
@@ -351,23 +368,6 @@ class Data
 		return $sale_currency;
 	}
 
-
-	/**
-	 * Return base trade catalog currency
-	 * @return string
-	 */
-	public static function getBaseCurrency() {
-		$base_currency = 'RUB';
-		$currencies = CCurrency::GetList();
-		if($currencies && isset($currencies->arResult) && is_array($currencies->arResult)) {
-			foreach($currencies->arResult as $currency) {
-				if($currency['BASE'] == 'Y') {
-					$base_currency = $currency['CURRENCY'];
-				}
-			}
-		}
-		return $base_currency;
-	}
 
 
 }

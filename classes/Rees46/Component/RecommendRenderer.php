@@ -74,10 +74,6 @@ class RecommendRenderer
 			// Currency to display
 			$sale_currency = Data::getSaleCurrency();
 
-			// Trade catalog currency
-			$base_currency = Data::getBaseCurrency();
-
-
 			$html = '';
 			$html .= '<div class="recommender-block-title">' . $recommender_title . '</div>';
 			$html .= '<div class="recommended-items">';
