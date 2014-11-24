@@ -300,7 +300,7 @@ class Data
 		}
 
 		// Round price down
-		$final_price = round($final_price);
+		$final_price = round($final_price, 0);
 
 		return $final_price;
 
