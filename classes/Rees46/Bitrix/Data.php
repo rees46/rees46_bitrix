@@ -207,7 +207,7 @@ class Data
 		// Получаем цену товара или товарного предложения
 		if(CCatalogSku::IsExistOffers($item_id)) {
 
-			// Для товарных предложений просто не показываем цену
+			/** @var integer $final_price */
 			$final_price = null;
 
 			// Пытаемся найти цену среди торговых предложений

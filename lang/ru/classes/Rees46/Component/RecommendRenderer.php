@@ -1,5 +1,6 @@
 <?php
 
+$MESS['REES_INCLUDE_BUYING_NOW']        = 'Прямо сейчас покупают';
 $MESS['REES_INCLUDE_SEE_ALSO']          = 'Посмотрите также';
 $MESS['REES_INCLUDE_RECENTLY_VIEWED']   = 'Вы недавно смотрели';
 $MESS['REES_INCLUDE_ALSO_BOUGHT']       = 'С этим также покупают';

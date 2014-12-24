@@ -40,6 +40,14 @@ class RecommendHandler
 
 		// check required params for recommenders
 		switch ($recommender) {
+			case 'buying_now':
+				if (isset($params['cart']) && is_array($params['cart'])) {
+					$jsonParams['cart'] = array_values($params['cart']);
+				}
+				if (isset($params['item_id']) && is_numeric($params['item_id'])) {
+					$jsonParams['item'] = json_encode($params['item_id']);
+				}
+				break;
 			case 'see_also':
 				if (isset($params['cart']) && is_array($params['cart'])) {
 					$jsonParams['cart'] = array_values($params['cart']);

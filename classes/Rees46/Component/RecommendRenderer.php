@@ -40,6 +40,9 @@ class RecommendRenderer
 			$recommended_by = '?recommended_by='. urlencode($recommender);
 
 			switch ($recommender) {
+				case 'buying_now':
+					$recommender_title = GetMessage('REES_INCLUDE_BUYING_NOW');
+					break;
 				case 'see_also':
 					$recommender_title = GetMessage('REES_INCLUDE_SEE_ALSO');
 					break;
