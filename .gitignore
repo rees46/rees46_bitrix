@@ -1,6 +1,8 @@
 # composer - installed by update-dependencies
 build/composer.phar
 
+.DS_Store
+
 # package
 build/*.zip
 build/.directory

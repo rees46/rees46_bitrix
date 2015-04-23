@@ -168,10 +168,9 @@ class Data
 			$return['name'] = $itemFull['NAME'];
 			$return['url'] = $host . $itemFull['DETAIL_PAGE_URL'];
 
-			$picture = $itemFull['DETAIL_PICTURE'] ?: $itemFull['PREVIEW_PICTURE'];
-
-			if ($picture) {
-				$return['image_url'] = $host . $libFile->GetPath($picture);
+			$picture_id = Data::getProductPhotoId($id);
+			if ($picture_id !== null) {
+				$return['image_url'] = $host . $libFile->GetPath($picture_id);
 			}
 
 			self::$itemArraysMoreCache[$id] = $return;
