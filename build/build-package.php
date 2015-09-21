@@ -45,7 +45,7 @@ run (__DIR__, 'cp '.    MODULE_DIR .'/options.php '.    BUILD_DIR);
 
 print "Creating archive...\n";
 
-run (__DIR__, "rm -f mk.rees46-{$version}.zip mk.rees46-{$version}-utf8.zip");
+run (__DIR__, "rm -f {$version}.zip {$version}-utf8.zip");
 run (__DIR__, "zip -r mk.rees46-{$version}.zip mk.rees46");
 run (__DIR__.'/mk.rees46/lang', "find -iname \\*.php -exec sh -c 'iconv -f cp1251 -t utf8 {} > {}.tmp && rm -f {} && mv {}.tmp {}' \\;");
 run (__DIR__, "zip -r mk.rees46-{$version}-utf8.zip mk.rees46");

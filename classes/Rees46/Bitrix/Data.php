@@ -33,10 +33,11 @@ class Data
 	public static function getLatestOrders()
 	{
 		$libOrder = new \CSaleOrder;
+		global $DB;
 
 		$orders = $libOrder->GetList(array(), array(
-			'DATE_INSERT_FROM' => date('Y-m-d', strtotime('-6 months')),
-			'STATUS' => 'F',
+			'DATE_INSERT_FROM' => date($DB->DateFormatToPHP(\CSite::GetDateFormat("SHORT")), strtotime('-6 months')),
+			'STATUS_ID' => 'F',
 		));
 
 		return $orders;

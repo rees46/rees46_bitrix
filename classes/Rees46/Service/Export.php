@@ -17,19 +17,27 @@ class Export
 	 */
 	public static function exportOrders()
 	{
+
 		set_time_limit(0);
+		$arOrders = self::getOrdersForExport();
+
+		// Split to chunks
+		$arChunks = array_chunk($arOrders, 1000);
 
 		$data = array(
 			'shop_id' => Options::getShopID(),
-			'shop_secret' => Options::getShopSecret(),
-			'orders' => self::getOrdersForExport(),
+			'shop_secret' => Options::getShopSecret()
 		);
 
-		if (count($data['orders']) > 0) {
-			self::sendData($data);
+		foreach ($arChunks as $key => $chunk) {
+			if (count($chunk) > 0) {
+				$data['orders'] = $chunk;
+				self::sendData($data);
+			}
 		}
 
-		return count($data['orders']);
+		return count($arOrders);
+
 	}
 
 	private static function getOrdersForExport()
