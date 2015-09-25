@@ -30,15 +30,15 @@ class Functions
 			BX.ready(function(){
 				var ud = null;
 				<?php if( $USER->GetId() != null ): ?>
-				ud = {
-					id: <?php echo $USER->GetId() ?>,
-					email: '<?php echo $USER->GetEmail() ?>'
-				};
+					ud = {
+						id: <?php echo $USER->GetId() ?>,
+						email: '<?php echo $USER->GetEmail() ?>'
+					};
 				<?php endif; ?>
 
 				REES46.init('<?= $shop_id ?>', ud, function () {
 					if (typeof(window.ReesPushData) != 'undefined') {
-						for (i = 0; i < window.ReesPushData.length; i++) {
+						for (var i = 0; i < window.ReesPushData.length; i++) {
 							var pd = window.ReesPushData[i];
 
 							if (pd.hasOwnProperty('order_id')) {
@@ -48,6 +48,8 @@ class Functions
 							}
 						}
 					}
+
+					REES46.addStyleToPage();
 
 					<?= self::$handleJs ?>
 				});
@@ -188,24 +190,24 @@ class Functions
 		}
 	}
 
-	public static function showRecommenderCSS()
-	{
-		global $APPLICATION;
-		static $css_sent = false;
-
-		$shop_id = Options::getShopID();
-		if($APPLICATION && $shop_id && $css_sent === false) {
-			$APPLICATION->AddHeadString('<link href="http://rees46.com/shop_css/'. $shop_id .'" rel="stylesheet" type="text/css" />');
-		}
-		$css_sent = true;
-
-//		$prefix = SITE_DIR ?: '/';
+//	public static function showRecommenderCSS()
+//	{
+//		global $APPLICATION;
+//		static $css_sent = false;
 //
-//		if ($APPLICATION && $css_sent === false) {
-//			$APPLICATION->AddHeadString('<link href="'. $prefix .'include/rees46-handler.php?action=css" rel="stylesheet" />');
-//			$css_sent = true;
+//		$shop_id = Options::getShopID();
+//		if($APPLICATION && $shop_id && $css_sent === false) {
+//			$APPLICATION->AddHeadString('<link href="http://rees46.com/shop_css/'. $shop_id .'" rel="stylesheet" type="text/css" />');
 //		}
-	}
+//		$css_sent = true;
+//
+////		$prefix = SITE_DIR ?: '/';
+////
+////		if ($APPLICATION && $css_sent === false) {
+////			$APPLICATION->AddHeadString('<link href="'. $prefix .'include/rees46-handler.php?action=css" rel="stylesheet" />');
+////			$css_sent = true;
+////		}
+//	}
 
 	/**
 	 * Unfortunately JSON_UNESCAPED_UNICODE is available only in PHP 5.4 and later
