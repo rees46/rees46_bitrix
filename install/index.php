@@ -15,7 +15,6 @@ class mk_rees46 extends CModule
 	var $MODULE_VERSION_DATE;
 	var $MODULE_NAME = 'REES46';
 	var $MODULE_DESCRIPTION;
-	var $MODULE_CSS;
 	var $PARTNER_NAME;
 	var $PARTNER_URI;
 

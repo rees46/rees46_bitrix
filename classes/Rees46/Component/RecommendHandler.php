@@ -33,10 +33,16 @@ class RecommendHandler
 			$params['cart'] = Functions::getRealItemIDsArray($params['cart']);
 		}
 
+
 		$jsonParams = array(
-			'recommender_type' => $recommender,
-			'limit' => Options::getRecommendCount(),
+				'recommender_type' => $recommender,
+				'limit' => Options::getRecommendCount(),
 		);
+
+
+		if (empty($params['modification']) === false) {
+			$jsonParams['modification'] = $params['modification'];
+		}
 
 		// check required params for recommenders
 		switch ($recommender) {
@@ -133,6 +139,6 @@ class RecommendHandler
 				});
 			});
 		</script>
-	<?php
+		<?php
 	}
 }

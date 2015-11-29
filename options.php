@@ -12,9 +12,6 @@ if ($REQUEST_METHOD === 'POST' && (!empty($save) || !empty($apply)) && check_bit
 	if (isset($_REQUEST['shop_secret'])) {
 		COption::SetOptionString(mk_rees46::MODULE_ID, 'shop_secret', trim($_REQUEST['shop_secret']));
 	}
-	if (isset($_REQUEST['css'])) {
-		COption::SetOptionString(mk_rees46::MODULE_ID, 'css', trim($_REQUEST['css']));
-	}
 	if (intval($_REQUEST['image_width']) > 0) {
 		COption::SetOptionInt(mk_rees46::MODULE_ID, 'image_width', $_REQUEST['image_width']);
 	}

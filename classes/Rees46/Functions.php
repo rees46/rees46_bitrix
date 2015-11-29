@@ -190,25 +190,6 @@ class Functions
 		}
 	}
 
-//	public static function showRecommenderCSS()
-//	{
-//		global $APPLICATION;
-//		static $css_sent = false;
-//
-//		$shop_id = Options::getShopID();
-//		if($APPLICATION && $shop_id && $css_sent === false) {
-//			$APPLICATION->AddHeadString('<link href="http://rees46.com/shop_css/'. $shop_id .'" rel="stylesheet" type="text/css" />');
-//		}
-//		$css_sent = true;
-//
-////		$prefix = SITE_DIR ?: '/';
-////
-////		if ($APPLICATION && $css_sent === false) {
-////			$APPLICATION->AddHeadString('<link href="'. $prefix .'include/rees46-handler.php?action=css" rel="stylesheet" />');
-////			$css_sent = true;
-////		}
-//	}
-
 	/**
 	 * Unfortunately JSON_UNESCAPED_UNICODE is available only in PHP 5.4 and later
 	 *

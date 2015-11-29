@@ -3,30 +3,28 @@
 namespace Rees46\Includes;
 
 use Rees46\Component\RecommendRenderer;
-use Rees46\Options;
+use Rees46\Component\YmlRenderer;
 
 class Controller
 {
 	public static function route()
 	{
 		switch($_REQUEST['action']) {
+
 			case 'recommend':
 				RecommendRenderer::run();
 				break;
 
-			case 'css':
-				self::renderCss();
+			case 'yml':
+
+				$yml = new YmlRenderer();
+				$yml->render();
 				break;
+
 
 			default:
 				die();
 		}
 	}
 
-	public static function renderCss()
-	{
-		header('Content-type: text/css');
-
-		echo Options::getRecommenderCSS();
-	}
 }

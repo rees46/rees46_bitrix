@@ -19,5 +19,3 @@ if (function_exists('__autoload')) { // if we have an old autoload func
 $loader = require __DIR__ . '/vendor/autoload.php';
 $loader->add('Rees46\\', __DIR__ . '/classes/');
 //$loader->register(true);
-//
-//\Rees46\Functions::showRecommenderCSS();
