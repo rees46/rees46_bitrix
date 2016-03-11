@@ -25,7 +25,7 @@ class Functions
 		}
 
 		?>
-		<script type="text/javascript" src="http://cdn.rees46.com/rees46_script2.js"></script>
+		<script type="text/javascript" src="//cdn.rees46.com/rees46_script2.js"></script>
 		<script type="text/javascript">
 			BX.ready(function(){
 				var ud = null;
