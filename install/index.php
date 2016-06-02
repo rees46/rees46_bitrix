@@ -75,6 +75,11 @@ class mk_rees46 extends CModule
 		// WARNING!!! NON-DOCUMENTED BITRIX EVENT!!!
 		// We can't get items in OnOrderAdd
 		RegisterModuleDependences('sale', 'OnBasketOrder',          self::MODULE_ID, 'Rees46\\Events', 'purchase');
+		
+		$eventManager = \Bitrix\Main\EventManager::getInstance(); 
+		$eventManager->registerEventHandler("sale","OnSaleOrderSaved", self::MODULE_ID, 'Rees46\\Events', 'OnSaleOrderSavedHandler');
+		$eventManager->registerEventHandler("sale","OnSaleBasketItemDeleted", self::MODULE_ID, 'Rees46\\Events', 'OnBasketDeleteMy');
+		$eventManager->registerEventHandler("sale","OnSaleBasketItemBeforeSaved", self::MODULE_ID, 'Rees46\\Events', 'OnSaleBasketItemBeforeSavedMy');
 	}
 
 	public function UnInstallEvents()
@@ -82,5 +87,10 @@ class mk_rees46 extends CModule
 		UnRegisterModuleDependences('sale', 'OnBasketAdd',          self::MODULE_ID, 'Rees46\\Events', 'cart');
 		UnRegisterModuleDependences('sale', 'OnBeforeBasketDelete', self::MODULE_ID, 'Rees46\\Events', 'removeFromCart');
 		UnRegisterModuleDependences('sale', 'OnBasketOrder',        self::MODULE_ID, 'Rees46\\Events', 'purchase');
+		
+		$eventManager = \Bitrix\Main\EventManager::getInstance(); 
+		$eventManager->unRegisterEventHandler("sale","OnSaleOrderSaved", self::MODULE_ID, 'Rees46\\Events', 'OnSaleOrderSavedHandler');
+		$eventManager->unRegisterEventHandler("sale","OnSaleBasketItemDeleted", self::MODULE_ID, 'Rees46\\Events', 'OnBasketDeleteMy');
+		$eventManager->unRegisterEventHandler("sale","OnSaleBasketItemBeforeSaved", self::MODULE_ID, 'Rees46\\Events', 'OnSaleBasketItemBeforeSavedMy');
 	}
 }
