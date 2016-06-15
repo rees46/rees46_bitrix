@@ -6,10 +6,12 @@ use Rees46\Bitrix\Data;
 
 class Events
 {
-	
-	 //add order
-	 public static function OnSaleOrderSavedHandler(\Bitrix\Main\Event $event)
-	{
+
+	/**
+	 * Event on order created
+	 * @param \Bitrix\Main\Event $event
+	 */
+	public static function OnSaleOrderSavedHandler(\Bitrix\Main\Event $event) {
 		
 		$parameters = $event->getParameters();
 		$order = $parameters['ENTITY'];
@@ -28,8 +30,11 @@ class Events
 		Functions::cookiePushPurchase($items, $order_id);
 
 	}
-	
-	 //dell product basket
+
+	/**
+	 * Event on removing product from cart
+	 * @param \Bitrix\Main\Event $event
+	 */
 	public static function  OnBasketDeleteMy(\Bitrix\Main\Event $event)
 	{
 		$parameters = $event->getParameters();
@@ -38,8 +43,11 @@ class Events
 		$item = Data::getItemArray($basket_id);
 		Functions::cookiePushData('remove_from_cart', $item);		
 	}
-	
-	 //add product basket
+
+	/**
+	 * Event on adding product to cart
+	 * @param \Bitrix\Main\Event $event
+	 */
 	public static function  OnSaleBasketItemBeforeSavedMy(\Bitrix\Main\Event $event)
 	{
 		
@@ -107,6 +115,8 @@ class Events
 			);
 		}
 
-		Functions::cookiePushPurchase($items, $order_id);
+		if(sizeof($items) > 0) {
+			Functions::cookiePushPurchase($items, $order_id);
+		}
 	}
 } 
