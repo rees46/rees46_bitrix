@@ -148,7 +148,17 @@ class Data
 		if (!empty($return['price'])) {
 			$has_price = true;
 		}
-
+if ( $item['QUANTITY'] == 0 ) {
+			$mxResult = CCatalogSKU::getOffersList(
+				$id
+			);
+			if ( count($mxResult) > 0 ) {
+				foreach ( $mxResult[$id] as $index=>$val ) {
+					$offers = $libProduct->GetByID($index);
+					$item['QUANTITY'] = $item['QUANTITY'] + $offers['QUANTITY'];
+				}
+			}
+		}	
 		if (isset($item['QUANTITY'])) {
 			$quantity = $item['QUANTITY'] > 0;
 			$return['is_available'] = ($quantity && $has_price) ? 1 : 0;
