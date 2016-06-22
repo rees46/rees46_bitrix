@@ -78,9 +78,9 @@ class REEES46YML{
 			$url = "http://" . $url;
 		}
 		$this->shopInfo = array(
-				'name'      =>COption::GetOptionString("eshop", "siteName", ""),
-				'company'   =>COption::GetOptionString("eshop", "shopOfName", ""),
-				'email'   	=>COption::GetOptionString("eshop", "shopEmail", ""),
+				'name'      =>iconv(SITE_CHARSET,"utf-8",COption::GetOptionString("eshop", "siteName", "")),
+				'company'   =>iconv(SITE_CHARSET,"utf-8",COption::GetOptionString("eshop", "shopOfName", "")),
+				'email'   	=>iconv(SITE_CHARSET,"utf-8",COption::GetOptionString("eshop", "shopEmail", "")),
 				'url'       =>$url,
 				'platform'  =>"1C-Bitrix"
 		);
@@ -132,7 +132,7 @@ class REEES46YML{
 					$this->categories[] = array(
 							'id' => $arAcc["ID"],
 							'parent_id' => intval($arAcc["IBLOCK_SECTION_ID"]) > 0 ? $arAcc["IBLOCK_SECTION_ID"] : null,
-							'name' => $arAcc["NAME"]
+							'name' => iconv(SITE_CHARSET,"utf-8",$arAcc["NAME"])
 					);
 				}
 			}
@@ -180,7 +180,7 @@ class REEES46YML{
 								$offer['data']['picture'] = $picture;
 								$offer['data']['categoryId'] = $category['id'];
 								$offer['data']['url'] = $this->getUrl($arOffer, $serverName);
-								$offer['data']['name'] = $arOffer["NAME"];
+								$offer['data']['name'] = iconv(SITE_CHARSET,"utf-8",$arOffer["NAME"]);
 								$description = strip_tags($arOffer["DETAIL_TEXT"]);
 								if(strlen($description) == 0){
 									$description = strip_tags($arOffer["PREVIEW_TEXT"]);
@@ -191,7 +191,9 @@ class REEES46YML{
 								if(strlen($description) == 0){
 									$description = strip_tags($arAcc["PREVIEW_TEXT"]);
 								}
-								$offer['data']['description'] = $description;
+								if ( iconv(SITE_CHARSET,"utf-8",$description) != '' ) {
+									$offer['data']['description'] = iconv(SITE_CHARSET,"utf-8",$description);
+								}
 								$dbProps = CIBlockElement::GetProperty($arOffer['IBLOCK_ID'], $arOffer['ID'], "sort", "asc", array('CODE'=>'COLOR_REF'));
 								$PROPS = array();
 								$hasColor = false;
@@ -203,7 +205,7 @@ class REEES46YML{
 											&& $ar_props['CODE'] == 'COLOR_REF'
 									){
 										$hasColor = true;
-										$PROPS = array('COLOR' => array('text'=>$ar_props['VALUE'], 'name'=>$ar_props['NAME']));
+										$PROPS = array('COLOR' => array('text'=>$ar_props['VALUE'], 'name'=>iconv(SITE_CHARSET,"utf-8",$ar_props['NAME'])));
 									}
 									$offerColors[] = $ar_props['VALUE'];
 									$offerColors = array_unique($offerColors);
