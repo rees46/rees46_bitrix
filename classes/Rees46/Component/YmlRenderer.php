@@ -140,6 +140,7 @@ class REEES46YML{
 	}
 
 	private function getOffers(){
+		$idzall = array();
 		if(count($this->categories) > 0){
 			$arSiteServers = array();
 			foreach ($this->categories as $category) {
@@ -149,8 +150,10 @@ class REEES46YML{
 				$total_sum=0;
 				$is_exists=false;
 				$cnt=0;
-
+				
 				while ($arAcc = $res->GetNext()){
+					if ( !$idzall[$arAcc['ID']] ) {
+						$idzall[$arAcc['ID']] = $arAcc['ID'];
 					$serverName = $this->getServerName($arAcc, $arSiteServers);
 					$cnt++;
 
@@ -178,7 +181,11 @@ class REEES46YML{
 									$picture = $this->getPicture($arAcc, $serverName);
 								}
 								$offer['data']['picture'] = $picture;
-								$offer['data']['categoryId'] = $category['id'];
+								
+								$db_old_groups = CIBlockElement::GetElementGroups($arAcc['ID'], true);
+								while($ar_group = $db_old_groups->Fetch()) {
+										$offer['data']['categoryId'][] = $ar_group['ID'];
+								}
 								$offer['data']['url'] = $this->getUrl($arOffer, $serverName);
 								$offer['data']['name'] = iconv(SITE_CHARSET,"utf-8",$arOffer["NAME"]);
 								$description = strip_tags($arOffer["DETAIL_TEXT"]);
@@ -236,7 +243,10 @@ class REEES46YML{
 						$offer['data']['currencyId'] = $price['CURRENCY'];
 						$offer['available'] = $this->getAvailable($arAcc);
 						$offer['data']['picture'] = $this->getPicture($arAcc, $serverName);
-						$offer['data']['categoryId'] = $category['id'];
+						$db_old_groups = CIBlockElement::GetElementGroups($arAcc['ID'], true);
+						while($ar_group = $db_old_groups->Fetch()) {
+								$offer['data']['categoryId'][] = $ar_group['ID'];
+						}
 						$offer['data']['url'] = $this->getUrl($arAcc, $serverName);
 						$offer['data']['name'] = $arAcc["NAME"];
 						$description = strip_tags($arAcc["DETAIL_TEXT"]);
@@ -272,6 +282,7 @@ class REEES46YML{
 								'SECTIONS' => true,
 								'PROPERTIES' => true
 						));
+					}
 					}
 				}
 			}
