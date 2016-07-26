@@ -248,12 +248,12 @@ class REEES46YML{
 								$offer['data']['categoryId'][] = $ar_group['ID'];
 						}
 						$offer['data']['url'] = $this->getUrl($arAcc, $serverName);
-						$offer['data']['name'] = $arAcc["NAME"];
+						$offer['data']['name'] = iconv(SITE_CHARSET,"utf-8",$arAcc["NAME"]);
 						$description = strip_tags($arAcc["DETAIL_TEXT"]);
 						if(strlen($description) == 0){
 							$description = strip_tags($arAcc["PREVIEW_TEXT"]);
 						}
-						$offer['data']['description'] = $description;
+						$offer['data']['description'] = iconv(SITE_CHARSET,"utf-8",$description);
 						$dbProps = CIBlockElement::GetProperty($arAcc['IBLOCK_ID'], $arAcc['ID'], "sort", "asc", array('CODE'=>'COLOR'));
 						$PROPS = array();
 						$hasColor = false;
