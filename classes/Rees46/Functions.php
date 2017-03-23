@@ -6,252 +6,210 @@ use Rees46\Bitrix\Data;
 
 class Functions
 {
-	const BASE_URL = 'http://api.rees46.com';
+    const BASE_URL = 'http://api.rees46.com';
 
-	private static $jsIncluded = false;
-	private static $handleJs = '';
+    private static $jsIncluded = false;
 
-	/**
-	 * insert script tags for Rees46
-	 */
-	public static function includeJs()
-	{
-		global $USER;
+    /**
+     * insert script tags for Rees46
+     */
+    public static function includeJs()
+    {
+        global $USER;
 
-		$shop_id = Options::getShopID();
+        $shop_id = Options::getShopID();
 
-		if (!$shop_id) {
-			return;
-		}
+        if (!$shop_id) {
+            return;
+        }
 
-		?>
-		<script type="text/javascript" src="//cdn.rees46.com/rees46_script2.js"></script>
-		<script type="text/javascript">
-			BX.ready(function(){
-				var ud = null;
-				<?php if( $USER->GetId() != null ): ?>
-					ud = {
-						id: <?php echo $USER->GetId() ?>,
-						email: '<?php echo $USER->GetEmail() ?>'
-					};
-				<?php endif; ?>
+        ?>
 
-				REES46.init('<?= $shop_id ?>', ud, function () {
-					if (typeof(window.ReesPushData) != 'undefined') {
-						for (var i = 0; i < window.ReesPushData.length; i++) {
-							var pd = window.ReesPushData[i];
+        <script>
+            (function(r){
+                window.r46=window.r46||function(){
+                    (r46.q=r46.q||[]).push(arguments);
+                }
+                var s=document.getElementsByTagName(r)[0],rs=document.createElement(r);
+                rs.async=1;
+                rs.src='//cdn.rees46.com/v3.js';
+                s.parentNode.insertBefore(rs,s);
+            })('script');
+            r46('init', '<?= $shop_id ?>');
+            <?php if( $USER->GetId() != null ): ?>
+                ud = {
+                        id: <?php echo $USER->GetId() ?>,
+                        email: '<?php echo $USER->GetEmail() ?>'
+                    };
+            <?php endif; ?>
+            r46('profile', 'set', ud);
+            r46('add_css', 'recommendations');
+        </script>
 
-							if (pd.hasOwnProperty('order_id')) {
-								REES46.pushData(pd.action, pd.data, pd.order_id);
-							} else {
-								REES46.pushData(pd.action, pd.data);
-							}
-						}
-					}
+        <?php
 
-					REES46.addStyleToPage();
+        self::$jsIncluded = true;
+    }
 
-					<?= self::$handleJs ?>
-				});
-			});
-		</script>
-		<?php
+    /**
+     * push data via javascript (insert corresponding script tag)
+     *
+     * @param $action
+     * @param $data
+     * @param $order_id
+     */
+    public static function jsPushData($action, $data, $order_id = null)
+    {
+        $json = self::jsonEncode($data);
 
-		self::$jsIncluded = true;
-	}
+        ?>
+        <script>
+            r46('track', '<?= $action ?>', <?= $json ?>);
+        </script>
+    <?php
+    }
 
-	/**
-	 * push data via javascript (insert corresponding script tag)
-	 *
-	 * @param $action
-	 * @param $data
-	 * @param $order_id
-	 */
-	public static function jsPushData($action, $data, $order_id = null)
-	{
-		$json = self::jsonEncode($data);
+    public static function getR46Cookie ()
+    {
+        $data = (!empty($_COOKIE['r46_events_track']) && !is_null(json_decode($_COOKIE['r46_events_track'], true))) ? json_decode($_COOKIE['r46_events_track'], true) : [];
+        return $data;
+    }
+    
 
-		?>
-		<script>
-			if (typeof(REES46) == 'undefined') {
-				if (typeof(window.ReesPushData) == 'undefined') {
-					window.ReesPushData = [];
-				}
+    public static function cookiePushData($action, $data)
+    {
+        $events_array = self::getR46Cookie();
+        switch ($action) {
+            case 'cart':
+                $events_array['cart'] = $data;
+                break;
 
-				window.ReesPushData.push({
-					action: '<?= $action ?>',
-					data: <?= $json ?>
-					<?= $order_id !== null ? ', order_id: '. $order_id : '' ?>
-				});
-			} else {
-				REES46.addReadyListener(function () {
-					REES46.pushData('<?= $action ?>', <?= $json ?> <?= $order_id !== null ? ', '. $order_id : '' ?>);
-				});
-			}
-		</script>
-	<?php
-	}
+            case 'purchase':
+                $events_array['purchase'] = $data;
+                break;
 
-	public static function cookiePushData($action, $data)
-	{
-		switch ($action) {
-			case 'cart':
-				$cookie = 'rees46_track_cart';
-				break;
+            default:
+                return;
+        }
+        setcookie('r46_events_track', json_encode($events_array), strtotime('+1 hour'), '/');
+    }
 
-			case 'remove_from_cart':
-				$cookie = 'rees46_track_remove_from_cart';
-				break;
+    /**
+     * get item_ids in the current cart
+     *
+     * @return array
+     */
+    public static function getCartItemIds()
+    {
 
-			case 'purchase':
-				$cookie = 'rees46_track_purchase';
-				break;
+        $basket = \Bitrix\Sale\Basket::loadItemsForFUser(
+                    \Bitrix\Sale\Fuser::getId(), 
+                    \Bitrix\Main\Context::getCurrent()->getSite()
+        );
+        $items = $basket->getBasketItems();
+        $cart = [];
+        foreach ($items as $item) {
+            $cart_id = $item->getId();
+            $id = Data::getItemArray($item->getProductId());
+            $cart[] = $id['id'];
+        }
+        return $cart;
+    }
 
-			default:
-				error_log('Unknown action type: '. $action);
-				return;
-		}
+    /**
+     * get real item id for complex product
+     */
+    public static function getRealItemID($item_id)
+    {
+        $arr = Data::getItemArray($item_id);
+        if ($arr) {
+            return $arr['item_id'];
+        } else {
+            return null;
+        }
+    }
 
-		setcookie($cookie, json_encode($data), strtotime('+1 hour'), '/');
-	}
+    /**
+     * @param array|\Traversable $item_ids
+     * @return array
+     */
+    public static function getRealItemIDsArray($item_ids)
+    {
+        $ids = array();
 
-	public static function cookiePushPurchase($data, $order_id = null)
-	{
-		self::cookiePushData('purchase', array(
-			'items' => $data,
-			'order_id' => $order_id,
-		));
-	}
+        foreach ($item_ids as $id) {
+            $real_id = self::getRealItemID($id);
 
-	/**
-	 * get item_ids in the current cart
-	 *
-	 * @return array
-	 */
-	public static function getCartItemIds()
-	{
-		$ids = array();
+            if ($real_id) {
+                $ids[] = $real_id;
+            }
+        }
 
-		foreach (Data::getOrderItems(null) as $item) {
-			$ids []= $item['PRODUCT_ID'];
-		}
+        return $ids;
+    }
 
-		return $ids;
-	}
+    /**
+     * Unfortunately JSON_UNESCAPED_UNICODE is available only in PHP 5.4 and later
+     *
+     * @param $array
+     * @return string JSON
+     */
+    private static function jsonEncode($array)
+    {
+        $js_array = true;
+        $prev_key = -1;
 
-	/**
-	 * get real item id for complex product
-	 */
-	public static function getRealItemID($item_id)
-	{
-		$arr = Data::getItemArray($item_id);
-		if ($arr) {
-			return $arr['item_id'];
-		} else {
-			return null;
-		}
-	}
+        $result = array();
 
-	/**
-	 * @param array|\Traversable $item_ids
-	 * @return array
-	 */
-	public static function getRealItemIDsArray($item_ids)
-	{
-		$ids = array();
+        foreach ($array as $key => $value) {
+            if ($js_array && is_numeric($key) && $key == $prev_key + 1) {
+                $prev_key = $key;
+            } else {
+                $js_array = false;
+            }
 
-		foreach ($item_ids as $id) {
-			$real_id = self::getRealItemID($id);
+            if       (is_array($value)) {
+                $value = self::jsonEncode($value);
+            } elseif ($value === true) {
+                $value = 'true';
+            } elseif ($value === false) {
+                $value = 'false';
+            } elseif ($value === null) {
+                $value = 'null';
+            } elseif (is_numeric($value)) {
+                // leave as it is
+            } else {
+                $value = '"'.addslashes($value).'"';
+            }
 
-			if ($real_id) {
-				$ids[] = $real_id;
-			}
-		}
+            $key = '"'.addslashes($key).'"';
 
-		return $ids;
-	}
+            $result[$key] = $value;
+        }
 
-	/**
-	 * run js after includeJs
-	 * @param $js
-	 */
-	public static function handleJs($js)
-	{
-		if (self::$jsIncluded) {
-			?>
-			<script>
-				$(function () {
-					<?= $js ?>
-				});
-			</script>
-		<?php
-		} else {
-			self::$handleJs .= $js;
-		}
-	}
+        if ($js_array) {
+            $json = '[' . implode(',', $result) . ']';
+        } else {
+            $jsonHash = array();
+            foreach ($result as $key => $value) {
+                $jsonHash []= "$key:$value";
+            }
+            $json = '{'. implode(',', $jsonHash) .'}';
+        }
 
-	/**
-	 * Unfortunately JSON_UNESCAPED_UNICODE is available only in PHP 5.4 and later
-	 *
-	 * @param $array
-	 * @return string JSON
-	 */
-	private static function jsonEncode($array)
-	{
-		$js_array = true;
-		$prev_key = -1;
+        return $json;
+    }
 
-		$result = array();
+    /**
+     * Old events for compatibility
+     */
 
-		foreach ($array as $key => $value) {
-			if ($js_array && is_numeric($key) && $key == $prev_key + 1) {
-				$prev_key = $key;
-			} else {
-				$js_array = false;
-			}
-
-			if       (is_array($value)) {
-				$value = self::jsonEncode($value);
-			} elseif ($value === true) {
-				$value = 'true';
-			} elseif ($value === false) {
-				$value = 'false';
-			} elseif ($value === null) {
-				$value = 'null';
-			} elseif (is_numeric($value)) {
-				// leave as it is
-			} else {
-				$value = '"'.addslashes($value).'"';
-			}
-
-			$key = '"'.addslashes($key).'"';
-
-			$result[$key] = $value;
-		}
-
-		if ($js_array) {
-			$json = '[' . implode(',', $result) . ']';
-		} else {
-			$jsonHash = array();
-			foreach ($result as $key => $value) {
-				$jsonHash []= "$key:$value";
-			}
-			$json = '{'. implode(',', $jsonHash) .'}';
-		}
-
-		return $json;
-	}
-
-	/**
-	 * Old events for compatibility
-	 */
-
-	/**
-	 * @deprecated Rees46\Events::view
-	 */
-	public static function view($item_id)               { Events::view($item_id); }
-	/**
-	 * @deprecated Rees46\Events::purchase
-	 */
-	public static function purchase($order_id)          { Events::purchase($order_id); }
+    /**
+     * @deprecated Rees46\Events::view
+     */
+    public static function view($item_id)               { Events::view($item_id); }
+    /**
+     * @deprecated Rees46\Events::purchase
+     */
+    public static function purchase($order_id)          { Events::purchase($order_id); }
 }

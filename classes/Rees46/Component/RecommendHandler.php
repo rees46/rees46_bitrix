@@ -25,17 +25,7 @@ class RecommendHandler
 			$params['cart'] = $cart;
 		}
 
-		if (empty($params['item_id']) === false) {
-			$params['item_id'] = Functions::getRealItemID($params['item_id']);
-		}
-
-		if (empty($params['cart']) === false) {
-			$params['cart'] = Functions::getRealItemIDsArray($params['cart']);
-		}
-
-
 		$jsonParams = array(
-				'recommender_type' => $recommender,
 				'limit' => Options::getRecommendCount(),
 		);
 
@@ -66,10 +56,16 @@ class RecommendHandler
 			case 'recently_viewed':
 				if (isset($params['cart']) && is_array($params['cart'])) {
 					$jsonParams['cart'] = array_values($params['cart']);
-				} // cart is not required
+				}
+				if (isset($params['item_id']) && is_numeric($params['item_id'])) {
+					$jsonParams['item'] = json_encode($params['item_id']);
+				}
 				break;
 
 			case 'also_bought':
+				if (isset($params['cart']) && is_array($params['cart'])) {
+					$jsonParams['cart'] = array_values($params['cart']);
+				}
 				if (isset($params['item_id']) && is_numeric($params['item_id'])) {
 					$jsonParams['item'] = json_encode($params['item_id']);
 				} else {
@@ -79,23 +75,30 @@ class RecommendHandler
 				break;
 
 			case 'similar':
+				if (isset($params['cart']) && is_array($params['cart'])) {
+					$jsonParams['cart'] = array_values($params['cart']);
+				}
 				if (isset($params['item_id']) && is_numeric($params['item_id'])) {
 					$jsonParams['item'] = json_encode($params['item_id']);
 				} else {
 					error_log('recommender similar requires item_id');
 					return;
 				}
-
-				// params2
-				if (isset($params['cart']) && is_array($params['cart'])) {
-					$jsonParams['cart'] = array_values($params['cart']);
-				} // cart is not required
 				break;
 
 			case 'interesting': // no params
+				if (isset($params['cart']) && is_array($params['cart'])) {
+					$jsonParams['cart'] = array_values($params['cart']);
+				}
+				if (isset($params['item_id']) && is_numeric($params['item_id'])) {
+					$jsonParams['item'] = json_encode($params['item_id']);
+				}
 				break;
 
 			case 'popular':
+				if (isset($params['cart']) && is_array($params['cart'])) {
+					$jsonParams['cart'] = array_values($params['cart']);
+				}
 				if (isset($params['category'])) {
 					$jsonParams['category'] = intval($params['category']);
 				}
@@ -112,30 +115,25 @@ class RecommendHandler
 		<div id="<?= $uniqid ?>" class="rees46-recommend"></div>
 		<script>
 			BX.ready(function(){
-				REES46.addReadyListener(function () {
-					REES46.recommend(<?= json_encode($jsonParams) ?>, function (items) {
-						if (items.length > 0) {
+				r46('recommend', '<?= $recommender ?>', <?= json_encode($jsonParams) ?>, function (items) {
+					if (items.length > 0) {
 
-							var data_string = BX.ajax.prepareData({
-								action: 'recommend',
-								recommended_by: <?= json_encode($recommender) ?>,
-								recommended_items: items
-							});
+						var data_string = BX.ajax.prepareData({
+							action: 'recommend',
+							recommended_by: <?= json_encode($recommender) ?>,
+							recommended_items: items
+						});
 
-							BX.ajax({
-								url: '<?= SITE_DIR ?>include/rees46-handler.php?' + data_string,
-								method: 'GET',
-								dataType: 'html',
-								async: true,
-								onsuccess: function (html) {
-									if (REES46.showPromotion) {
-										html = html + REES46.getPromotionBlock();
-									}
-									BX('<?= $uniqid ?>').innerHTML = html;
-								}
-							});
-						}
-					});
+						BX.ajax({
+							url: '<?= SITE_DIR ?>include/rees46-handler.php?' + data_string,
+							method: 'GET',
+							dataType: 'html',
+							async: true,
+							onsuccess: function (html) {
+								BX('<?= $uniqid ?>').innerHTML = html;
+							}
+						});
+					}
 				});
 			});
 		</script>

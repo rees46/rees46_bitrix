@@ -1,15 +1,11 @@
 <?php
-
 IncludeModuleLangFile(__FILE__);
-
 class mk_rees46 extends CModule
 {
 	const MODULE_ID = 'mk.rees46';
-
 	const IMAGE_WIDTH_DEFAULT       = 150;
 	const IMAGE_HEIGHT_DEFAULT      = 150;
 	const RECOMMEND_COUNT_DEFAULT   = 10;
-
 	var $MODULE_ID = "mk.rees46";
 	var $MODULE_VERSION;
 	var $MODULE_VERSION_DATE;
@@ -17,7 +13,6 @@ class mk_rees46 extends CModule
 	var $MODULE_DESCRIPTION;
 	var $PARTNER_NAME;
 	var $PARTNER_URI;
-
 	public function __construct()
 	{
 		$arModuleVersion = array();
@@ -29,7 +24,6 @@ class mk_rees46 extends CModule
 		$this->MODULE_NAME          = GetMessage('REES_INSTALL_MODULE_NAME');
 		$this->MODULE_DESCRIPTION   = GetMessage('REES_INSTALL_MODULE_DESC');
 	}
-
 	public function DoInstall()
 	{
 		global $APPLICATION;
@@ -38,7 +32,6 @@ class mk_rees46 extends CModule
 		$this->InstallEvents();
 		$APPLICATION->IncludeAdminFile(GetMessage('REES_INSTALL_TITLE'), __DIR__ . '/step.php');
 	}
-
 	public function DoUninstall()
 	{
 		global $APPLICATION;
@@ -47,7 +40,6 @@ class mk_rees46 extends CModule
 		$this->UnInstallEvents();
 		$APPLICATION->IncludeAdminFile(GetMessage('REES_INSTALL_TITLE'), __DIR__ . '/unstep.php');
 	}
-
 	public function InstallFiles($arParams = array())
 	{
 		$result = true;
@@ -55,7 +47,6 @@ class mk_rees46 extends CModule
 		$result = $result && CopyDirFiles(__DIR__ .'/include', $_SERVER['DOCUMENT_ROOT'] .'/include', true, true);
 		return $result;
 	}
-
 	public function UnInstallFiles()
 	{
 		$result = true;
@@ -63,34 +54,22 @@ class mk_rees46 extends CModule
 		$result = $result && DeleteDirFilesEx('/include/rees46-handler.php');
 		return $result;
 	}
-
 	public function InstallEvents()
 	{
-		// Track adding items to the cart
-		RegisterModuleDependences('sale', 'OnBasketAdd',            self::MODULE_ID, 'Rees46\\Events', 'cart');
-		// Track removing items from the cart
-		// OnBeforeBasketDelete because we can't get product_id in OnBasketDelete
-		RegisterModuleDependences('sale', 'OnBeforeBasketDelete',   self::MODULE_ID, 'Rees46\\Events', 'removeFromCart');
-		// Track ordering
-		// WARNING!!! NON-DOCUMENTED BITRIX EVENT!!!
-		// We can't get items in OnOrderAdd
-		RegisterModuleDependences('sale', 'OnBasketOrder',          self::MODULE_ID, 'Rees46\\Events', 'purchase');
-		
 		$eventManager = \Bitrix\Main\EventManager::getInstance(); 
 		$eventManager->registerEventHandler("sale","OnSaleOrderSaved", self::MODULE_ID, 'Rees46\\Events', 'OnSaleOrderSavedHandler');
-		$eventManager->registerEventHandler("sale","OnSaleBasketItemDeleted", self::MODULE_ID, 'Rees46\\Events', 'OnBasketDeleteMy');
-		$eventManager->registerEventHandler("sale","OnSaleBasketItemBeforeSaved", self::MODULE_ID, 'Rees46\\Events', 'OnSaleBasketItemBeforeSavedMy');
+		$eventManager->registerEventHandler("sale","OnSaleBasketItemDeleted", self::MODULE_ID, 'Rees46\\Events', 'OnSaleBasketItemMy');
+		$eventManager->registerEventHandler("sale","OnSaleBasketItemBeforeSaved", self::MODULE_ID, 'Rees46\\Events', 'OnSaleBasketItemMy');
+        $eventManager->registerEventHandler("sale","OnSaleBasketItemRefreshData", self::MODULE_ID, 'Rees46\\Events', 'OnSaleBasketItemMy');
 	}
-
 	public function UnInstallEvents()
 	{
-		UnRegisterModuleDependences('sale', 'OnBasketAdd',          self::MODULE_ID, 'Rees46\\Events', 'cart');
-		UnRegisterModuleDependences('sale', 'OnBeforeBasketDelete', self::MODULE_ID, 'Rees46\\Events', 'removeFromCart');
-		UnRegisterModuleDependences('sale', 'OnBasketOrder',        self::MODULE_ID, 'Rees46\\Events', 'purchase');
-		
 		$eventManager = \Bitrix\Main\EventManager::getInstance(); 
 		$eventManager->unRegisterEventHandler("sale","OnSaleOrderSaved", self::MODULE_ID, 'Rees46\\Events', 'OnSaleOrderSavedHandler');
-		$eventManager->unRegisterEventHandler("sale","OnSaleBasketItemDeleted", self::MODULE_ID, 'Rees46\\Events', 'OnBasketDeleteMy');
-		$eventManager->unRegisterEventHandler("sale","OnSaleBasketItemBeforeSaved", self::MODULE_ID, 'Rees46\\Events', 'OnSaleBasketItemBeforeSavedMy');
+		$eventManager->unRegisterEventHandler("sale","OnSaleBasketItemDeleted", self::MODULE_ID, 'Rees46\\Events', 'OnSaleBasketItemMy');
+		$eventManager->unRegisterEventHandler("sale","OnSaleBasketItemBeforeSaved", self::MODULE_ID, 'Rees46\\Events', 'OnSaleBasketItemMy');
+		$eventManager->unRegisterEventHandler("sale","OnSaleBasketItemRefreshData", self::MODULE_ID, 'Rees46\\Events', 'OnSaleBasketItemMy');
+
 	}
 }
+
