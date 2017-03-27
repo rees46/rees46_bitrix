@@ -41,8 +41,8 @@ class Functions
                         id: <?php echo $USER->GetId() ?>,
                         email: '<?php echo $USER->GetEmail() ?>'
                     };
+                r46('profile', 'set', ud);
             <?php endif; ?>
-            r46('profile', 'set', ud);
             r46('add_css', 'recommendations');
         </script>
 
