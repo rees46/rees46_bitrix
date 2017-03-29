@@ -40,8 +40,8 @@ class RecommendHandler
 				if (isset($params['cart']) && is_array($params['cart'])) {
 					$jsonParams['cart'] = array_values($params['cart']);
 				}
-				if (isset($params['item_id']) && is_numeric($params['item_id'])) {
-					$jsonParams['item'] = json_encode($params['item_id']);
+				if (isset($params['item_id'])) {
+                    $jsonParams['item'] = is_string($params['item_id']) ? $params['item_id'] : json_encode($params['item_id']);
 				}
 				break;
 			case 'see_also':
@@ -57,8 +57,8 @@ class RecommendHandler
 				if (isset($params['cart']) && is_array($params['cart'])) {
 					$jsonParams['cart'] = array_values($params['cart']);
 				}
-				if (isset($params['item_id']) && is_numeric($params['item_id'])) {
-					$jsonParams['item'] = json_encode($params['item_id']);
+				if (isset($params['item_id'])) {
+                    $jsonParams['item'] = is_string($params['item_id']) ? $params['item_id'] : json_encode($params['item_id']);
 				}
 				break;
 
@@ -66,8 +66,8 @@ class RecommendHandler
 				if (isset($params['cart']) && is_array($params['cart'])) {
 					$jsonParams['cart'] = array_values($params['cart']);
 				}
-				if (isset($params['item_id']) && is_numeric($params['item_id'])) {
-					$jsonParams['item'] = json_encode($params['item_id']);
+				if (isset($params['item_id'])) {
+                    $jsonParams['item'] = is_string($params['item_id']) ? $params['item_id'] : json_encode($params['item_id']);
 				} else {
 					error_log('recommender also_bought requires item_id');
 					return;
@@ -78,8 +78,8 @@ class RecommendHandler
 				if (isset($params['cart']) && is_array($params['cart'])) {
 					$jsonParams['cart'] = array_values($params['cart']);
 				}
-				if (isset($params['item_id']) && is_numeric($params['item_id'])) {
-					$jsonParams['item'] = json_encode($params['item_id']);
+				if (isset($params['item_id'])) {
+                    $jsonParams['item'] = is_string($params['item_id']) ? $params['item_id'] : json_encode($params['item_id']);
 				} else {
 					error_log('recommender similar requires item_id');
 					return;
@@ -90,8 +90,8 @@ class RecommendHandler
 				if (isset($params['cart']) && is_array($params['cart'])) {
 					$jsonParams['cart'] = array_values($params['cart']);
 				}
-				if (isset($params['item_id']) && is_numeric($params['item_id'])) {
-					$jsonParams['item'] = json_encode($params['item_id']);
+				if (isset($params['item_id'])) {
+                    $jsonParams['item'] = is_string($params['item_id']) ? $params['item_id'] : json_encode($params['item_id']);
 				}
 				break;
 
