@@ -110,7 +110,7 @@ class Functions
         $cart = [];
         foreach ($items as $item) {
             $cart_id = $item->getId();
-            $id = Data::getItemArray($item->getProductId());
+            $id = Data::getItemArray($item->getProductId(), false, true);
             $cart[] = $id['id'];
         }
         return $cart;
@@ -121,7 +121,7 @@ class Functions
      */
     public static function getRealItemID($item_id)
     {
-        $arr = Data::getItemArray($item_id);
+        $arr = Data::getItemArray($item_id, false, true);
         if ($arr) {
             return $arr['item_id'];
         } else {

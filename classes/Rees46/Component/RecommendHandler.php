@@ -4,6 +4,7 @@ namespace Rees46\Component;
 
 use Rees46\Functions;
 use Rees46\Options;
+use Rees46\Bitrix\Data;
 
 class RecommendHandler
 {
@@ -19,7 +20,11 @@ class RecommendHandler
 		$params = isset($arParams['params']) ? $arParams['params'] : array();
 
 		// get current cart items
-		$cart = Functions::getCartItemIds();
+        $cart_extended = Data::getCurrentCart();
+        $cart = [];
+        foreach ($cart_extended as $item) {
+            array_push($cart, $item["id"]);
+        }
 
 		if (isset($params['cart']) === false) {
 			$params['cart'] = $cart;

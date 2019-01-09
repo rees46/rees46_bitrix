@@ -60,7 +60,7 @@ class mk_rees46 extends CModule
 		$eventManager->registerEventHandler("sale","OnSaleOrderSaved", self::MODULE_ID, 'Rees46\\Events', 'OnSaleOrderSavedHandler');
 		$eventManager->registerEventHandler("sale","OnSaleBasketItemDeleted", self::MODULE_ID, 'Rees46\\Events', 'OnSaleBasketItemMy');
 		$eventManager->registerEventHandler("sale","OnSaleBasketBeforeSaved", self::MODULE_ID, 'Rees46\\Events', 'OnSaleBasketItemMy');
-        $eventManager->registerEventHandler("sale","OnSaleBasketItemRefreshData", self::MODULE_ID, 'Rees46\\Events', 'OnSaleBasketItemMy');
+        //$eventManager->registerEventHandler("sale","OnSaleBasketItemRefreshData", self::MODULE_ID, 'Rees46\\Events', 'OnSaleBasketItemMy');
 	}
 	public function UnInstallEvents()
 	{
@@ -68,7 +68,7 @@ class mk_rees46 extends CModule
 		$eventManager->unRegisterEventHandler("sale","OnSaleOrderSaved", self::MODULE_ID, 'Rees46\\Events', 'OnSaleOrderSavedHandler');
 		$eventManager->unRegisterEventHandler("sale","OnSaleBasketItemDeleted", self::MODULE_ID, 'Rees46\\Events', 'OnSaleBasketItemMy');
 		$eventManager->unRegisterEventHandler("sale","OnSaleBasketBeforeSaved", self::MODULE_ID, 'Rees46\\Events', 'OnSaleBasketItemMy');
-		$eventManager->unRegisterEventHandler("sale","OnSaleBasketItemRefreshData", self::MODULE_ID, 'Rees46\\Events', 'OnSaleBasketItemMy');
+		//$eventManager->unRegisterEventHandler("sale","OnSaleBasketItemRefreshData", self::MODULE_ID, 'Rees46\\Events', 'OnSaleBasketItemMy');
 
 	}
 }

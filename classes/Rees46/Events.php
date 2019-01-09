@@ -4,7 +4,6 @@ use Rees46\Bitrix\Data;
 class Events
 
 {
-
 	/**
 	 * push view event
 	 *
@@ -12,7 +11,7 @@ class Events
 	 */
 	public static function view($item_id)
 	{
-		$item = Data::getItemArray($item_id, true);
+		$item = Data::getItemArray($item_id, false, true);
 		Functions::jsPushData('view', $item);
 	}
 
@@ -39,17 +38,6 @@ class Events
      // basket
     public static function  OnSaleBasketItemMy(\Bitrix\Main\Event $event)
     {
-        $basket = \Bitrix\Sale\Basket::loadItemsForFUser(
-                    \Bitrix\Sale\Fuser::getId(), 
-                    \Bitrix\Main\Context::getCurrent()->getSite()
-        );
-        $items = $basket->getBasketItems();
-        $cart = [];
-        foreach ($items as $item) {
-            $cart_id = $item->getId();
-            $id = Data::getItemArray($item->getProductId());
-            $cart[] = (object)["id" => $id['id'], "amount" => (int)($item->getQuantity())];
-        }
-        Functions::cookiePushData('cart', $cart);
+        Functions::cookiePushData('cart', Data::getCurrentCart());
     }
 } 

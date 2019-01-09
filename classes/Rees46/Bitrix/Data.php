@@ -85,7 +85,7 @@ class Data
      * @param bool $more
      * @return array
      */
-    public static function getItemArray($id, $more = false)
+    public static function getItemArray($id, $more = false, $wo_price = false)
     {
         if (isset(self::$itemArraysMoreCache[$id])) {
             return self::$itemArraysMoreCache[$id];
@@ -144,8 +144,8 @@ class Data
         $return['categories'] = $categories;
 
         $has_price = false;
-        $return['price'] = self::getFinalPriceInCurrency($return['id'], self::getSaleCurrency());
-        if (!empty($return['price'])) {
+        $return['price'] = $wo_price ? 0 : self::getFinalPriceInCurrency($return['id'], self::getSaleCurrency());
+        if (!empty($return['price'] || $wo_price)) {
             $has_price = true;
         }
         if ( $item['QUANTITY'] == 0 ) {
@@ -161,7 +161,7 @@ class Data
         }   
         if (isset($item['QUANTITY'])) {
             $quantity = $item['QUANTITY'] > 0;
-            $return['stock'] = ($quantity && $has_price) ? true : false;
+            $return['stock'] = ($quantity && ($has_price || $wo_price)) ? true : false;
         }
 
         if (Options::getRecommendNonAvailable()) {
@@ -203,7 +203,7 @@ class Data
         $libBasket = new \CSaleBasket();
         $item = $libBasket->GetByID($id);
 
-        return Data::getItemArray($item['PRODUCT_ID']);
+        return Data::getItemArray($item['PRODUCT_ID'], false, true);
     }
 
 
@@ -379,57 +379,75 @@ class Data
     }
 
     public static function getCurrentCart() {
-        $arID = array();
         $arBasketItems = array();
+
+        $arID = array();
         $dbBasketItems = CSaleBasket::GetList(
-            array(
-                "NAME" => "ASC",
-                "ID" => "ASC"
-            ),
-            array(
-                "FUSER_ID" => CSaleBasket::GetBasketUserID(),
-                "LID" => SITE_ID,
-                "ORDER_ID" => "NULL"
-            ),
-            false,
-            false,
-            array("ID", "CALLBACK_FUNC", "MODULE", "PRODUCT_ID", "QUANTITY", "PRODUCT_PROVIDER_CLASS")
+        	array(
+		      "NAME" => "ASC",
+        		"ID" => "ASC"
+        	),
+        	array(
+        		"FUSER_ID" => CSaleBasket::GetBasketUserID(),
+        		"LID" => SITE_ID,
+        		"ORDER_ID" => "NULL"
+        	),
+        	false,
+        	false,
+        	array("ID", "CALLBACK_FUNC", "MODULE", "PRODUCT_ID", "QUANTITY", "PRODUCT_PROVIDER_CLASS")
         );
+
         while ($arItems = $dbBasketItems->Fetch()) {
-            if ('' != $arItems['PRODUCT_PROVIDER_CLASS'] || '' != $arItems["CALLBACK_FUNC"]) {
-                CSaleBasket::UpdatePrice(
-                                    $arItems["ID"],
-                                    $arItems["CALLBACK_FUNC"],
-                                    $arItems["MODULE"],
-                                    $arItems["PRODUCT_ID"],
-                                    $arItems["QUANTITY"],
-                                    "N",
-                                    $arItems["PRODUCT_PROVIDER_CLASS"]
-                                    );
-                $arID[] = $arItems["ID"];
-            }
+        	if ('' != $arItems['PRODUCT_PROVIDER_CLASS'] || '' != $arItems["CALLBACK_FUNC"]) {
+        		CSaleBasket::UpdatePrice(
+        			$arItems["ID"],
+        			$arItems["CALLBACK_FUNC"],
+        			$arItems["MODULE"],
+        			$arItems["PRODUCT_ID"],
+        			$arItems["QUANTITY"],
+        			"N",
+        			$arItems["PRODUCT_PROVIDER_CLASS"]
+        			);
+        		$arID[] = $arItems["ID"];
+        	}
         }
 
         if (!empty($arID)) {
-            $dbBasketItems = CSaleBasket::GetList(
-                array(
-                    "NAME" => "ASC",
-                    "ID" => "ASC"
-                ),
-                array(
-                    "ID" => $arID,
-                    "ORDER_ID" => "NULL"
-                ),
-                false,
-                false,
-                array("ID", "PRODUCT_ID", "QUANTITY")
-            );
-            while ($arItems = $dbBasketItems->Fetch()) {
-                $arBasketItems[] = $arItems;
-            }
+        	$dbBasketItems = CSaleBasket::GetList(
+        		array(
+        				"NAME" => "ASC",
+        				"ID" => "ASC"
+        		),
+        		array(
+        				"ID" => $arID,
+        				"ORDER_ID" => "NULL"
+        		),
+        		false,
+        		false,
+        		array("ID", "PRODUCT_ID", "QUANTITY")
+        	);
+        	while ($arItems = $dbBasketItems->Fetch()) {
+        		// проверяем является ли товар вариантом
+        		$mxResult = CCatalogSku::GetProductInfo($arItems['PRODUCT_ID']);
+        		if (is_array($mxResult)) {
+        			$product_id = intval($mxResult['ID']);
+        		} else {
+        			$product_id = intval($arItems['PRODUCT_ID']);
+        		}
+
+        		// группируем варианты в один элемент массива
+        		$variant_key = array_search($product_id, array_column($arBasketItems, 'id'));
+
+        		if ($variant_key !== false) {
+        			$arBasketItems[$variant_key]['amount'] += $arItems['QUANTITY'];
+        		} else {
+        			$arBasketItems[] = array(
+        				'id'     => $product_id,
+        				'amount' => $arItems['QUANTITY']
+        			);
+        		}
+        	}
         }
         return $arBasketItems;
     }
-
-
 }
