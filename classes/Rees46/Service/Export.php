@@ -17,7 +17,6 @@ class Export
 	 */
 	public static function exportOrders()
 	{
-
 		set_time_limit(0);
 		$arOrders = self::getOrdersForExport();
 
@@ -56,6 +55,10 @@ class Export
 				$order['user_id'] = $dbOrder['USER_ID'];
 			}
 
+			if (!empty($dbOrder['EMAIL'])) {
+				$order['user_email'] = $dbOrder['EMAIL'];
+			}
+
 			$dbItems = Data::getOrderItems($dbOrder['ID']);
 
 			$items = array();
@@ -63,9 +66,6 @@ class Export
 			foreach ($dbItems as $dbItem) {
 				$item = $dbItem['DATA'];
 				$item['amount'] = $dbItem['QUANTITY'];
-				$item['id'] = strval($item['item_id']);
-				unset($item['item_id']);
-
 				$items []= $item;
 			}
 

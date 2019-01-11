@@ -33,13 +33,23 @@ class Data
      */
     public static function getLatestOrders()
     {
-        $libOrder = new \CSaleOrder;
-        global $DB;
-
-        $orders = $libOrder->GetList(array(), array(
-            'DATE_INSERT_FROM' => date($DB->DateFormatToPHP(\CSite::GetDateFormat("SHORT")), strtotime('-6 months')),
-            'STATUS_ID' => 'F',
-        ));
+        $date = new \Bitrix\Main\Type\DateTime();
+        $filter = array(
+            'filter' => array(
+                ">=DATE_INSERT" => $date->add('- 1 month'), 
+                "=CANCELED" => "N"
+            ), 
+            'select' => array(
+                "ID",
+                "DATE_INSERT",
+                "USER_ID", 
+                "EMAIL" => 'USER.EMAIL'
+            ),
+            'order' => array(
+                "ID" => 'ASC'
+            )
+        );
+        $orders = \Bitrix\Sale\Internals\OrderTable::getList($filter);
 
         return $orders;
     }
@@ -85,7 +95,7 @@ class Data
      * @param bool $more
      * @return array
      */
-    public static function getItemArray($id, $more = false, $wo_price = false)
+    public static function getItemArray($id, $more = false, $full_data = true)
     {
         if (isset(self::$itemArraysMoreCache[$id])) {
             return self::$itemArraysMoreCache[$id];
@@ -135,25 +145,16 @@ class Data
             return null;
         }
 
-        // Get categories
-        $categories = array();
-        $item_categories = CIBlockElement::GetElementGroups($id, true);
-        while($category = $item_categories->Fetch()) {
-            $categories[] = $category['ID'];
-        }
-        $return['categories'] = $categories;
-
         $has_price = false;
-        $return['price'] = $wo_price ? 0 : self::getFinalPriceInCurrency($return['id'], self::getSaleCurrency());
-        if (!empty($return['price'] || $wo_price)) {
+        $return['price'] = self::getFinalPriceInCurrency($return['id'], self::getSaleCurrency());
+        if (!empty($return['price'])) {
             $has_price = true;
         }
-        if ( $item['QUANTITY'] == 0 ) {
-            $mxResult = CCatalogSKU::getOffersList(
-                $id
-            );
-            if ( count($mxResult) > 0 ) {
-                foreach ( $mxResult[$id] as $index=>$val ) {
+
+        if ($item['QUANTITY'] == 0) {
+            $mxResult = CCatalogSKU::getOffersList($id);
+            if (count($mxResult) > 0) {
+                foreach ($mxResult[$id] as $index => $val) {
                     $offers = $libProduct->GetByID($index);
                     $item['QUANTITY'] = $item['QUANTITY'] + $offers['QUANTITY'];
                 }
@@ -161,14 +162,25 @@ class Data
         }   
         if (isset($item['QUANTITY'])) {
             $quantity = $item['QUANTITY'] > 0;
-            $return['stock'] = ($quantity && ($has_price || $wo_price)) ? true : false;
+            $return['stock'] = ($quantity && $has_price) ? true : false;
         }
 
         if (Options::getRecommendNonAvailable()) {
             $return['stock'] = true;
         }
 
-        if ($more) {
+
+        if ($full_data) {
+            // Get categories
+            $categories = array();
+            $item_categories = CIBlockElement::GetElementGroups($id, true);
+            while($category = $item_categories->Fetch()) {
+                $categories[] = $category['ID'];
+            }
+            $return['categories'] = $categories;
+        }
+
+        if ($more && $full_data) {
             $libMain = new \CMain;
             $libFile = new \CFile();
 
@@ -185,27 +197,12 @@ class Data
             }
 
             self::$itemArraysMoreCache[$id] = $return;
-        } else {
+        } elseif ($full_data) {
             self::$itemArraysCache[$id] = $return;
         }
 
         return $return;
     }
-
-    /**
-     * get item params for view or cart push from basket id
-     *
-     * @param $id
-     * @return array|bool
-     */
-    public static function getBasketArray($id)
-    {
-        $libBasket = new \CSaleBasket();
-        $item = $libBasket->GetByID($id);
-
-        return Data::getItemArray($item['PRODUCT_ID'], false, true);
-    }
-
 
 
     public static function getFinalPriceInCurrency($item_id, $sale_currency = 'RUB') {
@@ -398,7 +395,7 @@ class Data
         );
 
         while ($arItems = $dbBasketItems->Fetch()) {
-        	if ('' != $arItems['PRODUCT_PROVIDER_CLASS'] || '' != $arItems["CALLBACK_FUNC"]) {
+            if (strlen($res["CALLBACK_FUNC"]) > 0){
         		CSaleBasket::UpdatePrice(
         			$arItems["ID"],
         			$arItems["CALLBACK_FUNC"],
@@ -408,8 +405,9 @@ class Data
         			"N",
         			$arItems["PRODUCT_PROVIDER_CLASS"]
         			);
-        		$arID[] = $arItems["ID"];
-        	}
+                $arItems = CSaleBasket::GetByID($arItems["ID"]);
+            }
+      		$arID[] = $arItems["ID"];
         }
 
         if (!empty($arID)) {
