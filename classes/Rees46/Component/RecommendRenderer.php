@@ -61,6 +61,9 @@ class RecommendRenderer
 				case 'popular':
 					$recommender_title = GetMessage('REES_INCLUDE_POPULAR');
 					break;
+				case 'search':
+					$recommender_title = GetMessage('REES_INCLUDE_SEARCH');
+					break;
 				default:
 					$recommender_title = '';
 			}

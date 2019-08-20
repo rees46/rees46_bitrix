@@ -9,12 +9,22 @@ class Events
 	 *
 	 * @param $item_id
 	 */
-	public static function view($item_id)
+	public static function view_event($item_id)
 	{
-		$item = Data::getItemArray($item_id, false, true);
+		$item = Data::getItemArray($item_id, false, false);
 		Functions::jsPushData('view', $item);
 	}
 
+	/**
+	 * push category event
+	 *
+	 * @param $category_id
+	 */
+	public static function category_event($category_id)
+	{
+        if (empty($category_id)) { return; };
+		Functions::jsPushData('category', $category_id);
+	}
 
      //add order
      public static function OnSaleOrderSavedHandler(\Bitrix\Main\Event $event)

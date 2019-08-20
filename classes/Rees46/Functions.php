@@ -26,6 +26,31 @@ class Functions
         ?>
 
         <script>
+            (function(){
+                document.addEventListener('DOMContentLoaded', function(){
+                    [].forEach.call(document.getElementsByTagName('form'), function(t){
+                        if (/(catalog|search)/.test(t.action.replace(document.location.origin, ''))){
+                            var i = [].filter.call(t.elements, function(e){
+                                return /^input$/i.test(e.tagName) && /q/.test(e.name);
+                            });
+                            [].forEach.call(i, function(t){
+                                if (!t.classList.contains('rees46-instant-search')) {
+                                    t.className += " rees46-instant-search";
+                                };
+                            });
+                        };
+                    });
+                    var ready = setInterval(function() {
+                        if (document.readyState === 'complete') {
+                            clearInterval(ready);
+                            if (typeof r46 != 'undefined' && document.getElementsByClassName('rees46-search-box').length == 0) {
+                                r46('search_init', '.rees46-instant-search');
+                            };
+                        };
+                    }, 10);
+                });
+            })();
+
             (function(r){
                 window.r46=window.r46||function(){
                     (r46.q=r46.q||[]).push(arguments);
@@ -48,6 +73,10 @@ class Functions
 
         <?php
 
+		if (!empty($_GET['q'])) {
+			self::jsPushData('search', $_GET['q']);
+        }
+
         self::$jsIncluded = true;
     }
 
@@ -58,15 +87,13 @@ class Functions
      * @param $data
      * @param $order_id
      */
-    public static function jsPushData($action, $data, $order_id = null)
+    public static function jsPushData($action, $data)
     {
-        $json = self::jsonEncode($data);
-
-        ?>
-        <script>
-            r46('track', '<?= $action ?>', <?= $json ?>);
-        </script>
-    <?php
+        $params = json_encode($data);
+        if ($params === false && is_string($data)) {
+            $params = json_encode(mb_convert_encoding($data, 'utf-8', 'cp-1251'));
+        }
+        echo "<script>typeof r46 != 'undefined' && r46('track', '{$action}', {$params});</script>";
     }
 
     public static function getR46Cookie ()
@@ -93,123 +120,4 @@ class Functions
         }
         setcookie('r46_events_track', json_encode($events_array), strtotime('+1 hour'), '/');
     }
-
-    /**
-     * get item_ids in the current cart
-     *
-     * @return array
-     */
-    public static function getCartItemIds()
-    {
-
-        $basket = \Bitrix\Sale\Basket::loadItemsForFUser(
-                    \Bitrix\Sale\Fuser::getId(), 
-                    \Bitrix\Main\Context::getCurrent()->getSite()
-        );
-        $items = $basket->getBasketItems();
-        $cart = [];
-        foreach ($items as $item) {
-            $cart_id = $item->getId();
-            $id = Data::getItemArray($item->getProductId(), false, true);
-            $cart[] = $id['id'];
-        }
-        return $cart;
-    }
-
-    /**
-     * get real item id for complex product
-     */
-    public static function getRealItemID($item_id)
-    {
-        $arr = Data::getItemArray($item_id, false, true);
-        if ($arr) {
-            return $arr['item_id'];
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * @param array|\Traversable $item_ids
-     * @return array
-     */
-    public static function getRealItemIDsArray($item_ids)
-    {
-        $ids = array();
-
-        foreach ($item_ids as $id) {
-            $real_id = self::getRealItemID($id);
-
-            if ($real_id) {
-                $ids[] = $real_id;
-            }
-        }
-
-        return $ids;
-    }
-
-    /**
-     * Unfortunately JSON_UNESCAPED_UNICODE is available only in PHP 5.4 and later
-     *
-     * @param $array
-     * @return string JSON
-     */
-    private static function jsonEncode($array)
-    {
-        $js_array = true;
-        $prev_key = -1;
-
-        $result = array();
-
-        foreach ($array as $key => $value) {
-            if ($js_array && is_numeric($key) && $key == $prev_key + 1) {
-                $prev_key = $key;
-            } else {
-                $js_array = false;
-            }
-
-            if       (is_array($value)) {
-                $value = self::jsonEncode($value);
-            } elseif ($value === true) {
-                $value = 'true';
-            } elseif ($value === false) {
-                $value = 'false';
-            } elseif ($value === null) {
-                $value = 'null';
-            } elseif (is_numeric($value)) {
-                // leave as it is
-            } else {
-                $value = '"'.addslashes($value).'"';
-            }
-
-            $key = '"'.addslashes($key).'"';
-
-            $result[$key] = $value;
-        }
-
-        if ($js_array) {
-            $json = '[' . implode(',', $result) . ']';
-        } else {
-            $jsonHash = array();
-            foreach ($result as $key => $value) {
-                $jsonHash []= "$key:$value";
-            }
-            $json = '{'. implode(',', $jsonHash) .'}';
-        }
-
-        return $json;
-    }
-
-    /**
-     * Old events for compatibility
-     */
-
-    /**
-     * @deprecated Rees46\Events::view
-     */
-    public static function view($item_id)               { Events::view($item_id); }
-    /**
-     * @deprecated Rees46\Events::purchase
-     */
-    public static function purchase($order_id)          { Events::purchase($order_id); }
 }

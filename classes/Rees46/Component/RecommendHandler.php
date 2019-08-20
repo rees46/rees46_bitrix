@@ -27,16 +27,20 @@ class RecommendHandler
         }
 
 		if (isset($params['cart']) === false) {
-			$params['cart'] = $cart;
+		  $params['cart'] = $cart;
 		}
 
 		$jsonParams = array(
-				'limit' => Options::getRecommendCount(),
+		  'limit' => Options::getRecommendCount(),
 		);
 
+		if (isset($params['category'])) {
+			$jsonParams['category'] = intval($params['category']);
+		}
 
-		if (empty($params['modification']) === false) {
-			$jsonParams['modification'] = $params['modification'];
+		if (!empty($_GET['q'])) {
+            $jsonParams['search_query'] = json_encode($_GET['q']) === false ? mb_convert_encoding($_GET['q'], 'utf-8', 'cp-1251') : $_GET['q'];
+            unset($jsonParams['category']);
 		}
 
 		// check required params for recommenders
@@ -104,8 +108,12 @@ class RecommendHandler
 				if (isset($params['cart']) && is_array($params['cart'])) {
 					$jsonParams['cart'] = array_values($params['cart']);
 				}
-				if (isset($params['category'])) {
-					$jsonParams['category'] = intval($params['category']);
+				break;
+
+			case 'search':
+                if (empty($jsonParams['search_query'])) { return; };
+				if (isset($params['cart']) && is_array($params['cart'])) {
+					$jsonParams['cart'] = array_values($params['cart']);
 				}
 				break;
 
@@ -120,7 +128,7 @@ class RecommendHandler
 		<div id="<?= $uniqid ?>" class="rees46-recommend"></div>
 		<script>
 			BX.ready(function(){
-				r46('recommend', '<?= $recommender ?>', <?= json_encode($jsonParams) ?>, function (items) {
+				typeof r46 != 'undefined' && r46('recommend', '<?= $recommender ?>', <?= json_encode($jsonParams) ?>, function (items) {
 					if (items.length > 0) {
 
 						var data_string = BX.ajax.prepareData({
