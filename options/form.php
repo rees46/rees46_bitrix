@@ -55,7 +55,7 @@ IncludeModuleLangFile(__FILE__);
 
 	<div style="margin-top: 60px;">
 		<table>
-			<tr>
+			<tr style="line-height: 30px;">
 				<td style="padding-left: 0">
 					<label for="REES46_recommend_count"><?= GetMessage('REES_OPTIONS_RECOMMEND_COUNT') ?></label>
 				</td>
@@ -63,12 +63,20 @@ IncludeModuleLangFile(__FILE__);
 					<input type="text" id="REES46_recommend_count" value="<?= \Rees46\Options::getRecommendCount() ?>" name="recommend_count" style="width: 50px"/>
 				</td>
 			</tr>
-			<tr>
+			<tr style="line-height: 30px;">
 				<td style="padding-left: 0">
 					<label for="REES46_recommend_nonavailable"><?= GetMessage('REES_OPTIONS_RECOMMEND_NONAVAILABLE') ?></label>
 				</td>
 				<td style="padding-left: 10px">
 					<input type="checkbox" id="REES46_recommend_nonavailable" value="1" <?php if (\Rees46\Options::getRecommendNonAvailable()): ?>checked="checked"<? endif ?> name="recommend_nonavailable" style="margin: 0"/>
+				</td>
+			</tr>
+			<tr style="line-height: 30px;">
+				<td style="padding-left: 0">
+					<label for="REES46_instant_search_embedded"><?= GetMessage('REES_OPTIONS_INSTANT_SEARCH_EMBEDDED') ?></label>
+				</td>
+				<td style="padding-left: 10px">
+					<input type="checkbox" id="REES46_instant_search_embedded" value="1" <?php if (\Rees46\Options::getInstantSearchEmbedded()): ?>checked="checked"<? endif ?> name="instant_search_embedded" style="margin: 0"/>
 				</td>
 			</tr>
 	</div>

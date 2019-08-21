@@ -24,6 +24,9 @@ $MESS['REES_OPTIONS_RECOMMEND_COUNT']
 $MESS['REES_OPTIONS_RECOMMEND_NONAVAILABLE']
 		= 'Рекомендовать товары, которых нет в наличии';
 
+$MESS['REES_OPTIONS_INSTANT_SEARCH_EMBEDDED']
+		= 'Автоматически встраивать быстрый поиск REES46';
+
 $MESS['REES_QUICK_EXPORT']
 		= 'Быстрый запуск';
 
@@ -53,4 +56,4 @@ $MESS['REES_QUICK_EXPORT_SUCCESS']
 	   и начнем делать рекомендации вашим клиентам. Работа на этой странице закончена.';
 
 $MESS['REES_QUICK_EXPORT_FAIL']
-		= 'При отправке данных произошла проблема';
+		= 'При отправке данных возникла проблема';

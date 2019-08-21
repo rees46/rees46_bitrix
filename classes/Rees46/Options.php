@@ -34,4 +34,10 @@ class Options
 	{
 		return \COption::GetOptionInt(\mk_rees46::MODULE_ID, 'recommend_nonavailable', false) ? true : false;
 	}
+
+	public static function getInstantSearchEmbedded()
+	{
+		return \COption::GetOptionInt(\mk_rees46::MODULE_ID, 'instant_search_embedded', \mk_rees46::INSTANT_SEARCH_DEFAULT) ? true : false;
+	}
+
 }
