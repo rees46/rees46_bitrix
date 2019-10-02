@@ -25,12 +25,11 @@ IncludeModuleLangFile(__FILE__);
 
 class YmlRenderer
 {
-
 	private $data = null;
 
-	public function __construct($app, $serverName){
+    public function __construct(){
 		CModule::IncludeModule("catalog");
-		$this->data = new REEES46YML($app, $serverName);
+        $this->data = new REEES46YML();
 	}
 
 	public function render() {
@@ -45,13 +44,8 @@ class YmlRenderer
 
 }
 
-
-
-
-
 class REEES46YML{
 
-	private $application;
 	private $serverName;
 	private $iBlocks = array();
 	private $arSelect = array();
@@ -61,9 +55,9 @@ class REEES46YML{
 	public $categories = array();
 	public $offers = array();
 
-	public function __construct($app, $serverName){
-		$this->application = $app;
-		$this->serverName = $serverName;
+	public function __construct(){
+		$this->serverName = "";
+        $this->CheckHEADRequest();
 		$this->getShopInfo();
 		$this->getCurrencies();
 		$this->getIBlocks();
@@ -71,6 +65,25 @@ class REEES46YML{
 		$this->getCategories();
 		$this->getOffers();
 	}
+
+    private function CheckHEADRequest(){
+        $date = date_create();
+        $lastModifiedUnix = date_timestamp_get($date);
+        $lastModified = gmdate("D, d M Y H:i:s \G\M\T", $lastModifiedUnix);
+        $ifModifiedSince = false;
+        if (isset($_ENV['HTTP_IF_MODIFIED_SINCE'])) $ifModifiedSince = strtotime(substr($_ENV['HTTP_IF_MODIFIED_SINCE'], 5));
+        if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) $ifModifiedSince = strtotime(substr($_SERVER['HTTP_IF_MODIFIED_SINCE'], 5));
+        if ($ifModifiedSince && $_SERVER["REQUEST_METHOD"] === "HEAD") {
+            if ($ifModifiedSince >= $lastModifiedUnix) {
+                header($_SERVER['SERVER_PROTOCOL'] . ' 304 Not Modified');
+            } else {
+                header('Last-Modified: '. $lastModified);
+            }
+            exit;
+        }
+        header('Last-Modified: '. $lastModified);
+    }
+
 
 	private function getShopInfo(){
 		$url = strlen($this->serverName) > 0 ? $this->serverName : $_SERVER['HTTP_HOST'];
