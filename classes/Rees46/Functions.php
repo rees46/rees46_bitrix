@@ -23,19 +23,23 @@ class Functions
             return;
         }
 
+        $instantSearch = Options::getInstantSearchEmbedded();
+
         ?>
 
         <script>
+
+            <?php if ($instantSearch == 1): ?>
             (function(){
                 document.addEventListener('DOMContentLoaded', function(){
                     [].forEach.call(document.getElementsByTagName('form'), function(t){
-                        if (/(catalog|search)/.test(t.action.replace(document.location.origin, ''))){
+                        if (typeof t.action == "string" && /(catalog|search)/.test(t.action.replace(document.location.origin, ''))){
                             var i = [].filter.call(t.elements, function(e){
                                 return /^input$/i.test(e.tagName) && /q/.test(e.name);
                             });
                             [].forEach.call(i, function(t){
                                 if (!t.classList.contains('rees46-instant-search')) {
-                                    t.className += " rees46-instant-search";
+                                    t.classList.add("rees46-instant-search");
                                 };
                             });
                         };
@@ -50,6 +54,7 @@ class Functions
                     }, 10);
                 });
             })();
+            <?php endif; ?>
 
             (function(r){
                 window.r46=window.r46||function(){
