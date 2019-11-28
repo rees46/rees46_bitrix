@@ -228,7 +228,7 @@ class Data
                         'IBLOCK_ID' => $ar_res['IBLOCK_ID'],
                         'HIDE_NOT_AVAILABLE' => 'Y',
                         'CHECK_PERMISSIONS' => 'Y'
-                    ), array($item_id));
+                    ), array($item_id), array(), array(), array(), 0, array(), true);
 
                     foreach($offers as $offer) {
 

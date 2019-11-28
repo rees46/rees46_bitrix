@@ -28,10 +28,11 @@ class Functions
         ?>
 
         <script>
-
-            <?php if ($instantSearch == 1): ?>
             (function(){
-                document.addEventListener('DOMContentLoaded', function(){
+                if (window.REES46Initialized) return;
+                window.REES46Initialized = true;
+                <?php if ($instantSearch == 1): ?>
+                var instantSearch = function() {
                     [].forEach.call(document.getElementsByTagName('form'), function(t){
                         if (typeof t.action == "string" && /(catalog|search)/.test(t.action.replace(document.location.origin, ''))){
                             var i = [].filter.call(t.elements, function(e){
@@ -44,36 +45,56 @@ class Functions
                             });
                         };
                     });
-                    var ready = setInterval(function() {
-                        if (document.readyState === 'complete') {
-                            clearInterval(ready);
-                            if (typeof r46 != 'undefined' && document.getElementsByClassName('rees46-search-box').length == 0) {
-                                r46('search_init', '.rees46-instant-search');
-                            };
-                        };
-                    }, 10);
-                });
-            })();
-            <?php endif; ?>
+                    if (typeof r46 != "undefined") {
+                        r46("search_init", ".rees46-instant-search");
+                    };
+                };
+                if (document.readyState === 'complete') {
+                    instantSearch();
+                } else {
+                    document.addEventListener('DOMContentLoaded', function(){
+                        instantSearch();
+                    });
+                };
+                <?php endif; ?>
 
-            (function(r){
                 window.r46=window.r46||function(){
                     (r46.q=r46.q||[]).push(arguments);
                 }
-                var s=document.getElementsByTagName(r)[0],rs=document.createElement(r);
-                rs.async=1;
-                rs.src='//cdn.rees46.com/v3.js';
-                s.parentNode.insertBefore(rs,s);
-            })('script');
-            r46('init', '<?= $shop_id ?>');
-            <?php if( $USER->GetId() != null ): ?>
-                ud = {
-                        id: <?php echo $USER->GetId() ?>,
-                        email: '<?php echo $USER->GetEmail() ?>'
-                    };
-                r46('profile', 'set', ud);
-            <?php endif; ?>
-            r46('add_css', 'recommendations');
+
+                var cdn = "//cdn.rees46.com";
+                var scriptFile = cdn + "/v3.js";
+                var pre = document.createElement("link");
+                pre.setAttribute("href", cdn);
+                pre.setAttribute("rel", "dns-prefetch");
+                document.head.appendChild(pre);
+
+                pre = document.createElement("link");
+                pre.setAttribute("href", cdn);
+                pre.setAttribute("rel", "preconnect");
+                document.head.appendChild(pre);
+
+                pre = document.createElement("link");
+                pre.setAttribute("href", scriptFile);
+                pre.setAttribute("rel", "preload");
+                pre.setAttribute("as", "script");
+                document.head.appendChild(pre);
+
+                pre = document.createElement("script");
+                pre.setAttribute("src", scriptFile),
+                pre.setAttribute("async", ""),
+                document.head.appendChild(pre);
+
+
+                r46('init', '<?= $shop_id ?>');
+                <?php if( $USER->GetId() != null ): ?>
+                    var ud = {
+                            id: <?php echo $USER->GetId() ?>,
+                            email: '<?php echo $USER->GetEmail() ?>'
+                        };
+                    r46('profile', 'set', ud);
+                <?php endif; ?>
+            })();
         </script>
 
         <?php

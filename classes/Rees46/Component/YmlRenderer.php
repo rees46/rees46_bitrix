@@ -2,6 +2,10 @@
 
 namespace Rees46\Component;
 
+ini_set("max_execution_time", "3600");
+set_time_limit(3600);
+
+use CMain;
 use CSite;
 use CCatalogProduct;
 use CFile;
@@ -47,6 +51,7 @@ class YmlRenderer
 class REEES46YML{
 
 	private $serverName;
+    private $serverOrigin;
 	private $iBlocks = array();
 	private $arSelect = array();
 	private $arPTypes = array();
@@ -57,6 +62,7 @@ class REEES46YML{
 
 	public function __construct(){
 		$this->serverName = "";
+        $this->serverOrigin = $this->getServerOrigin();
         $this->CheckHEADRequest();
 		$this->getShopInfo();
 		$this->getCurrencies();
@@ -84,6 +90,11 @@ class REEES46YML{
         header('Last-Modified: '. $lastModified);
     }
 
+    private function getServerOrigin() {
+        $origin = (CMain::IsHTTPS()) ? "https://" : "http://";
+        $origin .= $_SERVER["HTTP_HOST"];
+        return $origin;
+    }
 
 	private function getShopInfo(){
 		$url = strlen($this->serverName) > 0 ? $this->serverName : $_SERVER['HTTP_HOST'];
@@ -141,11 +152,12 @@ class REEES46YML{
 			foreach ($this->iBlocks as $iBlock){
 				$filter = Array("IBLOCK_ID"=>intval($iBlock), "ACTIVE"=>"Y", "IBLOCK_ACTIVE"=>"Y", "GLOBAL_ACTIVE"=>"Y");
 				$db_acc = CIBlockSection::GetList(array("left_margin"=>"asc"), $filter);
-				while ($arAcc = $db_acc->Fetch()){
+				while ($arAcc = $db_acc->GetNext()){
 					$this->categories[] = array(
 							'id' => $arAcc["ID"],
 							'parent_id' => intval($arAcc["IBLOCK_SECTION_ID"]) > 0 ? $arAcc["IBLOCK_SECTION_ID"] : null,
-							'name' => iconv(SITE_CHARSET,"utf-8",$arAcc["NAME"])
+							'name' => iconv(SITE_CHARSET,"utf-8",$arAcc["NAME"]),
+                            'url' => $this->serverOrigin . (!empty($arAcc["~SECTION_PAGE_URL"]) ? $arAcc["~SECTION_PAGE_URL"] : (!empty($arAcc["SECTION_PAGE_URL"]) ? $arAcc["SECTION_PAGE_URL"] : ''))
 					);
 				}
 			}
@@ -559,13 +571,14 @@ class REES46YMLExport {
 	 * @param string $name category name
 	 * @param int $id "id" attribute
 	 * @param int $parentId "parentId" attribute
+	 * @param string $url "url" attribute
 	 */
-	protected function addCategory($name,$id,$parentId = null) {
+	protected function addCategory($name,$id,$parentId = null, $url = "") {
 		$engine = $this->getEngine();
 		$engine->startElement('category');
 		$engine->writeAttribute('id', $id);
-		if ($parentId)
-			$engine->writeAttribute('parentId', $parentId);
+		if ($parentId) $engine->writeAttribute('parentId', $parentId);
+        if (!empty($url)) $engine->writeAttribute('url', $url);
 		$engine->text($name);
 		$engine->fullEndElement();
 	}
@@ -627,7 +640,7 @@ class REES46YMLExport {
 
 	protected function categories(){
 		foreach($this->categories as $category) {
-			$this->addCategory($category['name'],$category['id'],$category['parent_id']);
+            $this->addCategory($category['name'],$category['id'],$category['parent_id'],$category['url']);
 		}
 	}
 
