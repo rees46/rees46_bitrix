@@ -6,7 +6,7 @@ use Rees46\Bitrix\Data;
 
 class Functions
 {
-    const BASE_URL = 'http://api.rees46.com';
+    const BASE_URL = 'https://api.rees46.com';
 
     private static $jsIncluded = false;
 
@@ -58,33 +58,9 @@ class Functions
                 };
                 <?php endif; ?>
 
-                window.r46=window.r46||function(){
-                    (r46.q=r46.q||[]).push(arguments);
-                }
-
-                var cdn = "//cdn.rees46.com";
-                var scriptFile = cdn + "/v3.js";
-                var pre = document.createElement("link");
-                pre.setAttribute("href", cdn);
-                pre.setAttribute("rel", "dns-prefetch");
-                document.head.appendChild(pre);
-
-                pre = document.createElement("link");
-                pre.setAttribute("href", cdn);
-                pre.setAttribute("rel", "preconnect");
-                document.head.appendChild(pre);
-
-                pre = document.createElement("link");
-                pre.setAttribute("href", scriptFile);
-                pre.setAttribute("rel", "preload");
-                pre.setAttribute("as", "script");
-                document.head.appendChild(pre);
-
-                pre = document.createElement("script");
-                pre.setAttribute("src", scriptFile),
-                pre.setAttribute("async", ""),
-                document.head.appendChild(pre);
-
+                window.r46=window.r46||function(){(window.r46.q=window.r46.q||[]).push(arguments)};
+                var c="//cdn.rees46.com",v="/v3.js",s={link:[{href:c,rel:"dns-prefetch"},{href:c,rel:"preconnect"},{href:c+v,rel:"preload",as:"script"}],script:[{src:c+v,async:""}]};
+                Object.keys(s).forEach(function(c){s[c].forEach(function(d){var e=document.createElement(c),a;for(a in d)e.setAttribute(a,d[a]);document.head.appendChild(e)})});
 
                 r46('init', '<?= $shop_id ?>');
                 <?php if( $USER->GetId() != null ): ?>

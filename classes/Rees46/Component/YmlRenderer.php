@@ -97,10 +97,7 @@ class REEES46YML{
     }
 
 	private function getShopInfo(){
-		$url = strlen($this->serverName) > 0 ? $this->serverName : $_SERVER['HTTP_HOST'];
-		if(!preg_match('#^http(s)?://#', $url)){
-			$url = "http://" . $url;
-		}
+		$url = $this->serverOrigin;
 		$this->shopInfo = array(
 				'name'      =>iconv(SITE_CHARSET,"utf-8",COption::GetOptionString("eshop", "siteName", "")),
 				'company'   =>iconv(SITE_CHARSET,"utf-8",COption::GetOptionString("eshop", "shopOfName", "")),
@@ -169,7 +166,7 @@ class REEES46YML{
 		if(count($this->categories) > 0){
 			$arSiteServers = array();
 			foreach ($this->categories as $category) {
-				$filter = Array("SECTION_ID"=>intval($category['id']), "ACTIVE_DATE"=>"Y", "ACTIVE"=>"Y");
+				$filter = Array("SECTION_ID"=>intval($category['id']), "ACTIVE_DATE"=>"Y", "ACTIVE"=>"Y", "CATALOG_AVAILABLE"=>"Y");
 				$res = CIBlockElement::GetList(array(), $filter, false, false, $this->arSelect);
 
 				$total_sum=0;
@@ -188,9 +185,10 @@ class REEES46YML{
 						$firstOffer = true;
 						$offerColors = array();
 						if(is_array($arInfo)){
-							$rsOffers = CIBlockElement::GetList(array(),array('IBLOCK_ID' => $arInfo['IBLOCK_ID'], 'PROPERTY_'.$arInfo['SKU_PROPERTY_ID'] => $arAcc['ID']));
+							$rsOffers = CIBlockElement::GetList(array(),array('IBLOCK_ID' => $arInfo['IBLOCK_ID'], 'PROPERTY_'.$arInfo['SKU_PROPERTY_ID'] => $arAcc['ID'], "CATALOG_AVAILABLE"=>"Y"));
 							while ($arOffer = $rsOffers->GetNext()) {
-								$offer = array('id'=>$arOffer["ID"], 'group_id'=>$arAcc['ID'], 'data'=>array(), 'params'=>array());
+                                if (!$firstOffer) break;
+								$offer = array('id'=>$arAcc['ID'], 'group_id'=>null, 'data'=>array(), 'params'=>array());
 								$price = $this->getPrice($arOffer["ID"]);
 								if($price === null) continue;
 								if($price['DISCOUNT_PRICE'] > 0 && $price['DISCOUNT_PRICE'] < $price['PRICE']){
@@ -212,7 +210,7 @@ class REEES46YML{
 										$offer['data']['categoryId'][] = $ar_group['ID'];
 								}
 								$offer['data']['url'] = $this->getUrl($arOffer, $serverName);
-								$offer['data']['name'] = iconv(SITE_CHARSET,"utf-8",$arOffer["NAME"]);
+								$offer['data']['name'] = iconv(SITE_CHARSET,"utf-8", !empty($arAcc["NAME"]) ? $arAcc["NAME"] : $arOffer["NAME"]);
 								$description = strip_tags($arOffer["DETAIL_TEXT"]);
 								if(strlen($description) == 0){
 									$description = strip_tags($arOffer["PREVIEW_TEXT"]);
@@ -389,9 +387,9 @@ class REEES46YML{
 			$arPictInfo = CFile::GetFileArray($pictNo);
 			if (is_array($arPictInfo)){
 				if(substr($arPictInfo["SRC"], 0, 1) == "/")
-					$strFile = "http://".$serverName.implode("/", array_map("rawurlencode", explode("/", $arPictInfo["SRC"])));
+					$strFile = ((CMain::IsHTTPS()) ? "https://" : "http://") . $serverName.implode("/", array_map("rawurlencode", explode("/", $arPictInfo["SRC"])));
 				elseif(preg_match("/^(http|https):\\/\\/(.*?)\\/(.*)\$/", $arPictInfo["SRC"], $match))
-					$strFile = "http://".$match[2].'/'.implode("/", array_map("rawurlencode", explode("/", $match[3])));
+					$strFile = ((CMain::IsHTTPS()) ? "https://" : "http://") . $match[2].'/'.implode("/", array_map("rawurlencode", explode("/", $match[3])));
 				else
 					$strFile = $arPictInfo["SRC"];
 			}
@@ -406,7 +404,7 @@ class REEES46YML{
 		}else{
 			$arAcc['DETAIL_PAGE_URL'] = str_replace(' ', '%20', $arAcc['DETAIL_PAGE_URL']);
 		}
-		$url = "http://" . $serverName . $arAcc['DETAIL_PAGE_URL'];
+		$url = ((CMain::IsHTTPS()) ? "https://" : "http://") . $serverName . $arAcc['DETAIL_PAGE_URL'];
 		return $url;
 	}
 

@@ -28,11 +28,6 @@ IncludeModuleLangFile(__FILE__);
 			),
 			array(
 					'DIV'   => 'edit3',
-					'TAB'   => GetMessage('REES_OPTIONS_DISPLAY'),
-					'TITLE' => GetMessage('REES_OPTIONS_DISPLAY'),
-			),
-			array(
-					'DIV'   => 'edit4',
 					'TAB'   => GetMessage('REES_QUICK_EXPORT'),
 					'TITLE' => GetMessage('REES_QUICK_EXPORT'),
 			),
@@ -53,32 +48,9 @@ IncludeModuleLangFile(__FILE__);
 		<input type="text" id="REES46_shopsecret" value="<?= \Rees46\Options::getShopSecret() ?>" name="shop_secret" style="width: 300px"/>
 	</div>
 
-	<div style="margin-top: 60px;">
-		<table>
-			<tr style="line-height: 30px;">
-				<td style="padding-left: 0">
-					<label for="REES46_recommend_count"><?= GetMessage('REES_OPTIONS_RECOMMEND_COUNT') ?></label>
-				</td>
-				<td style="padding-left: 10px">
-					<input type="text" id="REES46_recommend_count" value="<?= \Rees46\Options::getRecommendCount() ?>" name="recommend_count" style="width: 50px"/>
-				</td>
-			</tr>
-			<tr style="line-height: 30px;">
-				<td style="padding-left: 0">
-					<label for="REES46_recommend_nonavailable"><?= GetMessage('REES_OPTIONS_RECOMMEND_NONAVAILABLE') ?></label>
-				</td>
-				<td style="padding-left: 10px">
-					<input type="checkbox" id="REES46_recommend_nonavailable" value="1" <?php if (\Rees46\Options::getRecommendNonAvailable()): ?>checked="checked"<? endif ?> name="recommend_nonavailable" style="margin: 0"/>
-				</td>
-			</tr>
-			<tr style="line-height: 30px;">
-				<td style="padding-left: 0">
-					<label for="REES46_instant_search_embedded"><?= GetMessage('REES_OPTIONS_INSTANT_SEARCH_EMBEDDED') ?></label>
-				</td>
-				<td style="padding-left: 10px">
-					<input type="checkbox" id="REES46_instant_search_embedded" value="1" <?php if (\Rees46\Options::getInstantSearchEmbedded()): ?>checked="checked"<? endif ?> name="instant_search_embedded" style="margin: 0"/>
-				</td>
-			</tr>
+	<div style="margin-top: 20px;">
+        <label for="REES46_instant_search_embedded"><?= GetMessage('REES_OPTIONS_INSTANT_SEARCH_EMBEDDED') ?></label>
+        <input type="checkbox" id="REES46_instant_search_embedded" value="1" <?php if (\Rees46\Options::getInstantSearchEmbedded()): ?>checked="checked"<? endif ?> name="instant_search_embedded" style="margin: 0 0 0 5px"/>
 	</div>
 
 	<?php $tabControl->BeginNextTab(); ?>
@@ -86,17 +58,7 @@ IncludeModuleLangFile(__FILE__);
 	<div>
 		<label for="REES46_img_width"><?= GetMessage('REES_OPTIONS_COPY_AND_PASTE_YML') ?></label>
 		<br/>
-		<input type="text" id="REES46_yml_file_url"  value="http://<?= $_SERVER['HTTP_HOST'] . SITE_DIR ?>/include/rees46-handler.php?action=yml" name="yml_file_url" readonly="readonly" style="width: 100%;"/>
-	</div>
-
-	<?php $tabControl->BeginNextTab(); ?>
-
-	<div>
-		<label for="REES46_img_width"><?= GetMessage('REES_OPTIONS_IMAGE_SIZE') ?></label>
-		<br/>
-		<input type="text" id="REES46_img_width"  value="<?= \Rees46\Options::getImageWidth() ?>" name="image_width" style="width: 50px"/>
-		<label for="REES46_img_height">x</label>
-		<input type="text" id="REES46_img_height" value="<?= \Rees46\Options::getImageHeight() ?>" name="image_height" style="width: 50px"/>
+		<input type="text" id="REES46_yml_file_url"  value="<?= $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['SERVER_NAME'] . SITE_DIR ?>/include/rees46-handler.php?action=yml" name="yml_file_url" readonly="readonly" style="width: 100%;"/>
 	</div>
 
 	<?php $tabControl->BeginNextTab(); ?>

@@ -46,6 +46,7 @@ class mk_rees46 extends CModule
 		$result = true;
 		$result = $result && CopyDirFiles(__DIR__ .'/components/rees46', $_SERVER['DOCUMENT_ROOT'] .'/bitrix/components/rees46', true, true);
 		$result = $result && CopyDirFiles(__DIR__ .'/include', $_SERVER['DOCUMENT_ROOT'] .'/include', true, true);
+
 		return $result;
 	}
 	public function UnInstallFiles()

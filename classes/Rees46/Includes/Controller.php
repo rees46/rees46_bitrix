@@ -1,8 +1,6 @@
 <?php
 
 namespace Rees46\Includes;
-
-use Rees46\Component\RecommendRenderer;
 use Rees46\Component\YmlRenderer;
 
 class Controller
@@ -12,7 +10,7 @@ class Controller
 		switch($_REQUEST['action']) {
 
 			case 'recommend':
-				RecommendRenderer::run();
+                // Removed outdated recommenders, but kept the action so as not to break the site
 				break;
 
 			case 'yml':

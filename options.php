@@ -12,22 +12,7 @@ if ($REQUEST_METHOD === 'POST' && (!empty($save) || !empty($apply)) && check_bit
 	if (isset($_REQUEST['shop_secret'])) {
 		COption::SetOptionString(mk_rees46::MODULE_ID, 'shop_secret', trim($_REQUEST['shop_secret']));
 	}
-	if (isset($_REQUEST['css'])) {
-		COption::SetOptionString(mk_rees46::MODULE_ID, 'css', trim($_REQUEST['css']));
-	}
-	if (intval($_REQUEST['image_width']) > 0) {
-		COption::SetOptionInt(mk_rees46::MODULE_ID, 'image_width', $_REQUEST['image_width']);
-	}
-	if (intval($_REQUEST['image_height']) > 0) {
-		COption::SetOptionInt(mk_rees46::MODULE_ID, 'image_height', $_REQUEST['image_height']);
-	}
-	if (intval($_REQUEST['recommend_count']) > 0) {
-		COption::SetOptionInt(mk_rees46::MODULE_ID, 'recommend_count', $_REQUEST['recommend_count']);
-	}
-
-	COption::SetOptionInt(mk_rees46::MODULE_ID, 'recommend_nonavailable', $_REQUEST['recommend_nonavailable'] ? 1 : 0);
     COption::SetOptionInt(mk_rees46::MODULE_ID, 'instant_search_embedded', $_REQUEST['instant_search_embedded'] ? 1 : 0);
-
 }
 
 $export_state = \Rees46\Service\Export::STATUS_NOT_PERFORMED;

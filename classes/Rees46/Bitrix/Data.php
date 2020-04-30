@@ -165,11 +165,6 @@ class Data
             $return['stock'] = ($quantity && $has_price) ? true : false;
         }
 
-        if (Options::getRecommendNonAvailable()) {
-            $return['stock'] = true;
-        }
-
-
         if ($full_data) {
             // Get categories
             $categories = array();

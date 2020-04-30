@@ -9,26 +9,14 @@ $MESS['REES_OPTIONS_SHOP_ID']
 $MESS['REES_OPTIONS_SHOP_SECRET']
 		= 'Секретный ключ';
 
-$MESS['REES_OPTIONS_YML']= 'Расширенный YML с товарами';
-$MESS['REES_OPTIONS_COPY_AND_PASTE_YML']= 'Скопируйте этот URL и вставьте в поле YML в настройках магазина в личном кабинете на сайте REES46.com';
-
-$MESS['REES_OPTIONS_DISPLAY']
-		= 'Внешний вид';
-
-$MESS['REES_OPTIONS_IMAGE_SIZE']
-		= 'Размер изображений в рекомендациях';
-
-$MESS['REES_OPTIONS_RECOMMEND_COUNT']
-		= 'Количество товаров для рекомендации';
-
-$MESS['REES_OPTIONS_RECOMMEND_NONAVAILABLE']
-		= 'Рекомендовать товары, которых нет в наличии';
+$MESS['REES_OPTIONS_YML']= 'Товарная выгрузка REES46';
+$MESS['REES_OPTIONS_COPY_AND_PASTE_YML']= 'Скопируйте этот URL и вставьте в поле YML в настройках магазина в личном кабинете REES46';
 
 $MESS['REES_OPTIONS_INSTANT_SEARCH_EMBEDDED']
 		= 'Автоматически встраивать быстрый поиск REES46';
 
 $MESS['REES_QUICK_EXPORT']
-		= 'Быстрый запуск';
+		= 'Выгрузка истории заказов';
 
 $MESS['REES_QUICK_EXPORT_DESC']
 		= 'Для того, чтобы ускорить процесс появления блоков рекомендаций,
