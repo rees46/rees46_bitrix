@@ -6,7 +6,7 @@ use Rees46\Bitrix\Data;
 
 class Functions
 {
-    const BASE_URL = 'https://api.rees46.com';
+    const BASE_URL = 'https://api.rees46.ru';
 
     private static $jsIncluded = false;
 
@@ -59,7 +59,7 @@ class Functions
                 <?php endif; ?>
 
                 window.r46=window.r46||function(){(window.r46.q=window.r46.q||[]).push(arguments)};
-                var c="//cdn.rees46.com",v="/v3.js",s={link:[{href:c,rel:"dns-prefetch"},{href:c,rel:"preconnect"},{href:c+v,rel:"preload",as:"script"}],script:[{src:c+v,async:""}]};
+                var c="//cdn.rees46.ru",v="/v3.js",s={link:[{href:c,rel:"dns-prefetch"},{href:c,rel:"preconnect"},{href:c+v,rel:"preload",as:"script"}],script:[{src:c+v,async:""}]};
                 Object.keys(s).forEach(function(c){s[c].forEach(function(d){var e=document.createElement(c),a;for(a in d)e.setAttribute(a,d[a]);document.head.appendChild(e)})});
 
                 r46('init', '<?= $shop_id ?>');
