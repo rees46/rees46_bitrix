@@ -21,7 +21,7 @@ class mk_rees46 extends CModule
 		$this->MODULE_VERSION       = $arModuleVersion['VERSION'];
 		$this->MODULE_VERSION_DATE  = $arModuleVersion['VERSION_DATE'];
 		$this->PARTNER_NAME         = "REES46";
-		$this->PARTNER_URI          = "http://rees46.com/";
+		$this->PARTNER_URI          = "http://rees46.ru/";
 		$this->MODULE_NAME          = GetMessage('REES_INSTALL_MODULE_NAME');
 		$this->MODULE_DESCRIPTION   = GetMessage('REES_INSTALL_MODULE_DESC');
 	}
