@@ -43,7 +43,9 @@ class Data
                 "ID",
                 "DATE_INSERT",
                 "USER_ID", 
-                "EMAIL" => 'USER.EMAIL'
+                "EMAIL" => 'USER.EMAIL',
+                "PRICE",
+                "STATUS_ID"
             ),
             'order' => array(
                 "ID" => 'ASC'
@@ -160,20 +162,6 @@ class Data
                 }
             }
         }   
-        if (isset($item['QUANTITY'])) {
-            $quantity = $item['QUANTITY'] > 0;
-            $return['stock'] = ($quantity && $has_price) ? true : false;
-        }
-
-        if ($full_data) {
-            // Get categories
-            $categories = array();
-            $item_categories = CIBlockElement::GetElementGroups($id, true);
-            while($category = $item_categories->Fetch()) {
-                $categories[] = $category['ID'];
-            }
-            $return['categories'] = $categories;
-        }
 
         if ($more && $full_data) {
             $libMain = new \CMain;
