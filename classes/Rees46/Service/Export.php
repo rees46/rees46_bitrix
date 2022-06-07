@@ -49,14 +49,12 @@ class Export
 			$order = array(
 				'id' => $dbOrder['ID'],
 				'date' => strtotime($dbOrder['DATE_INSERT']),
+        'value' => array('total' => $dbOrder['PRICE']),
+        'status' => $dbOrder['STATUS_ID']
 			);
 
-			if (!empty($dbOrder['USER_ID'])) {
-				$order['user_id'] = $dbOrder['USER_ID'];
-			}
-
-			if (!empty($dbOrder['EMAIL'])) {
-				$order['user_email'] = $dbOrder['EMAIL'];
+      if (!empty($dbOrder['EMAIL'])) {
+				$order['email'] = $dbOrder['EMAIL'];
 			}
 
 			$dbItems = Data::getOrderItems($dbOrder['ID']);
@@ -65,7 +63,7 @@ class Export
 
 			foreach ($dbItems as $dbItem) {
 				$item = $dbItem['DATA'];
-				$item['amount'] = $dbItem['QUANTITY'];
+				$item['quantity'] = $dbItem['QUANTITY'];
 				$items []= $item;
 			}
 
@@ -82,7 +80,7 @@ class Export
 		$pest = new \PestJSON(Functions::BASE_URL);
 
 		try {
-			$pest->post('/import/orders.json', $data);
+			$pest->post('/sync/orders', $data);
 		} catch (\Pest_Json_Decode $e) {
 			// can be safely ignored
 		}
