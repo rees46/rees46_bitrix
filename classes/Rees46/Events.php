@@ -2,6 +2,8 @@
 	
 	namespace Rees46;
 	
+	use Bitrix\Main\Event;
+	use CUser;
 	use Rees46\Bitrix\Data;
 	
 	class Events
@@ -14,8 +16,7 @@
 		 */
 		public static function view_event($item_id)
 		{
-			$item = Data::getItemArray($item_id, false, false);
-			Functions::jsPushData('view', $item);
+			Functions::jsPushData('view', $item_id);
 		}
 		
 		/**
@@ -31,29 +32,89 @@
 			Functions::jsPushData('category', $category_id);
 		}
 		
-		//add order
-		public static function OnSaleOrderSavedHandler(\Bitrix\Main\Event $event)
-		{
-			$parameters = $event->getParameters();
-			$order = $parameters['ENTITY'];
-			$order_id = $order->getId();
-			$order_price = (float)($order->getPrice());
-			$products = [];
-			foreach (Data::getOrderItems($order_id) as $item) {
-				$products[] = (object)([
-					'id' => $item['PRODUCT_ID'],
-					'amount' => (int)$item['QUANTITY'],
-					'price' => (float)$item['PRICE']
-				]);
-			}
-			$order_data = (object)(["products" => $products, "order_price" => $order_price, "order" => (is_string($order_id) ? $order_id : json_encode($order_id))]);
-			Functions::cookiePushData('purchase', $order_data);
-		}
-		
-		// basket
-		public static function OnSaleBasketItemMy(\Bitrix\Main\Event $event)
+		/**
+		 * save to cookie cart data
+		 *
+		 * @param Event $event
+		 * @return void
+		 */
+		public static function OnSaleBasketItemMy(Event $event)
 		{
 			Functions::cookiePushData('cart', Data::getCurrentCart());
+		}
+		
+		/**
+		 * send order data
+		 *
+		 * @param Event $event
+		 * @return void
+		 */
+		public static function OnSaleOrderSavedHandler(Event $event)
+		{
+			$parameters = $event->getParameters();
+			$order      = $parameters['ENTITY'];
+			$is_new     = $parameters['IS_NEW'];
+			
+			$user_id     = $order->getUserId();
+			$user_info   = CUser::GetByID($user_id)->fetch();
+			$user_groups = CUser::GetUserGroup($user_id);
+			$available_groups = is_array(unserialize(Options::getUserGroups()[0])) ? unserialize(Options::getUserGroups()[0]) : [];
+			$user_data   = [
+				"email"       => $user_info['EMAIL'],
+				"phone"       => $user_info['PERSONAL_PHONE'],
+			];
+			
+			$order_id    = $order->getId();
+			$products    = [];
+			foreach (Data::getOrderItems($order_id) as $item) {
+				$products[] = (object)([
+					'id'        => $item['PRODUCT_ID'],
+					'quantity'  => $item['QUANTITY'],
+					'price'     => $item['PRICE']
+				]);
+			}
+			$order_info  = $order->getFieldValues();
+			$order_data  = [
+				"shop_id"     => Options::getShopID(),
+				"shop_secret" => Options::getShopSecret(),
+			];
+			
+			if ($is_new)
+			{
+				if ( empty(array_intersect($user_groups, $available_groups)) )
+				{
+					$order_data["event"]        = "purchase";
+					$order_data["did"]          = $_COOKIE["rees46_device_id"];
+					$order_data["seance"]       = $_COOKIE["rees46_session_code"];
+					$order_data["segment"]      = $_COOKIE["rees46_segment"];
+					$order_data["source"]       = $_COOKIE["rees46_source"];
+					$order_data["stream"]       = Options::getStream();
+					$order_data["order_id"]     = $order_id;
+					$order_data["order_price"]  = $order_info["PRICE"];
+					$order_data["items"]        = $products;
+					
+					Data::trackPurchase($order_data);
+				}
+			}
+			elseif ( ($order->getField('DATE_INSERT')->getTimestamp() + 5) < time() )
+			{
+				$order_data["orders"] = [
+					[
+						"id"      => $order_id,
+						"status"  => $order_info["STATUS_ID"],
+						"date"    => time(),
+						"email"   => $user_data["email"],
+						"phone"   => $user_data["phone"],
+						"value"   => [
+							"total"     => $order_info["PRICE"],
+							"delivery"  => $order_info["PRICE_DELIVERY"],
+							"discount"  => $order_info["DISCOUNT_VALUE"]
+						],
+						"items"   => $products
+					]
+				];
+				Data::syncOrders($order_data);
+			}
 		}
 		
 		/**
