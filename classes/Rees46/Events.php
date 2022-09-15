@@ -94,6 +94,23 @@
 					$order_data["items"]        = $products;
 					
 					Data::trackPurchase($order_data);
+				} else {
+					$order_data["orders"] = [
+						[
+							"id"      => $order_id,
+							"status"  => $order_info["STATUS_ID"],
+							"date"    => time(),
+							"email"   => $user_data["email"],
+							"phone"   => $user_data["phone"],
+							"value"   => [
+								"total"     => $order_info["PRICE"],
+								"delivery"  => $order_info["PRICE_DELIVERY"],
+								"discount"  => $order_info["DISCOUNT_VALUE"]
+							],
+							"items"   => $products
+						]
+					];
+					Data::syncOrders($order_data);
 				}
 			}
 			elseif ( ($order->getField('DATE_INSERT')->getTimestamp() + 5) < time() )
