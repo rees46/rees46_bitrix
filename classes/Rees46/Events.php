@@ -51,6 +51,9 @@
 		 */
 		public static function OnSaleOrderSavedHandler(Event $event)
 		{
+			// Очищаем корзину
+			Functions::cookiePushData('cart', []);
+			
 			$parameters = $event->getParameters();
 			$order      = $parameters['ENTITY'];
 			$is_new     = $parameters['IS_NEW'];
