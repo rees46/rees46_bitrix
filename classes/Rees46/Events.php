@@ -92,6 +92,8 @@
 					$order_data["segment"]      = $_COOKIE["rees46_segment"];
 					$order_data["source"]       = $_COOKIE["rees46_source"];
 					$order_data["stream"]       = Options::getStream();
+					$order_data["email"]        = $user_data['email'];
+					$order_data["phone"]        = $user_data['phone'];
 					$order_data["order_id"]     = $order_id;
 					$order_data["order_price"]  = $order_info["PRICE"];
 					$order_data["items"]        = $products;
