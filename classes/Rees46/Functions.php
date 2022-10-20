@@ -113,7 +113,7 @@
 					
 					<?php if ( CurrentUser::get()->getId() != null ): ?>
 					let ud = {
-						id:            <?= $currentUserData['ID'] ?>,
+						id:           '<?= $currentUserData['ID'] ?>',
 						email:        '<?= $currentUserData['EMAIL'] ?>',
 						first_name:   '<?= $currentUserData['NAME'] ?>',
 						middle_name:  '<?= $currentUserData['SECOND_NAME'] ?>',
