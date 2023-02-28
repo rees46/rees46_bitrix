@@ -49,11 +49,11 @@ class Export
 			$order = array(
 				'id' => $dbOrder['ID'],
 				'date' => strtotime($dbOrder['DATE_INSERT']),
-        'value' => array('total' => $dbOrder['PRICE']),
-        'status' => $dbOrder['STATUS_ID']
+                'value' => array('total' => $dbOrder['PRICE']),
+                'status' => $dbOrder['STATUS_ID']
 			);
 
-      if (!empty($dbOrder['EMAIL'])) {
+            if (!empty($dbOrder['EMAIL'])) {
 				$order['email'] = $dbOrder['EMAIL'];
 			}
 
@@ -62,14 +62,16 @@ class Export
 			$items = array();
 
 			foreach ($dbItems as $dbItem) {
-				$item = $dbItem['DATA'];
+				$item['id']       = $dbItem['PRODUCT_ID'];
 				$item['quantity'] = $dbItem['QUANTITY'];
-				$items []= $item;
+				$item['price']    = $dbItem['PRICE'];
+				
+				$items[] = $item;
 			}
 
 			$order['items'] = $items;
 
-			$orders []= $order;
+			$orders[] = $order;
 		}
 
 		return $orders;
