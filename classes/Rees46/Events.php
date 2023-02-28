@@ -115,7 +115,7 @@
 							"items"   => $products
 						]
 					];
-					Data::syncOrders($order_data);
+					if ($order_info["PRICE"]) Data::syncOrders($order_data);
 				}
 			}
 			elseif ( ($order->getField('DATE_INSERT')->getTimestamp() + 5) < time() )

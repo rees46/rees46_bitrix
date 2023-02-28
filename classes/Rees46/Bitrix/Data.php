@@ -16,6 +16,7 @@
 	use CIBlockElement;
 	use CIBlockPriceTools;
 	use CSaleBasket;
+	use Bitrix\Sale;
 	use Bitrix\Sale\Order;
 	
 	\CModule::IncludeModule('iblock');
@@ -350,73 +351,29 @@
 		
 		public static function getCurrentCart()
 		{
-			$arBasketItems = $arID = [];
-			$dbBasketItems = CSaleBasket::GetList(
-				[
-					"NAME"  => "ASC",
-					"ID"    => "ASC"
-				],
-				[
-					"FUSER_ID"  => CSaleBasket::GetBasketUserID(),
-					"LID"       => SITE_ID,
-					"ORDER_ID"  => "NULL"
-				],
-				false,
-				false,
-				["ID", "CALLBACK_FUNC", "MODULE", "PRODUCT_ID", "QUANTITY", "PRODUCT_PROVIDER_CLASS"]
-			);
+			$basket = Sale\Basket::loadItemsForFUser(Sale\Fuser::getId(), \Bitrix\Main\Context::getCurrent()->getSite());
+			$basketItems = [];
 			
-			while ($arItems = $dbBasketItems->Fetch()) {
-				if (strlen($arItems["CALLBACK_FUNC"]) > 0) {
-					CSaleBasket::UpdatePrice(
-						$arItems["ID"],
-						$arItems["CALLBACK_FUNC"],
-						$arItems["MODULE"],
-						$arItems["PRODUCT_ID"],
-						$arItems["QUANTITY"],
-						"N",
-						$arItems["PRODUCT_PROVIDER_CLASS"]
-					);
-					$arItems = CSaleBasket::GetByID($arItems["ID"]);
+			foreach ($basket as $basketItem) {
+				$product_info = CCatalogSku::GetProductInfo($basketItem->getField('PRODUCT_ID'));
+				if (is_array($product_info))
+				{
+					$product_id = intval($product_info['ID']);
 				}
-				$arID[] = $arItems["ID"];
+				else
+				{
+					$product_id = intval($basketItem->getField('PRODUCT_ID'));
+				}
+				
+				$quantity = $basketItem->getQuantity();
+				
+				$basketItems[] = [
+					'id'        => $product_id,
+					'quantity'  => $quantity
+				];
 			}
 			
-			if (!empty($arID)) {
-				$dbBasketItems = CSaleBasket::GetList(
-					[
-						"NAME" => "ASC",
-						"ID"   => "ASC"
-					],
-					[
-						"ID"        => $arID,
-						"ORDER_ID"  => "NULL"
-					],
-					false,
-					false,
-					["ID", "PRODUCT_ID", "QUANTITY"]
-				);
-				while ($arItems = $dbBasketItems->Fetch()) {
-					$mxResult = CCatalogSku::GetProductInfo($arItems['PRODUCT_ID']);
-					if (is_array($mxResult)) {
-						$product_id = intval($mxResult['ID']);
-					} else {
-						$product_id = intval($arItems['PRODUCT_ID']);
-					}
-					
-					$variant_key = array_search($product_id, array_column($arBasketItems, 'id'));
-					
-					if ($variant_key !== false) {
-						$arBasketItems[$variant_key]['quantity'] += $arItems['QUANTITY'];
-					} else {
-						$arBasketItems[] = [
-							'id'        => $product_id,
-							'quantity'  => $arItems['QUANTITY']
-						];
-					}
-				}
-			}
-			return $arBasketItems;
+			return $basketItems;
 		}
 		
 		/**
