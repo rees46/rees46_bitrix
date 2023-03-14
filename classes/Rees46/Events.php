@@ -104,7 +104,7 @@
 						[
 							"id"      => $order_id,
 							"status"  => $order_info["STATUS_ID"],
-							"date"    => time(),
+							"date"    => $order_info["DATE_INSERT"]->getTimestamp(),
 							"email"   => $user_data["email"],
 							"phone"   => $user_data["phone"],
 							"value"   => [
@@ -124,7 +124,7 @@
 					[
 						"id"      => $order_id,
 						"status"  => $order_info["STATUS_ID"],
-						"date"    => time(),
+						"date"    => $order_info["DATE_INSERT"]->getTimestamp(),
 						"email"   => $user_data["email"],
 						"phone"   => $user_data["phone"],
 						"value"   => [
