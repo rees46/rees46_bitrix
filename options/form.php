@@ -91,45 +91,48 @@
 				while ($list_prop_arr = $list_properties_arr->fetch()):
 					$properties[$block['name']][$block['id'] . '_' .$list_prop_arr['ID']] = $list_prop_arr['NAME'];
 				endwhile;
+				
+				
+				// Строковые параметры
+				$params_string_properties_arr = CIBlock::GetProperties(
+						$block['id'],
+						[],
+						[
+								'ACTIVE'        => 'Y',
+								'PROPERTY_TYPE' => 'S'
+						]
+				);
+				while ($param_string_prop_arr = $params_string_properties_arr->fetch()):
+					$params_properties[$block['name']][$block['id'] . '_' .$param_string_prop_arr['ID']] = $param_string_prop_arr['NAME'];
+				endwhile;
+				
+				// Числовые параметры
+				$params_int_properties_arr = CIBlock::GetProperties(
+						$block['id'],
+						[],
+						[
+								'ACTIVE'        => 'Y',
+								'PROPERTY_TYPE' => 'N'
+						]
+				);
+				while ($param_int_prop_arr = $params_int_properties_arr->fetch()):
+					$params_properties[$block['name']][$block['id'] . '_' .$param_int_prop_arr['ID']] = $param_int_prop_arr['NAME'];
+				endwhile;
+				
+				// Параметры типа список
+				$params_list_properties_arr = CIBlock::GetProperties(
+						$block['id'],
+						[],
+						[
+								'ACTIVE'        => 'Y',
+								'PROPERTY_TYPE' => 'L'
+						]
+				);
+				while ($param_list_prop_arr = $params_list_properties_arr->fetch()):
+					$params_properties[$block['name']][$block['id'] . '_' .$param_list_prop_arr['ID']] = $param_list_prop_arr['NAME'];
+				endwhile;
 			}
 		endforeach;
-		
-		// Строковые параметры
-		$params_string_properties_arr = CIBlock::GetProperties(
-				$selected_offer_info_block,
-				[],
-				[
-						'ACTIVE'        => 'Y',
-						'PROPERTY_TYPE' => 'S'
-				]
-		);
-		while ($param_string_prop_arr = $params_string_properties_arr->fetch()):
-			$params_properties[$param_string_prop_arr['ID']] = $param_string_prop_arr['NAME'];
-		endwhile;
-		// Числовые параметры
-		$params_int_properties_arr = CIBlock::GetProperties(
-				$selected_offer_info_block,
-				[],
-				[
-						'ACTIVE'        => 'Y',
-						'PROPERTY_TYPE' => 'N'
-				]
-		);
-		while ($param_int_prop_arr = $params_int_properties_arr->fetch()):
-			$params_properties[$param_int_prop_arr['ID']] = $param_int_prop_arr['NAME'];
-		endwhile;
-		// Параметры типа список
-		$params_list_properties_arr = CIBlock::GetProperties(
-				$selected_offer_info_block,
-				[],
-				[
-						'ACTIVE'        => 'Y',
-						'PROPERTY_TYPE' => 'L'
-				]
-		);
-		while ($param_list_prop_arr = $params_list_properties_arr->fetch()):
-			$params_properties[$param_list_prop_arr['ID']] = $param_list_prop_arr['NAME'];
-		endwhile;
 	endif;
 	$params_properties_selected = (Options::getProperties()[0]) ? unserialize(Options::getProperties()[0]) : [];
 ?>
@@ -481,16 +484,19 @@
 			    style="width: 40%"><?= GetMessage('REES_OPTIONS_YML_EXTENDED_PROPERTIES') ?></td>
 			<td class="adm-detail-content-cell-r"
 			    style="width: 60%">
-				<?php foreach ($params_properties as $key => $property): ?>
-					<label>
-						<input type="checkbox" id="user_group_<?=$key;?>"
-						       value="<?=$key;?>"
-								<?php if (in_array($key, $params_properties_selected)): ?>
-									checked="checked"
-								<?php endif; ?>
-								   name="properties[]" style="margin: 0 5px 0 0"/>
-						<span><?=$property;?></span>
-					</label><br>
+				<?php foreach ($params_properties as $key => $property_arr): ?>
+					<b><?=$key;?></b><br>
+					<?php foreach ($property_arr as $key => $property): ?>
+						<label>
+							<input type="checkbox" id="user_group_<?=$key;?>"
+							       value="<?=$key;?>"
+									<?php if (in_array($key, $params_properties_selected)): ?>
+										checked="checked"
+									<?php endif; ?>
+									   name="properties[]" style="margin: 0 5px 0 0"/>
+							<span><?=$property;?></span>
+						</label><br>
+					<?php endforeach; ?>
 				<?php endforeach; ?>
 			</td>
 		</tr>

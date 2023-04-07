@@ -52,11 +52,11 @@
 	
 	class REEES46YMLExtended
 	{
-		private string $serverName   = '';
-		private string $serverOrigin = '';
-		private ?string $info_block   = null;
-		private array $arSelect     = [];
-		private array $arPTypes     = [];
+		private $serverName   = '';
+		private $serverOrigin = '';
+		private $info_block   = null;
+		private $arSelect     = [];
+		private $arPTypes     = [];
 		
 		public array $shopInfo   = [];
 		public array $currencies = [];
@@ -99,7 +99,7 @@
 			header('Last-Modified: ' . $lastModified);
 		}
 		
-		private function getServerOrigin(): string
+		private function getServerOrigin()
 		{
 			$origin = (CMain::isHttps()) ? 'https://' : 'http://';
 			$origin .= $_SERVER['HTTP_HOST'];
@@ -195,6 +195,9 @@
 			if ( count($this->categories) > 0 ):
 				$arSiteServers = [];
 				
+				// Собираем только уникальные товары
+				$unique_ids = [];
+				
 				foreach ( $this->categories as $category ):
 					$filter = [
 						'SECTION_ID'        => (int) $category['id'],
@@ -229,6 +232,8 @@
 								);
 								
 								while ($arOffer = $productOffers->GetNext()):
+									if (in_array($arOffer['ID'], $unique_ids)) continue;
+									
 									$offer = [
 										'id'        => $arOffer['ID'],
 										'group_id'  => $arProduct['ID'],
@@ -265,7 +270,7 @@
 									$offer['data']['picture'] = $picture;
 									
 									// Категории
-									$db_old_groups = CIBlockElement::GetElementGroups($arOffer['ID'], true);
+									$db_old_groups = CIBlockElement::GetElementGroups($arProduct['ID'], true);
 									while ($ar_group = $db_old_groups->Fetch()):
 										$offer['data']['categoryId'][] = $ar_group['ID'];
 									endwhile;
@@ -312,15 +317,18 @@
 									$selected_params = unserialize(Options::getProperties()[0]);
 									$params = [];
 									foreach ($selected_params as $param):
+										$info_block_id = explode('_' , $param)[0];
+										$param_id = explode('_' , $param)[1];
+										
 										$arParams = CIBlockElement::GetProperty(
-											Options::getOfferInfoBlock(),
-											$arOffer['ID'],
+											$info_block_id,
+											($info_block_id == $arOffer['IBLOCK_ID']) ? $arOffer['ID'] : $arProduct['ID'],
 											[
 												'sort' => 'asc'
 											],
 											[
 												'EMPTY' => 'N',
-												'ID'    => $param
+												'ID'    => $param_id
 											]
 										);
 										
@@ -333,12 +341,15 @@
 									endforeach;
 									$offer['params'] = $params;
 									
+									$unique_ids[] = $arOffer['ID'];
+									
 									$this->offers[] = $offer;
 								endwhile;
 							endif;
 						
 						// Товар
 						else:
+							if (in_array($arOffer['ID'], $unique_ids)) continue;
 							$offer = [
 								'id'        => $arProduct['ID'],
 								'group_id'  => null,
@@ -430,6 +441,8 @@
 							endforeach;
 							$offer['params'] = $params;
 							
+							$unique_ids[] = $arProduct['ID'];
+							
 							$this->offers[] = $offer;
 						endif;
 					endwhile;
@@ -437,7 +450,7 @@
 			endif;
 		}
 		
-		private function getProp(?string $selected_param, string $product_iblock_id, string $product_id, string $offer_id = null): string|null
+		private function getProp($selected_param, $product_iblock_id, $product_id, $offer_id = null)
 		{
 			$prop = null;
 			
