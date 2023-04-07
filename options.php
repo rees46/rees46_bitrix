@@ -20,28 +20,45 @@
 		$REQUEST_METHOD === 'POST'
 		&& (!empty($save) || !empty($apply))
 		&& check_bitrix_sessid()
-	)
-	{
-		if (isset($_REQUEST['shop_id']))
-		{
+	):
+		if (isset($_REQUEST['shop_id'])):
 			Option::set(mk_rees46::MODULE_ID, 'shop_id', trim($_REQUEST['shop_id']));
-		}
-		if (isset($_REQUEST['shop_secret']))
-		{
+		endif;
+		if (isset($_REQUEST['shop_secret'])):
 			Option::set(mk_rees46::MODULE_ID, 'shop_secret', trim($_REQUEST['shop_secret']));
-		}
-		if (isset($_REQUEST['stream']))
-		{
+		endif;
+		if (isset($_REQUEST['stream'])):
 			Option::set(mk_rees46::MODULE_ID, 'stream', trim($_REQUEST['stream']));
-		}
-		if (isset($_REQUEST['user_groups']))
-		{
+		endif;
+		if (isset($_REQUEST['user_groups'])):
 			Option::set(mk_rees46::MODULE_ID, 'user_groups', serialize($_REQUEST['user_groups']));
-		} else {
+		else:
 			Option::set(mk_rees46::MODULE_ID, 'user_groups', null);
-		}
+		endif;
 		Option::set(mk_rees46::MODULE_ID, 'instant_search_embedded', $_REQUEST['instant_search_embedded'] ? 1 : 0);
-	}
+		
+		// Extended feed
+		if (isset($_REQUEST['product_info_block'])):
+			Option::set(mk_rees46::MODULE_ID, 'product_info_block', $_REQUEST['product_info_block']);
+		endif;
+		if (isset($_REQUEST['offer_info_block'])):
+			Option::set(mk_rees46::MODULE_ID, 'offer_info_block', $_REQUEST['offer_info_block']);
+		endif;
+		if (isset($_REQUEST['params'])):
+			foreach ($_REQUEST['params'] as $key => $param):
+				if ($param != '0'):
+					Option::set(mk_rees46::MODULE_ID, trim($key), trim($param));
+				else:
+					Option::set(mk_rees46::MODULE_ID, trim($key), null);
+				endif;
+			endforeach;
+		endif;
+		if (isset($_REQUEST['properties'])):
+			Option::set(mk_rees46::MODULE_ID, 'properties', serialize($_REQUEST['properties']));
+		else:
+			Option::set(mk_rees46::MODULE_ID, 'properties', null);
+		endif;
+	endif;
 	
 	$export_state = Export::STATUS_NOT_PERFORMED;
 	$export_count = -1;

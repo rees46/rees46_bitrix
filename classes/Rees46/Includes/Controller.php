@@ -2,6 +2,7 @@
 
 namespace Rees46\Includes;
 use Rees46\Component\YmlRenderer;
+use Rees46\Component\YmlRendererExtended;
 
 class Controller
 {
@@ -16,6 +17,11 @@ class Controller
 			case 'yml':
 
 				$yml = new YmlRenderer();
+				$yml->render();
+				break;
+			
+			case 'yml_extended':
+				$yml = new YmlRendererExtended();
 				$yml->render();
 				break;
 

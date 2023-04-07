@@ -1,32 +1,44 @@
 <?php
 	
-	$MESS['REES_OPTIONS_SETTINGS']		            = 'Настройки';
-	$MESS['REES_OPTIONS_SHOP_ID']		              = 'Код магазина';
-	$MESS['REES_OPTIONS_SHOP_SECRET']		          = 'Секретный ключ';
-	$MESS['REES_OPTIONS_STREAM']                  = 'Stream';
-	$MESS['REES_OPTIONS_USER_GROUPS']             = 'Группы пользователей,
-																									 <br>которые являются сотрудниками.
-																									 <br><br>Блокируется событие оформления заказа
-																									 <br>когда сотрудники оформляют заказы за клиентов,
-																									 <br>например по телефону';
-	$MESS['REES_OPTIONS_YML']                     = 'Товарная выгрузка REES46';
-	$MESS['REES_OPTIONS_COPY_AND_PASTE_YML']      = 'Скопируйте этот URL и вставьте в поле YML
-																									 <br>в настройках магазина в личном кабинете REES46';
-	$MESS['REES_OPTIONS_INSTANT_SEARCH_EMBEDDED'] = 'Автоматически встраивать быстрый поиск REES46';
-	$MESS['REES_QUICK_EXPORT']                    = 'Выгрузка истории заказов';
-	$MESS['REES_QUICK_EXPORT_DESC']               = 'Для того, чтобы ускорить процесс появления блоков рекомендаций,
-																								   вы можете загрузить в нашу систему историю заказов вашего
-																								   интернет-магазина за последние 30 дней. Это позволит быстрее
-																								   сформировать рекомендации и начать делать рекомендации вашим
-																								   покупателям.';
-	$MESS['REES_QUICK_EXPORT_DESC_NO_SECRET']     = 'Внимание: вы не установили секретный ключ во вкладке "Настройки".
-																									 Без этого экспорт истории заказов невозможен. Вставьте секретный ключ
-																									 в поле "Секретный ключ" и сохраните настройки, после чего вернитесь сюда.';
-	$MESS['REES_QUICK_EXPORT_BUTTON']             = 'Отправить данные';
-	$MESS['REES_QUICK_EXPORT_EMPTY']              = 'К сожалению, мы не наши историю заказов вашего магазина. Если
-																								   у вас новый сайт, то рекомендации появятся спустя какое-то небольшое
-																								   время. Если же у вас есть история заказов, свяжитесь с нами
-																								   по электронной почте <a href="mailto:support@rees46.ru">support@rees46.ru</a>';
-	$MESS['REES_QUICK_EXPORT_SUCCESS']            = 'Отлично. Данные о заказах отправлены. Через несколько минут мы их обработаем
-	                                                 и начнем делать рекомендации вашим клиентам. Работа на этой странице закончена.';
-	$MESS['REES_QUICK_EXPORT_FAIL']               = 'При отправке данных возникла проблема';
+	$MESS['REES_OPTIONS_SETTINGS']                      = 'Настройки';
+	$MESS['REES_OPTIONS_SHOP_ID']                       = 'Код магазина';
+	$MESS['REES_OPTIONS_SHOP_SECRET']                   = 'Секретный ключ';
+	$MESS['REES_OPTIONS_STREAM']                        = 'Stream';
+	$MESS['REES_OPTIONS_USER_GROUPS']                   = 'Группы пользователей,';
+	$MESS['REES_OPTIONS_USER_GROUPS']                  .= '<br>которые являются сотрудниками.';
+	$MESS['REES_OPTIONS_USER_GROUPS']                  .= '<br><br>Блокируется событие оформления заказа';
+	$MESS['REES_OPTIONS_USER_GROUPS']                  .= '<br>когда сотрудники оформляют заказы за клиентов,';
+	$MESS['REES_OPTIONS_USER_GROUPS']                  .= '<br>например по телефону';
+	$MESS['REES_OPTIONS_YML']                           = 'Товарная выгрузка REES46';
+	$MESS['REES_OPTIONS_COPY_AND_PASTE_YML']            = 'Скопируйте этот URL и вставьте в поле YML';
+	$MESS['REES_OPTIONS_COPY_AND_PASTE_YML']           .= '<br>в настройках магазина в личном кабинете REES46';
+	$MESS['REES_OPTIONS_INSTANT_SEARCH_EMBEDDED']       = 'Автоматически встраивать быстрый поиск REES46';
+	$MESS['REES_QUICK_EXPORT']                          = 'Выгрузка истории заказов';
+	$MESS['REES_QUICK_EXPORT_DESC']                     = 'Для того, чтобы ускорить процесс появления блоков рекомендаций,';
+	$MESS['REES_QUICK_EXPORT_DESC']                    .=	'вы можете загрузить в нашу систему историю заказов вашего';
+	$MESS['REES_QUICK_EXPORT_DESC']                    .=	'интернет-магазина за последние 30 дней. Это позволит быстрее';
+	$MESS['REES_QUICK_EXPORT_DESC']                    .=	'сформировать рекомендации и начать делать рекомендации вашим';
+	$MESS['REES_QUICK_EXPORT_DESC']                    .=	'покупателям.';
+	$MESS['REES_QUICK_EXPORT_DESC_NO_SECRET']           = 'Внимание: вы не установили секретный ключ во вкладке "Настройки".';
+	$MESS['REES_QUICK_EXPORT_DESC_NO_SECRET']          .= 'Без этого экспорт истории заказов невозможен. Вставьте секретный ключ';
+	$MESS['REES_QUICK_EXPORT_DESC_NO_SECRET']          .= 'в поле "Секретный ключ" и сохраните настройки, после чего вернитесь сюда.';
+	$MESS['REES_QUICK_EXPORT_BUTTON']                   = 'Отправить данные';
+	$MESS['REES_QUICK_EXPORT_EMPTY']                    = 'К сожалению, мы не наши историю заказов вашего магазина. Если';
+	$MESS['REES_QUICK_EXPORT_EMPTY']                   .= 'у вас новый сайт, то рекомендации появятся спустя какое-то небольшое';
+	$MESS['REES_QUICK_EXPORT_EMPTY']                   .= 'время. Если же у вас есть история заказов, свяжитесь с нами';
+	$MESS['REES_QUICK_EXPORT_EMPTY']                   .= 'по электронной почте <a href="mailto:support@rees46.ru">support@rees46.ru</a>';
+	$MESS['REES_QUICK_EXPORT_SUCCESS']                  = 'Отлично. Данные о заказах отправлены. Через несколько минут мы их обработаем';
+	$MESS['REES_QUICK_EXPORT_SUCCESS']                 .= 'и начнем делать рекомендации вашим клиентам. Работа на этой странице закончена.';
+	$MESS['REES_QUICK_EXPORT_FAIL']                     = 'При отправке данных возникла проблема';
+	$MESS['REES_OPTIONS_YML_EXTENDED']                  = 'Расширенная товарная выгрузка REES46';
+	$MESS['REES_OPTIONS_YML_EXTENDED_PRODUCT_IBLOCK']   = 'Инфоблок с товарами';
+	$MESS['REES_OPTIONS_YML_EXTENDED_OFFER_IBLOCK']     = 'Инфоблок с торговыми предложениями';
+	$MESS['REES_OPTIONS_YML_EXTENDED_PRICE_MARGIN']     = 'Маржинальность';
+	$MESS['REES_OPTIONS_YML_EXTENDED_BARCODE']          = 'Штрих код (Артикул)';
+	$MESS['REES_OPTIONS_YML_EXTENDED_TYPEPREFIX']       = 'Префикс';
+	$MESS['REES_OPTIONS_YML_EXTENDED_VENDOR']           = 'Производитель';
+	$MESS['REES_OPTIONS_YML_EXTENDED_VENDORCODE']       = 'Код производителя';
+	$MESS['REES_OPTIONS_YML_EXTENDED_MODEL']            = 'Модель';
+	$MESS['REES_OPTIONS_YML_EXTENDED_IS_NEW']           = 'Новинка';
+	$MESS['REES_OPTIONS_YML_EXTENDED_IS_NEW_DESC']      = 'Укажите значение, которое означает, <br>что товар является новинкой';
+	$MESS['REES_OPTIONS_YML_EXTENDED_PROPERTIES']       = 'Укажите свойства, <br>которые должны быть переданы в фид <br>как параметры товара';

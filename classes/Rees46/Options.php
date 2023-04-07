@@ -32,4 +32,23 @@
 			return Option::get(\mk_rees46::MODULE_ID, 'instant_search_embedded', \mk_rees46::INSTANT_SEARCH_DEFAULT) ? true : false;
 		}
 		
+		public static function getProductInfoBlock()
+		{
+			return Option::get(\mk_rees46::MODULE_ID, 'product_info_block');
+		}
+		
+		public static function getOfferInfoBlock()
+		{
+			return Option::get(\mk_rees46::MODULE_ID, 'offer_info_block');
+		}
+		
+		public static function getParam(string $name)
+		{
+			return Option::get(\mk_rees46::MODULE_ID, $name);
+		}
+		
+		public static function getProperties()
+		{
+			return explode(',', Option::get(\mk_rees46::MODULE_ID, 'properties'));
+		}
 	}
