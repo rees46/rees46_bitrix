@@ -333,10 +333,40 @@
 										);
 										
 										while ( $arParam = $arParams->Fetch() ):
-											$params[] = [
-												'text' => $arParam['VALUE_ENUM'] ?? $arParam['VALUE'],
-												'name' => iconv(SITE_CHARSET, 'utf-8', $arParam['NAME'])
-											];
+											if (isset($arParam['USER_TYPE_SETTINGS']) && isset($arParam['USER_TYPE_SETTINGS']['TABLE_NAME'])):
+												$paramName = null;
+												
+												\Bitrix\Main\Loader::IncludeModule("highloadblock");
+												$result = \Bitrix\Highloadblock\HighloadBlockTable::getList([
+													'filter' => [
+														'=TABLE_NAME' => $arParam['USER_TYPE_SETTINGS']['TABLE_NAME']
+													]
+												]);
+												
+												if ( $row = $result->fetch() ):
+													$entity = \Bitrix\Highloadblock\HighloadBlockTable::compileEntity($row["ID"]);
+													$entityDataClass = $entity->getDataClass();
+													
+													$result = $entityDataClass::getList([
+														'select' => ["*"],
+														'order' => [],
+														'filter' => []
+													]);
+													while ($arRow = $result->Fetch()):
+														if ($arRow['UF_XML_ID'] == $arParam['VALUE']) $paramName = $arRow['UF_NAME'];
+													endwhile;
+												endif;
+												
+												$params[] = [
+													'text' => $paramName,
+													'name' => iconv(SITE_CHARSET, 'utf-8', $arParam['NAME'])
+												];
+											else:
+												$params[] = [
+													'text' => $arParam['VALUE_ENUM'] ?? $arParam['VALUE'],
+													'name' => iconv(SITE_CHARSET, 'utf-8', $arParam['NAME'])
+												];
+											endif;
 										endwhile;
 									endforeach;
 									$offer['params'] = $params;
@@ -433,10 +463,40 @@
 								);
 								
 								while ( $arParam = $arParams->Fetch() ):
-									$params[] = [
-										'text' => $arParam['VALUE_ENUM'] ?? $arParam['VALUE'],
-										'name' => iconv(SITE_CHARSET, 'utf-8', $arParam['NAME'])
-									];
+									if (isset($arParam['USER_TYPE_SETTINGS']) && isset($arParam['USER_TYPE_SETTINGS']['TABLE_NAME'])):
+										$paramName = null;
+										
+										\Bitrix\Main\Loader::IncludeModule("highloadblock");
+										$result = \Bitrix\Highloadblock\HighloadBlockTable::getList([
+											'filter' => [
+												'=TABLE_NAME' => $arParam['USER_TYPE_SETTINGS']['TABLE_NAME']
+											]
+										]);
+										
+										if ( $row = $result->fetch() ):
+											$entity = \Bitrix\Highloadblock\HighloadBlockTable::compileEntity($row["ID"]);
+											$entityDataClass = $entity->getDataClass();
+											
+											$result = $entityDataClass::getList([
+												'select' => ["*"],
+												'order' => [],
+												'filter' => []
+											]);
+											while ($arRow = $result->Fetch()):
+												if ($arRow['UF_XML_ID'] == $arParam['VALUE']) $paramName = $arRow['UF_NAME'];
+											endwhile;
+										endif;
+										
+										$params[] = [
+											'text' => $paramName,
+											'name' => iconv(SITE_CHARSET, 'utf-8', $arParam['NAME'])
+										];
+									else:
+										$params[] = [
+											'text' => $arParam['VALUE_ENUM'] ?? $arParam['VALUE'],
+											'name' => iconv(SITE_CHARSET, 'utf-8', $arParam['NAME'])
+										];
+									endif;
 								endwhile;
 							endforeach;
 							$offer['params'] = $params;
