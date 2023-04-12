@@ -29,33 +29,32 @@
 		private static $itemArraysMoreCache = array();
 		
 		/**
-		 * get orders for the last 6 months for export
+		 * get orders for the custom period for export
 		 *
 		 * @return bool|\CDBResult
 		 */
-		public static function getLatestOrders()
+		public static function getLatestOrders($from, $to)
 		{
-			$date = new \Bitrix\Main\Type\DateTime();
-			$filter = array(
-				'filter' => array(
-					">=DATE_INSERT" => $date->add('- 1 month'),
-					"=CANCELED" => "N"
-				),
-				'select' => array(
-					"ID",
-					"DATE_INSERT",
-					"USER_ID",
-					"EMAIL" => 'USER.EMAIL',
-					"PRICE",
-					"STATUS_ID"
-				),
-				'order' => array(
-					"ID" => 'ASC'
-				)
-			);
-			$orders = \Bitrix\Sale\Internals\OrderTable::getList($filter);
+			$parameters = [
+				'filter' => [
+					'>=DATE_INSERT' => $from,
+					'<=DATE_INSERT' => $to,
+					'=CANCELED'     => 'N'
+				],
+				'select' => [
+					'ID',
+					'DATE_INSERT',
+					'USER_ID',
+					'EMAIL' => 'USER.EMAIL',
+					'PRICE',
+					'STATUS_ID'
+				],
+				'order' => [
+					'ID' => 'ASC'
+				]
+			];
 			
-			return $orders;
+			return \Bitrix\Sale\Order::getList($parameters);
 		}
 		
 		/**

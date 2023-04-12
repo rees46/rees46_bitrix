@@ -13,66 +13,65 @@ class Export
 	const STATUS_SUCCESS        = 2;
 
 	/**
-	 * @return bool|int false on error, count of the orders on success (can be 0)
+	 * @return int false on error, count of the orders on success (can be 0)
 	 */
-	public static function exportOrders()
+	public static function exportOrders($from, $to)
 	{
 		set_time_limit(0);
-		$arOrders = self::getOrdersForExport();
+		$arOrders = self::getOrdersForExport($from, $to);
 
 		// Split to chunks
 		$arChunks = array_chunk($arOrders, 1000);
 
-		$data = array(
-			'shop_id' => Options::getShopID(),
-			'shop_secret' => Options::getShopSecret()
-		);
+		$data = [
+			'shop_id'       => Options::getShopID(),
+			'shop_secret'   => Options::getShopSecret()
+		];
 
-		foreach ($arChunks as $key => $chunk) {
-			if (count($chunk) > 0) {
+		foreach ($arChunks as $chunk):
+			if ( count($chunk) > 0 ):
 				$data['orders'] = $chunk;
 				self::sendData($data);
-			}
-		}
+			endif;
+		endforeach;
 
 		return count($arOrders);
-
 	}
 
-	private static function getOrdersForExport()
+	private static function getOrdersForExport($from, $to)
 	{
-		$dbOrders = Data::getLatestOrders();
+		$dbOrders = Data::getLatestOrders($from, $to);
 
-		$orders = array();
+		$orders = [];
 
-		while ($dbOrder = $dbOrders->Fetch()) {
-			$order = array(
-				'id' => $dbOrder['ID'],
-				'date' => strtotime($dbOrder['DATE_INSERT']),
-                'value' => array('total' => $dbOrder['PRICE']),
-                'status' => $dbOrder['STATUS_ID']
-			);
+		while ( $dbOrder = $dbOrders->Fetch() ):
+			$order = [
+				'id'        => $dbOrder['ID'],
+				'date'      => strtotime($dbOrder['DATE_INSERT']),
+                'value'     => [
+					'total' => $dbOrder['PRICE']
+                ],
+                'status'    => $dbOrder['STATUS_ID']
+			];
 
-            if (!empty($dbOrder['EMAIL'])) {
-				$order['email'] = $dbOrder['EMAIL'];
-			}
+            if ( !empty($dbOrder['EMAIL']) ) $order['email'] = $dbOrder['EMAIL'];
 
 			$dbItems = Data::getOrderItems($dbOrder['ID']);
 
-			$items = array();
+			$items = [];
 
-			foreach ($dbItems as $dbItem) {
+			foreach ($dbItems as $dbItem):
 				$item['id']       = $dbItem['PRODUCT_ID'];
 				$item['quantity'] = $dbItem['QUANTITY'];
 				$item['price']    = $dbItem['PRICE'];
 				
 				$items[] = $item;
-			}
+			endforeach;
 
 			$order['items'] = $items;
 
 			$orders[] = $order;
-		}
+		endwhile;
 
 		return $orders;
 	}

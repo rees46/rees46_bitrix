@@ -519,16 +519,40 @@
 	
 	<?php $tabControl->BeginNextTab(); ?>
 	<?php if ($export_state === \Rees46\Service\Export::STATUS_NOT_PERFORMED): ?>
-		<p>
-			<?= GetMessage('REES_QUICK_EXPORT_DESC') ?>
-		</p>
-		
+		<tr class="heading">
+			<td colspan="2"><b>Настройки экспорта заказов</b></td>
+		</tr>
 		<?php if (\Rees46\Options::getShopSecret() == ''): ?>
 			<p><strong><?= GetMessage('REES_QUICK_EXPORT_DESC_NO_SECRET') ?></strong></p>
 		<?php else: ?>
-			<div>
-				<input class="adm-btn-save" type="submit" value="<?= GetMessage('REES_QUICK_EXPORT_BUTTON') ?>" name="do_export">
-			</div>
+			<tr class="bx-in-group">
+				<td class="adm-detail-valign-top adm-detail-content-cell-l"
+				    style="width: 40%"><?= GetMessage('REES_QUICK_EXPORT_DATE_START') ?></td>
+				<td class="adm-detail-content-cell-r"
+				    style="width: 60%">
+					<input type="date"
+					       id="REES46_export_date_start"
+					       name="export_date_start"/>
+				</td>
+			</tr>
+			<tr class="bx-in-group">
+				<td class="adm-detail-valign-top adm-detail-content-cell-l"
+				    style="width: 40%"><?= GetMessage('REES_QUICK_EXPORT_DATE_END') ?></td>
+				<td class="adm-detail-content-cell-r"
+				    style="width: 60%">
+					<input type="date"
+					       id="REES46_export_date_end"
+					       name="export_date_end"/>
+				</td>
+			</tr>
+			<tr class="bx-in-group">
+				<td class="adm-detail-valign-top adm-detail-content-cell-l"
+				    style="width: 40%"></td>
+				<td class="adm-detail-content-cell-r"
+				    style="width: 60%">
+					<input class="adm-btn-save" type="submit" value="<?= GetMessage('REES_QUICK_EXPORT_BUTTON') ?>" name="do_export">
+				</td>
+			</tr>
 		<?php endif ?>
 	
 	<?php elseif ($export_state === \Rees46\Service\Export::STATUS_SUCCESS && $export_count === 0): ?>

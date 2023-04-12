@@ -7,6 +7,7 @@
 	use Bitrix\Main\HttpApplication;
 	use Bitrix\Main\Loader;
 	use Bitrix\Main\Config\Option;
+	use Bitrix\Main\Type\DateTime;
 	use \Rees46\Service\Export;
 	
 	Loc::loadMessages(__FILE__);
@@ -65,7 +66,15 @@
 	
 	if (isset($_REQUEST['do_export'])) {
 		try {
-			$export_count = Export::exportOrders();
+			$date   = new DateTime();
+			$from   = $_REQUEST['export_date_start']
+						? new DateTime($_REQUEST['export_date_start'].' 00:00:00', "Y-m-d H:i:s")
+						: $date->add('-1 month');
+			$to     = $_REQUEST['export_date_end']
+						? new DateTime($_REQUEST['export_date_end'].' 23:59:59', "Y-m-d H:i:s")
+						: $date;
+			
+			$export_count = Export::exportOrders($from, $to);
 			$export_state = Export::STATUS_SUCCESS;
 		} catch (Exception $e) {
 			$export_error = $e->getMessage();
