@@ -64,7 +64,7 @@
 			$available_groups = is_array(unserialize(Options::getUserGroups()[0])) ? unserialize(Options::getUserGroups()[0]) : [];
 			$user_data   = [
 				"email"       => $user_info['EMAIL'],
-				"phone"       => $user_info['PERSONAL_PHONE'],
+				"phone"       => (strlen($user_info['PERSONAL_PHONE']) > 0) ? $user_info['PERSONAL_PHONE'] : $user_info['WORK_PHONE'],
 			];
 			
 			$order_id    = $order->getId();

@@ -354,20 +354,10 @@
 			$basketItems = [];
 			
 			foreach ($basket as $basketItem) {
-				$product_info = CCatalogSku::GetProductInfo($basketItem->getField('PRODUCT_ID'));
-				if (is_array($product_info))
-				{
-					$product_id = intval($product_info['ID']);
-				}
-				else
-				{
-					$product_id = intval($basketItem->getField('PRODUCT_ID'));
-				}
-				
 				$quantity = $basketItem->getQuantity();
 				
 				$basketItems[] = [
-					'id'        => $product_id,
+					'id'        => $basketItem->getField('PRODUCT_ID'),
 					'quantity'  => $quantity
 				];
 			}
