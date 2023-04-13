@@ -493,7 +493,7 @@
 										];
 									else:
 										$params[] = [
-											'text' => $arParam['VALUE_ENUM'] ?? $arParam['VALUE'],
+											'text' => ($arParam['VALUE_ENUM'] && strlen($arParam['VALUE_ENUM']) > 0) ? $arParam['VALUE_ENUM'] : $arParam['VALUE'],
 											'name' => iconv(SITE_CHARSET, 'utf-8', $arParam['NAME'])
 										];
 									endif;
@@ -527,7 +527,7 @@
 					]
 				);
 				while ( $param_arr = $prop_arr->fetch() ):
-					$prop = $param_arr['VALUE_ENUM'] ?? $param_arr['VALUE'];
+					$prop = ($param_arr['VALUE_ENUM'] && strlen($param_arr['VALUE_ENUM']) > 0) ? $param_arr['VALUE_ENUM'] : $param_arr['VALUE'];
 				endwhile;
 			endif;
 			
