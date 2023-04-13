@@ -379,7 +379,7 @@
 						
 						// Товар
 						else:
-							if (in_array($arOffer['ID'], $unique_ids)) continue;
+							if (in_array($arProduct['ID'], $unique_ids)) continue;
 							$offer = [
 								'id'        => $arProduct['ID'],
 								'group_id'  => null,
