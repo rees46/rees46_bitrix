@@ -363,7 +363,7 @@
 												];
 											else:
 												$params[] = [
-													'text' => $arParam['VALUE_ENUM'] ?? $arParam['VALUE'],
+													'text' => ($arParam['VALUE_ENUM'] && strlen($arParam['VALUE_ENUM']) > 0) ? $arParam['VALUE_ENUM'] : $arParam['VALUE'],
 													'name' => iconv(SITE_CHARSET, 'utf-8', $arParam['NAME'])
 												];
 											endif;
