@@ -63,9 +63,23 @@
 			$user_groups = CUser::GetUserGroup($user_id);
 			$available_groups = is_array(unserialize(Options::getUserGroups()[0])) ? unserialize(Options::getUserGroups()[0]) : [];
 			$user_data   = [
-				"email"       => $user_info['EMAIL'],
-				"phone"       => (strlen($user_info['PERSONAL_PHONE']) > 0) ? $user_info['PERSONAL_PHONE'] : $user_info['WORK_PHONE'],
+				'email'       => $user_info['EMAIL'],
+				'phone'       => (strlen($user_info['PERSONAL_PHONE']) > 0) ? $user_info['PERSONAL_PHONE'] : $user_info['WORK_PHONE'],
 			];
+			// Поиск номера телефона в таблице авторизации по номеру
+			if ( strlen($user_data['phone']) === 0 ) {
+				$phoneAuthTable = \Bitrix\Main\UserPhoneAuthTable::getList($parameters = [
+					'filter' => ['USER_ID' => $user_id]
+				]);
+				if ( $item = $phoneAuthTable->fetch() ) {
+					$phone_number = $item['PHONE_NUMBER'];
+				} else {
+					$phone_number = null;
+				}
+				if ($phone_number && strlen($phone_number) > 0) {
+					$user_data['phone'] = $phone_number;
+				}
+			}
 			
 			$order_id    = $order->getId();
 			$products    = [];
