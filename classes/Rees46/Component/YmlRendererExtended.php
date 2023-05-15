@@ -878,7 +878,13 @@
 						$val = [ $val ];
 					endif;
 					foreach ( $val as $value ):
-						if ($value) $engine->writeElement($elm, $value);
+						if ($elm == 'name' || $elm == 'description') {
+							$engine->startElement($elm);
+							$engine->writeRaw('<![CDATA['.$value.']]>');
+							$engine->endElement();
+						} else {
+							$engine->writeElement($elm, $value);
+						}
 					endforeach;
 				endif;
 			endforeach;
