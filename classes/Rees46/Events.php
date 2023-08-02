@@ -84,11 +84,13 @@
 			$order_id    = $order->getId();
 			$products    = [];
 			foreach (Data::getOrderItems($order_id) as $item) {
-				$products[] = (object)([
-					'id'        => $item['PRODUCT_ID'],
-					'quantity'  => $item['QUANTITY'],
-					'price'     => $item['PRICE']
-				]);
+				if ( (int)$item['QUANTITY'] > 0 ) {
+					$products[] = (object)([
+						'id'        => $item['PRODUCT_ID'],
+						'quantity'  => $item['QUANTITY'],
+						'price'     => $item['PRICE']
+					]);
+				}
 			}
 			$order_info  = $order->getFieldValues();
 			$order_data  = [
@@ -96,60 +98,60 @@
 				"shop_secret" => Options::getShopSecret(),
 			];
 			
-			if ($is_new)
-			{
-				if ( empty(array_intersect($user_groups, $available_groups)) )
-				{
-					$order_data["event"]        = "purchase";
-					$order_data["did"]          = $_COOKIE["rees46_device_id"];
-					$order_data["seance"]       = $_COOKIE["rees46_session_code"];
-					$order_data["segment"]      = $_COOKIE["rees46_segment"];
-					$order_data["source"]       = $_COOKIE["rees46_source"];
-					$order_data["stream"]       = Options::getStream();
-					$order_data["email"]        = $user_data['email'];
-					$order_data["phone"]        = $user_data['phone'];
-					$order_data["order_id"]     = $order_id;
-					$order_data["order_price"]  = $order_info["PRICE"];
-					$order_data["items"]        = $products;
-					
-					Data::trackPurchase($order_data);
-				} else {
+			if (sizeof($products)) {
+				if ($is_new) {
+					if (empty(array_intersect($user_groups, $available_groups))) {
+						$order_data["event"] = "purchase";
+						$order_data["did"] = $_COOKIE["rees46_device_id"];
+						$order_data["seance"] = $_COOKIE["rees46_session_code"];
+						$order_data["segment"] = $_COOKIE["rees46_segment"];
+						$order_data["source"] = $_COOKIE["rees46_source"];
+						$order_data["stream"] = Options::getStream();
+						$order_data["email"] = $user_data['email'];
+						$order_data["phone"] = $user_data['phone'];
+						$order_data["order_id"] = $order_id;
+						$order_data["order_price"] = $order_info["PRICE"];
+						$order_data["items"] = $products;
+						
+						Data::trackPurchase($order_data);
+					}
+					else {
+						$order_data["orders"] = [
+							[
+								"id" => $order_id,
+								"status" => $order_info["STATUS_ID"],
+								"date" => $order_info["DATE_INSERT"]->getTimestamp(),
+								"email" => $user_data["email"],
+								"phone" => $user_data["phone"],
+								"value" => [
+									"total" => $order_info["PRICE"],
+									"delivery" => $order_info["PRICE_DELIVERY"],
+									"discount" => $order_info["DISCOUNT_VALUE"]
+								],
+								"items" => $products
+							]
+						];
+						if ($order_info["PRICE"]) Data::syncOrders($order_data);
+					}
+				}
+				elseif (($order->getField('DATE_INSERT')->getTimestamp() + 5) < time()) {
 					$order_data["orders"] = [
 						[
-							"id"      => $order_id,
-							"status"  => $order_info["STATUS_ID"],
-							"date"    => $order_info["DATE_INSERT"]->getTimestamp(),
-							"email"   => $user_data["email"],
-							"phone"   => $user_data["phone"],
-							"value"   => [
-								"total"     => $order_info["PRICE"],
-								"delivery"  => $order_info["PRICE_DELIVERY"],
-								"discount"  => $order_info["DISCOUNT_VALUE"]
+							"id" => $order_id,
+							"status" => $order_info["STATUS_ID"],
+							"date" => $order_info["DATE_INSERT"]->getTimestamp(),
+							"email" => $user_data["email"],
+							"phone" => $user_data["phone"],
+							"value" => [
+								"total" => $order_info["PRICE"],
+								"delivery" => $order_info["PRICE_DELIVERY"],
+								"discount" => $order_info["DISCOUNT_VALUE"]
 							],
-							"items"   => $products
+							"items" => $products
 						]
 					];
-					if ($order_info["PRICE"]) Data::syncOrders($order_data);
+					Data::syncOrders($order_data);
 				}
-			}
-			elseif ( ($order->getField('DATE_INSERT')->getTimestamp() + 5) < time() )
-			{
-				$order_data["orders"] = [
-					[
-						"id"      => $order_id,
-						"status"  => $order_info["STATUS_ID"],
-						"date"    => $order_info["DATE_INSERT"]->getTimestamp(),
-						"email"   => $user_data["email"],
-						"phone"   => $user_data["phone"],
-						"value"   => [
-							"total"     => $order_info["PRICE"],
-							"delivery"  => $order_info["PRICE_DELIVERY"],
-							"discount"  => $order_info["DISCOUNT_VALUE"]
-						],
-						"items"   => $products
-					]
-				];
-				Data::syncOrders($order_data);
 			}
 		}
 		
