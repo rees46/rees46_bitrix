@@ -320,6 +320,8 @@
 										$info_block_id = explode('_' , $param)[0];
 										$param_id = explode('_' , $param)[1];
 										
+										$param_arr = explode('_', $param);
+										
 										$arParams = CIBlockElement::GetProperty(
 											$info_block_id,
 											($info_block_id == $arOffer['IBLOCK_ID']) ? $arOffer['ID'] : $arProduct['ID'],
@@ -328,7 +330,7 @@
 											],
 											[
 												'EMPTY' => 'N',
-												'ID'    => $param_id
+												'ID'    => end($param_arr)
 											]
 										);
 										
@@ -450,6 +452,7 @@
 							$selected_params = unserialize(Options::getProperties()[0]);
 							$params = [];
 							foreach ($selected_params as $param):
+								$param_arr = explode('_', $param);
 								$arParams = CIBlockElement::GetProperty(
 									Options::getProductInfoBlock(),
 									$arProduct['ID'],
@@ -458,7 +461,7 @@
 									],
 									[
 										'EMPTY' => 'N',
-										'ID'    => $param
+										'ID'    => end($param_arr)
 									]
 								);
 								
