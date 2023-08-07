@@ -2,7 +2,7 @@
 
 ## Инструкция по установке
 
-http://memo.mkechinov.ru/pages/viewpage.action?pageId=786459
+https://rees46.ru/docs/ru/setup/cms-plugins/bitrix.html
 
 ## Как готовить обновление
 
