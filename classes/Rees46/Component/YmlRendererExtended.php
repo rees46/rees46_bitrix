@@ -703,6 +703,7 @@
 			'picture',
 			'price_margin',
 			'price',
+			'oldprice',
 			'typePrefix',
 			'url',
 			'vendor',
