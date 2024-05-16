@@ -122,7 +122,12 @@
 						gender:       '<?= $currentUserData['PERSONAL_GENDER'] ? mb_strtolower($currentUserData['PERSONAL_GENDER']) : null; ?>',
 						birthday:     '<?= $currentUserData['PERSONAL_BIRTHDAY'] ? date('Y-m-d', strtotime($currentUserData['PERSONAL_BIRTHDAY'])) : null ;?>',
 					};
-					r46('profile', 'set', ud);
+
+					ud = Object.fromEntries(Object.entries(ud).filter(([key, value]) => value !== '' && value !== null));
+
+					if (Object.keys(ud).length > 0) {
+            			r46('profile', 'set', ud);
+        			}
 					<?php endif; ?>
 				})();
 			</script>
