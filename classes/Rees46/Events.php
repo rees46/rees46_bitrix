@@ -86,9 +86,9 @@
 			foreach (Data::getOrderItems($order_id) as $item) {
 				if ( (int)$item['QUANTITY'] > 0 ) {
 					$products[] = (object)([
-						'id'        => $item['PRODUCT_ID'],
-						'quantity'  => $item['QUANTITY'],
-						'price'     => $item['PRICE']
+						'id'     => $item['PRODUCT_ID'],
+						'amount' => $item['QUANTITY'],
+						'price'  => $item['PRICE']
 					]);
 				}
 			}

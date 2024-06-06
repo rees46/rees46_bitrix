@@ -357,8 +357,8 @@
 				$quantity = $basketItem->getQuantity();
 				
 				$basketItems[] = [
-					'id'        => $basketItem->getField('PRODUCT_ID'),
-					'quantity'  => $quantity
+					'id'     => $basketItem->getField('PRODUCT_ID'),
+					'amount' => $quantity
 				];
 			}
 			
