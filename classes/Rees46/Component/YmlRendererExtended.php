@@ -171,23 +171,33 @@
 		
 		private function getCategories()
 		{
-			if ( $this->info_block ):
-				$filter = [
-					'IBLOCK_ID'     => (int) $this->info_block,
-					'ACTIVE'        => 'Y',
-					'IBLOCK_ACTIVE' => 'Y',
-					'GLOBAL_ACTIVE' => 'Y'
-				];
-				$db_acc = CIBlockSection::GetList(['left_margin'=>'asc'], $filter);
-				while ($arAcc = $db_acc->GetNext()):
-					$this->categories[] = [
-						'id'        => $arAcc['ID'],
-						'parent_id' => intval($arAcc['IBLOCK_SECTION_ID']) > 0 ? $arAcc['IBLOCK_SECTION_ID'] : null,
-						'name'      => iconv(SITE_CHARSET,'utf-8',$arAcc['NAME']),
-						'url'       => $this->serverOrigin . (!empty($arAcc['~SECTION_PAGE_URL']) ? $arAcc['~SECTION_PAGE_URL'] : (!empty($arAcc['SECTION_PAGE_URL']) ? $arAcc['SECTION_PAGE_URL'] : ''))
+			if (Options::getCategories()[0] || $this->info_block) {
+				if (Options::getCategories()[0]) {
+					$filter = [
+						'ID' => unserialize(Options::getCategories()[0]),
+						'ACTIVE' => 'Y',
+						'IBLOCK_ACTIVE' => 'Y',
+						'GLOBAL_ACTIVE' => 'Y'
 					];
-				endwhile;
-			endif;
+				} else if ($this->info_block) {
+					$filter = [
+						'IBLOCK_ID' => (int)$this->info_block,
+						'ACTIVE' => 'Y',
+						'IBLOCK_ACTIVE' => 'Y',
+						'GLOBAL_ACTIVE' => 'Y'
+					];
+				}
+				
+				$db_acc = CIBlockSection::GetList(['left_margin' => 'asc'], $filter);
+				while ($arAcc = $db_acc->GetNext()) {
+					$this->categories[] = [
+						'id' => $arAcc['ID'],
+						'parent_id' => intval($arAcc['IBLOCK_SECTION_ID']) > 0 ? $arAcc['IBLOCK_SECTION_ID'] : null,
+						'name' => iconv(SITE_CHARSET, 'utf-8', $arAcc['NAME']),
+						'url' => $this->serverOrigin . (!empty($arAcc['~SECTION_PAGE_URL']) ? $arAcc['~SECTION_PAGE_URL'] : (!empty($arAcc['SECTION_PAGE_URL']) ? $arAcc['SECTION_PAGE_URL'] : ''))
+					];
+				}
+			}
 		}
 		
 		private function getOffers()
@@ -714,7 +724,6 @@
 		protected string $_file;
 		protected string $_tmpFile;
 		protected $_engine;
-		
 		public array $shopInfo      = [
 			'name'      => '',
 			'company'   => '',

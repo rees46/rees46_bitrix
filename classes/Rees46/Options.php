@@ -51,4 +51,8 @@
 		{
 			return explode(',', Option::get(\mk_rees46::MODULE_ID, 'properties'));
 		}
+		
+		public static function getCategories() {
+			return explode(',', Option::get(\mk_rees46::MODULE_ID, 'categories'));
+		}
 	}

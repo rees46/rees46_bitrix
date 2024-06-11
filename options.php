@@ -59,6 +59,11 @@
 		else:
 			Option::set(mk_rees46::MODULE_ID, 'properties', null);
 		endif;
+		if (isset($_REQUEST['categories'])):
+			Option::set(mk_rees46::MODULE_ID, 'categories', serialize($_REQUEST['categories']));
+		else:
+			Option::set(mk_rees46::MODULE_ID, 'categories', null);
+		endif;
 	endif;
 	
 	$export_state = Export::STATUS_NOT_PERFORMED;

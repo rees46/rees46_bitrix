@@ -40,6 +40,32 @@
 	$selected_product_info_block = Options::getProductInfoBlock();
 	$selected_offer_info_block = Options::getOfferInfoBlock();
 	
+	// Список категорий
+	$categories = [];
+	if ($selected_product_info_block):
+		foreach ( $info_blocks as $block ):
+			if (
+				$block['id'] == $selected_product_info_block
+			) {
+				$filter = [
+					'IBLOCK_ID'     => (int) $block['id'],
+					'ACTIVE'        => 'Y',
+					'IBLOCK_ACTIVE' => 'Y',
+					'GLOBAL_ACTIVE' => 'Y'
+				];
+				$db_acc = CIBlockSection::GetList(['left_margin'=>'asc'], $filter);
+				while ($arAcc = $db_acc->GetNext()):
+					$categories[] = [
+						'id'        => $arAcc['ID'],
+						'parent_id' => intval($arAcc['IBLOCK_SECTION_ID']) > 0 ? $arAcc['IBLOCK_SECTION_ID'] : null,
+						'name'      => iconv(SITE_CHARSET,'utf-8',$arAcc['NAME']),
+					];
+				endwhile;
+			}
+		endforeach;
+	endif;
+	$categories_selected = (Options::getCategories()[0]) ? unserialize(Options::getCategories()[0]) : [];
+	
 	// Список свойств и параметров
 	$properties = [];
 	$params_properties = [];
@@ -302,6 +328,27 @@
 		</td>
 	</tr>
 	<?php if ($selected_product_info_block): ?>
+		<tr class="heading">
+			<td colspan="2"><b>Список категорий</b></td>
+		</tr>
+		<tr class="bx-in-group">
+			<td class="adm-detail-valign-top adm-detail-content-cell-l"
+			    style="width: 40%"><?= GetMessage('REES_OPTIONS_YML_EXTENDED_CATEGORIES') ?></td>
+			<td class="adm-detail-content-cell-r"
+			    style="width: 60%">
+		  <?php foreach ($categories as $category): ?>
+						<label <?php if ($category['parent_id']) {?>style="margin-left: 15px"<?php } ?>>
+							<input type="checkbox" id="user_group_category_<?=$category['id'];?>"
+							       value="<?=$category['id'];?>"
+				  <?php if (in_array($category['id'], $categories_selected)): ?>
+										checked="checked"
+				  <?php endif; ?>
+									   name="categories[]" style="margin: 0 5px 0 0"/>
+							<span><?=$category['name'];?></span>
+						</label><br>
+		  <?php endforeach; ?>
+			</td>
+		</tr>
 		<tr class="heading">
 			<td colspan="2"><b>Список свойств</b></td>
 		</tr>
