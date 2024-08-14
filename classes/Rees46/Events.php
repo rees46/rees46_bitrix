@@ -87,7 +87,7 @@
 				if ( (int)$item['QUANTITY'] > 0 ) {
 					$products[] = (object)([
 						'id'     => $item['PRODUCT_ID'],
-						'amount' => $item['QUANTITY'],
+						'quantity' => $item['QUANTITY'],
 						'price'  => $item['PRICE']
 					]);
 				}
